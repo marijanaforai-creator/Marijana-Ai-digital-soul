@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="sr-Latn-RS">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Digital Soul Studio — Mockup Studio za brzo pretvaranje slike u profesionalni mockup.">
+<title>Mockup Studio — Digital Soul Studio</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="mockup.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a class="logo" href="index.html">MARIJANA<span>AI DIGITAL SOUL</span></a>
+    <nav class="nav-links">
+      <a href="index.html">Početna</a>
+      <a href="mockup.html" aria-current="page">Mockup Studio</a>
+      <a href="index.html#ai">AI alati</a>
+      <a href="index.html#biblioteka">Biblioteka rešenja</a>
+      <a href="index.html#proizvodi">Svi proizvodi</a>
+    </nav>
+  </div>
+</header>
+
+<main class="mockup-page">
+  <section class="mockup-hero">
+    <div class="container">
+      <div class="kicker">DIGITAL SOUL STUDIO</div>
+      <h1>Mockup Studio <em>od slike do scene</em></h1>
+      <p>Ubaci svoju sliku, izaberi scenu i odmah napravi profesionalni mockup. Ovo je prva funkcionalna verzija modula.</p>
+    </div>
+  </section>
+
+  <section class="mockup-workspace">
+    <div class="container mockup-grid">
+      <aside class="mockup-panel">
+        <div class="panel-block">
+          <label class="upload-box" for="imageUpload">
+            <input id="imageUpload" type="file" accept="image/*">
+            <span class="upload-icon">＋</span>
+            <strong>Ubaci svoju sliku</strong>
+            <small>PNG, JPG ili WEBP</small>
+          </label>
+        </div>
+
+        <div class="panel-block">
+          <label for="sceneSelect">Scena</label>
+          <select id="sceneSelect">
+            <option value="phone">Telefon</option>
+            <option value="laptop">Laptop</option>
+            <option value="planner">Planner</option>
+            <option value="poster">Poster</option>
+            <option value="business">Business scena</option>
+            <option value="fitness">Fitness scena</option>
+            <option value="hotel">Hotel scena</option>
+            <option value="restaurant">Restoran scena</option>
+            <option value="yoga">Yoga scena</option>
+            <option value="beauty">Beauty scena</option>
+          </select>
+        </div>
+
+        <div class="panel-block">
+          <label for="scaleRange">Veličina slike <span id="scaleValue">100%</span></label>
+          <input id="scaleRange" type="range" min="50" max="150" value="100">
+        </div>
+
+        <div class="panel-block">
+          <label for="rotateRange">Rotacija <span id="rotateValue">0°</span></label>
+          <input id="rotateRange" type="range" min="-15" max="15" value="0">
+        </div>
+
+        <div class="panel-block">
+          <label for="bgColor">Boja pozadine</label>
+          <input id="bgColor" class="color-input" type="color" value="#E8DED0">
+        </div>
+
+        <div class="panel-actions">
+          <button id="resetBtn" class="btn">Vrati početno</button>
+          <button id="downloadBtn" class="btn primary" type="button">Preuzmi PNG</button>
+        </div>
+
+        <p id="statusText" class="mockup-status">Prvo ubaci sliku.</p>
+      </aside>
+
+      <section class="canvas-area">
+        <div class="canvas-toolbar">
+          <strong id="sceneTitle">Telefon</strong>
+          <span>Pregled mockup-a</span>
+        </div>
+        <div id="mockupStage" class="mockup-stage scene-phone">
+          <div class="scene-decoration decor-one"></div>
+          <div class="scene-decoration decor-two"></div>
+          <div id="mockupObject" class="mockup-object phone-object">
+            <div class="device-frame">
+              <div class="device-screen">
+                <img id="previewImage" alt="Pregled tvoje slike">
+              </div>
+            </div>
+          </div>
+          <div id="sceneLabel" class="scene-label">DIGITAL SOUL STUDIO</div>
+        </div>
+      </section>
+    </div>
+  </section>
+</main>
+
+<script src="mockup.js"></script>
+</body>
+</html>
