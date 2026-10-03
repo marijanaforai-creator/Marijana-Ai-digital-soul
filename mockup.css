@@ -17,9 +17,44 @@
 .mockup-hero p{max-width:680px;color:rgba(246,242,234,.78);font-size:14px}
 .mockup-workspace{padding:55px 0 90px}
 .mockup-grid{display:grid;grid-template-columns:330px 1fr;gap:28px;align-items:start}
-.mockup-panel{background:var(--white);border:1px solid rgba(37,37,34,.1);padding:22px;position:sticky;top:105px}
+.mockup-panel{
+  background:var(--white);
+  color:#28222F;
+  border:1px solid rgba(37,37,34,.14);
+  padding:22px;
+  position:sticky;
+  top:105px;
+  max-height:calc(100vh - 125px);
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  scrollbar-width:thin;
+  scrollbar-color:#7654A8 #F1EBF7;
+}
+.mockup-panel::-webkit-scrollbar{width:8px}
+.mockup-panel::-webkit-scrollbar-track{background:#F1EBF7;border-radius:8px}
+.mockup-panel::-webkit-scrollbar-thumb{background:#7654A8;border-radius:8px}
 .panel-block{padding:0 0 22px;margin-bottom:22px;border-bottom:1px solid rgba(37,37,34,.1)}
-.panel-block>label:not(.upload-box){display:flex;justify-content:space-between;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}
+.panel-block>label:not(.upload-box){
+  display:flex;
+  justify-content:space-between;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  margin-bottom:10px;
+  color:#28222F;
+}
+.mockup-panel .sub-control-label,
+.mockup-panel .check-row{
+  color:#3B235F!important;
+}
+.mockup-panel input[type="number"]{
+  color:#28222F;
+  background:#FFFFFF;
+}
+.mockup-panel select{
+  color:#28222F;
+}
 .upload-box{display:flex;min-height:155px;border:1px dashed var(--sage);background:var(--ivory);align-items:center;justify-content:center;flex-direction:column;gap:7px;cursor:pointer;text-align:center}
 .upload-box input{display:none}
 .upload-box strong{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500}
@@ -399,4 +434,53 @@
 .device-screen.drop-ready .frame-snap-indicator{
   opacity:1;
   transform:translate(-50%,-50%) scale(1.03);
+}
+
+
+/* Jasna leva kontrolna tabla — desktop */
+.mockup-body .mockup-panel-title{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:12px;
+  padding:0 0 16px;
+  margin-bottom:20px;
+  border-bottom:2px solid rgba(118,84,168,.18);
+}
+.mockup-body .mockup-panel-title span{
+  display:block;
+  color:#7654A8;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+}
+.mockup-body .mockup-panel-title strong{
+  display:block;
+  color:#28222F;
+  font-family:'Cormorant Garamond',serif;
+  font-size:25px;
+  font-weight:600;
+  line-height:1;
+}
+.mockup-body .mockup-panel .panel-block{
+  color:#28222F;
+}
+.mockup-body .mockup-panel .upload-box{
+  color:#28222F;
+}
+.mockup-body .mockup-panel .upload-box strong{
+  color:#28222F;
+}
+.mockup-body .mockup-panel .upload-box small{
+  color:#5F5966;
+}
+.mockup-body .mockup-panel .mockup-status{
+  color:#5F5966;
+}
+@media(max-width:900px){
+  .mockup-body .mockup-panel{
+    max-height:none;
+    overflow:visible;
+  }
 }
