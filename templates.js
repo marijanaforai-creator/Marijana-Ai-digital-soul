@@ -106,7 +106,103 @@ const grid=document.getElementById('libraryGrid'),details=document.getElementByI
 function renderIndustryPacks(){
  const wrap=document.getElementById('industryPacks'); if(!wrap)return;
  wrap.innerHTML='';
- industryPacks.forEach(p=>{const el=document.createElement('button');el.className='industry-pack';el.type='button';el.innerHTML='<strong>'+p.name+'</strong><small>'+p.desc+'</small>';el.onclick=()=>{category=p.cat;document.querySelectorAll('.category').forEach(x=>x.classList.toggle('active',x.dataset.category===category));search.value=p.name.split(' ')[0];render();renderIndustryPacks();document.getElementById('libraryGrid').scrollIntoView({behavior:'smooth',block:'start'})};wrap.appendChild(el)})
+ industryPacks.forEach(p=>{const el=document.createElement('button');el.className='industry-pack';el.type='button';el.innerHTML='<strong>'+p.name+'</strong><small>'+p.desc+'</small>';el.onclick=()=>{category=p.cat;const promoFormats=[
+{id:'promo-card',name:'Promo kartica',size:'1200 × 1200',group:'digital'},
+{id:'instagram-post',name:'Instagram objava',size:'1080 × 1350',group:'digital'},
+{id:'instagram-story',name:'Instagram Story',size:'1080 × 1920',group:'digital'},
+{id:'reel-cover',name:'Reel cover',size:'1080 × 1920',group:'digital'},
+{id:'facebook',name:'Facebook vizual',size:'1200 × 1500',group:'digital'},
+{id:'pinterest',name:'Pinterest Pin',size:'1000 × 1500',group:'digital'},
+{id:'tiktok',name:'TikTok cover',size:'1080 × 1920',group:'digital'},
+{id:'linkedin',name:'LinkedIn vizual',size:'1200 × 627',group:'digital'},
+{id:'email-header',name:'Email header',size:'1200 × 600',group:'digital'},
+{id:'web-banner',name:'Web banner',size:'1600 × 600',group:'digital'},
+{id:'promo-poster',name:'Promo poster',size:'1080 × 1350',group:'print'},
+{id:'a4',name:'A4 poster',size:'2480 × 3508',group:'print'},
+{id:'a5',name:'A5 poster',size:'1748 × 2480',group:'print'},
+{id:'flyer',name:'Letak',size:'1748 × 2480',group:'print'},
+{id:'price-list',name:'Cenovnik',size:'1748 × 2480',group:'print'},
+{id:'sticker',name:'Promo nalepnica',size:'1200 × 1200',group:'print'}
+];
+const promoBadges=['Akcija','Novo','-20%','Ograničena ponuda','Bestseller','Domaće','Ručno rađeno','Lokalno','Premium','Besplatna dostava','Novo u ponudi','Poslednji komadi','Sezonski proizvod','Poklon'];
+const promoStyles={
+luxury:{bg:'#171717',text:'#f7f4ed',accent:'#c7a76c',font:'Georgia,serif'},
+minimal:{bg:'#f7f4ed',text:'#20211f',accent:'#8ea386',font:'Arial,sans-serif'},
+wellness:{bg:'#e8eee7',text:'#20211f',accent:'#8ea386',font:'Georgia,serif'},
+business:{bg:'#e3e8eb',text:'#20211f',accent:'#536675',font:'Arial,sans-serif'},
+bold:{bg:'#20211f',text:'#ffffff',accent:'#8ea386',font:'Arial,sans-serif'}
+};
+let promoState={style:'luxury',format:'promo-card',variant:0};
+function promoData(){
+ const product=JSON.parse(localStorage.getItem('digitalSoulProductInput')||'{}');
+ const offer=JSON.parse(localStorage.getItem('digitalSoulOffer')||'{}');
+ return {
+ name:product.productName||'Naziv proizvoda',
+ price:offer.offerPrice||product.productPrice||'Cena',
+ oldPrice:offer.offerOldPrice||'',
+ discount:offer.offerDiscount||'',
+ deadline:offer.offerDeadline||'',
+ code:offer.offerCode||'',
+ message:offer.offerMessage||product.productBenefit||product.productDescription||'Glavna korist proizvoda',
+ cta:product.productCta||'Saznaj više'
+ };
+}
+function initVisualPromoEngine(){
+ const fs=document.getElementById('promoFormat');if(!fs)return;
+ fs.innerHTML=promoFormats.map(x=>'<option value="'+x.id+'">'+x.name+' · '+x.size+'</option>').join('');
+ fs.value='promo-card';
+ const style=document.getElementById('promoStyle');
+ style.onchange=()=>{promoState.style=style.value;renderPromo()};
+ fs.onchange=()=>{promoState.format=fs.value;renderPromo()};
+ document.getElementById('promoBrand').onchange=renderPromo;
+ document.getElementById('buildPromo').onclick=()=>{promoState.variant=0;renderPromo()};
+ document.getElementById('makeFivePromos').onclick=()=>{promoState.variant=0;renderPromoVariants()};
+ document.getElementById('visualOnly').onclick=()=>{promoState.style=promoState.style==='luxury'?'minimal':promoState.style==='minimal'?'wellness':'luxury';style.value=promoState.style;renderPromo()};
+ document.getElementById('textOnly').onclick=()=>{promoState.variant++;renderPromo()};
+ document.getElementById('priceOnly').onclick=()=>{promoState.variant++;renderPromo()};
+ document.getElementById('ctaOnly').onclick=()=>{promoState.variant++;renderPromo()};
+ document.getElementById('downloadPromoPack').onclick=()=>downloadPromoPack();
+ document.getElementById('createWholePromo').onclick=()=>{renderPromoVariants(true)};
+ renderPromo();
+}
+function promoCopy(d,v){
+ const headlines=[
+ d.message,
+ d.name+' — sada dostupno',
+ 'Posebna ponuda za '+d.name,
+ 'Vreme je za '+d.name,
+ 'Otkrij '+d.name
+ ];
+ const ctas=[d.cta,'Poruči danas','Saznaj više','Javi se za detalje','Iskoristi ponudu'];
+ return {headline:headlines[v%headlines.length],cta:ctas[v%ctas.length]};
+}
+function renderPromo(){
+ const box=document.getElementById('promoPreview');if(!box)return;
+ const d=promoData(),p=promoCopy(d,promoState.variant),s=promoStyles[promoState.style],fmt=promoFormats.find(x=>x.id===promoState.format)||promoFormats[0];
+ box.hidden=false;
+ box.innerHTML='<div class="promo-canvas promo-'+promoState.style+'" style="--promo-bg:'+s.bg+';--promo-text:'+s.text+';--promo-accent:'+s.accent+';--promo-font:'+s.font+'"><div class="promo-brand">'+(document.getElementById('promoBrand').value==='Bez brenda'?'':document.getElementById('promoBrand').value)+'</div><div class="promo-badge">'+(d.discount||'PROMO')+'</div><div class="promo-copy"><div class="promo-format-label">'+fmt.name+'</div><h3>'+p.headline+'</h3><p>'+d.message+'</p><div class="promo-prices">'+(d.oldPrice?'<del>'+d.oldPrice+'</del> ':'')+'<strong>'+d.price+'</strong></div><div class="promo-meta">'+(d.deadline?'Rok: '+d.deadline+' · ':'')+(d.code?'Kod: '+d.code:'')+'</div><button type="button">'+p.cta+'</button></div></div><div class="promo-spec"><strong>'+fmt.name+'</strong><span>'+fmt.size+'</span><span>Stil: '+promoState.style+'</span></div>';
+}
+function renderPromoVariants(full=false){
+ const wrap=document.getElementById('promoVariants');if(!wrap)return;
+ const d=promoData();wrap.hidden=false;
+ wrap.innerHTML='';
+ const variants=Array.from({length:5},(_,i)=>({style:Object.keys(promoStyles)[i%5],variant:i}));
+ variants.forEach((v,i)=>{
+  const p=promoCopy(d,v.variant),s=promoStyles[v.style];
+  const el=document.createElement('article');el.className='promo-variant';
+  el.innerHTML='<div class="promo-mini" style="background:'+s.bg+';color:'+s.text+';font-family:'+s.font+'"><small style="color:'+s.accent+'">'+(d.discount||'PROMO')+'</small><strong>'+p.headline+'</strong><span>'+(d.price||'Cena')+'</span><em>'+p.cta+'</em></div><div class="promo-variant-info">Varijanta '+(i+1)+' · '+v.style+'</div>';
+  el.onclick=()=>{promoState.style=v.style;promoState.variant=v.variant;document.getElementById('promoStyle').value=v.style;renderPromo()};
+  wrap.appendChild(el);
+ });
+ if(full) document.getElementById('promoPreview').scrollIntoView({behavior:'smooth',block:'center'});
+}
+function downloadPromoPack(){
+ const d=promoData(),fmt=promoFormats.find(x=>x.id===promoState.format)||promoFormats[0];
+ const text=[fmt.name,fmt.size,'',d.name,d.message,d.oldPrice?'Stara cena: '+d.oldPrice:'',d.price?'Cena: '+d.price:'',d.discount?'Popust: '+d.discount:'',d.deadline?'Rok: '+d.deadline:'',d.code?'Promo kod: '+d.code:'',d.cta?'CTA: '+d.cta:''].filter(Boolean).join('\n');
+ const blob=new Blob([text],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+ a.href=url;a.download='digital-soul-promo-'+fmt.id+'.txt';a.click();URL.revokeObjectURL(url);
+}
+document.querySelectorAll('.category').forEach(x=>x.classList.toggle('active',x.dataset.category===category));search.value=p.name.split(' ')[0];render();renderIndustryPacks();document.getElementById('libraryGrid').scrollIntoView({behavior:'smooth',block:'start'})};wrap.appendChild(el)})
 }
 function render(){
 let q=(search.value||'').toLowerCase().trim(), list;
@@ -135,4 +231,4 @@ function showDetails(t){
  details.scrollIntoView({behavior:'smooth',block:'start'});
 }
 document.querySelectorAll('.category').forEach(b=>b.onclick=()=>{category=b.dataset.category;document.querySelectorAll('.category').forEach(x=>x.classList.remove('active'));b.classList.add('active');render()});
-search.oninput=render;sort.onchange=render;initCampaignBuilder();initProductInput();initCorrectionEngine();initRepurposeEngine();initAudienceEngine();initCampaignBuilder2();initOfferEngine();document.getElementById('generateContent')?.addEventListener('click',generateContent);document.getElementById('libraryFavorites').onclick=()=>{category=category==='mine'?'all':'mine';document.querySelectorAll('.category').forEach(x=>x.classList.toggle('active',x.dataset.category===category));render()};render();
+search.oninput=render;sort.onchange=render;initCampaignBuilder();initProductInput();initCorrectionEngine();initRepurposeEngine();initAudienceEngine();initCampaignBuilder2();initOfferEngine();initVisualPromoEngine();document.getElementById('generateContent')?.addEventListener('click',generateContent);document.getElementById('libraryFavorites').onclick=()=>{category=category==='mine'?'all':'mine';document.querySelectorAll('.category').forEach(x=>x.classList.toggle('active',x.dataset.category===category));render()};render();
