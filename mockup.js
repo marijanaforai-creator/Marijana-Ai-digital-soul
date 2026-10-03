@@ -1,4 +1,5 @@
 const imageUpload=document.getElementById('imageUpload');
+const mockupUploadTrigger=document.getElementById('mockupUploadTrigger');
 const previewImage=document.getElementById('previewImage');
 const imageStrip=document.getElementById('imageStrip');
 const uploadCount=document.getElementById('uploadCount');
@@ -107,7 +108,7 @@ const batchSceneList=[
 const batchFormatList=[
  ['square','Kvadrat 1200×1200'],['portrait','Portret 1080×1350'],
  ['landscape','Pejzaž 1600×900'],['story','Story / Reel 1080×1920'],
- ['pinterest','Pinterest 1000×1500']
+ ['pin','Pinterest 1000×1500']
 ];
 function initBatchEngine(){
   const scenes=document.getElementById('batchScenes'), formats=document.getElementById('batchFormats');
@@ -146,7 +147,8 @@ function getBatchImage(){
   return img && img.src && img.src!=='about:blank' ? img : null;
 }
 function renderBatchCanvas(scene,format){
-  const size=formatSizes[format]||formatSizes.square||{w:1200,h:1200};
+  const dims=formatSizes[format]||formatSizes.square;
+  const size={w:dims[0],h:dims[1]};
   const canvas=document.createElement('canvas');
   canvas.width=size.w; canvas.height=size.h;
   const ctx=canvas.getContext('2d');
@@ -405,10 +407,11 @@ function loadImages(files){
   const readers=selected.map(file=>new Promise(resolve=>{
     const reader=new FileReader();
     reader.onload=()=>resolve({data:reader.result,name:file.name});
+    reader.onerror=()=>resolve(null);
     reader.readAsDataURL(file);
   }));
   Promise.all(readers).then(result=>{
-    images=result;
+    images=result.filter(Boolean);
     activeImageIndex=0;
     selectImage(0);
     statusText.textContent=`Učitano je ${images.length} ${images.length===1?'slika':'slike'}. Možeš izabrati aktivnu sliku ispod upload polja.`;
@@ -544,6 +547,7 @@ function downloadMockup(){
   img.src=images[activeImageIndex].data;
 }
 
+mockupUploadTrigger?.addEventListener('click',()=>imageUpload?.click());
 imageUpload.addEventListener('change',e=>loadImages(e.target.files));
 sceneSelect.addEventListener('change',e=>setScene(e.target.value));
 templateSelect.addEventListener('change',e=>applyTemplate(e.target.value));
