@@ -69,13 +69,21 @@ const libraryTemplates=[
  {id:'office-pro',name:'Office Pro',scene:'office',category:'business',bg:'#D9DDD7',shape:'wide'},
  {id:'premium-product',name:'Premium Product',scene:'product',category:'product',bg:'#E8E0D2',shape:'tall'},
  {id:'packaging-studio',name:'Packaging Studio',scene:'packaging',category:'product',bg:'#D8C9B0',shape:'tall'},
- {id:'desk-creator',name:'Creator Desk',scene:'desk',category:'business',bg:'#E4D8C8',shape:'wide'}
+ {id:'desk-creator',name:'Creator Desk',scene:'desk',category:'business',bg:'#E4D8C8',shape:'wide'},
+ {id:'laptop-angle',name:'Laptop — ugao',scene:'laptop-angle',category:'3d',bg:'#F4F1EC',shape:'wide'},
+ {id:'multi-device',name:'Multi-device scena',scene:'multi-device',category:'3d',bg:'#F4F1EC',shape:'wide'},
+ {id:'isometric-cards',name:'Izometrijske kartice',scene:'isometric-cards',category:'3d',bg:'#F2F2F2',shape:'wide'},
+ {id:'floating-cards',name:'Lebdeće kartice',scene:'floating-cards',category:'3d',bg:'#DCE7F2',shape:'wide'},
+ {id:'paper-stack',name:'Složeni papiri',scene:'paper-stack',category:'3d',bg:'#E6E6E6',shape:'wide'},
+ {id:'magazine-spread',name:'Magazine spread',scene:'magazine-spread',category:'3d',bg:'#D8D2C8',shape:'wide'},
+ {id:'open-magazine',name:'Otvoreni magazin',scene:'open-magazine',category:'3d',bg:'#D8D2C8',shape:'wide'},
+ {id:'desktop-scene',name:'Desktop scena',scene:'desktop-scene',category:'3d',bg:'#F1EEE9',shape:'wide'}
 ];
 
 const sceneNames={
   phone:'Telefon',laptop:'Laptop',planner:'Planner',poster:'Poster',
   business:'Business scena',fitness:'Fitness scena',hotel:'Hotel scena',
-  restaurant:'Restoran scena',yoga:'Yoga scena',beauty:'Beauty scena',office:'Kancelarija',desk:'Radni sto',product:'Premium proizvod',packaging:'Ambalaža',social:'Social media ekran'
+  restaurant:'Restoran scena',yoga:'Yoga scena',beauty:'Beauty scena',office:'Kancelarija',desk:'Radni sto',product:'Premium proizvod',packaging:'Ambalaža',social:'Social media ekran', 'laptop-angle':'Laptop — ugao', 'multi-device':'Multi-device scena', 'isometric-cards':'Izometrijske kartice', 'floating-cards':'Lebdeće kartice', 'paper-stack':'Složeni papiri', 'magazine-spread':'Magazine spread', 'open-magazine':'Otvoreni magazin', 'desktop-scene':'Desktop scena'
 };
 
 const lifestylePresets={
@@ -312,6 +320,7 @@ function selectImage(index){
   if(!images[index])return;
   activeImageIndex=index;
   previewImage.src=images[index].data;
+  mockupObject.style.setProperty('--scene-image', `url("${images[index].data}")`);
   previewImage.style.display='block';
   imageZoom=100; imageOffsetX=0; imageOffsetY=0;
   updateImageTransform();
@@ -393,6 +402,7 @@ function setScene(value){
   mockupStage.dataset.scene=scene;
   mockupStage.classList.toggle('blank-white-layout', templateSelect?.value==='blank-white');
   sceneTitle.textContent=sceneNames[scene]||'Mockup';
+  if(images[activeImageIndex]) mockupObject.style.setProperty('--scene-image', `url("${images[activeImageIndex].data}")`);
 
   // Nateraj browser da osveži geometriju uređaja odmah nakon promene.
   mockupObject.style.display='none';
