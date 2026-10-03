@@ -23,7 +23,22 @@ const industryPacks=[
  {id:'farm',name:'Poljoprivredno gazdinstvo',desc:'Proizvodi sa gazdinstva, sezona, dostupnost i porudžbine',cat:'lifestyle'}
 ];
 
-const campaignPurposes=['Reklama','Prodaja','Akcija','Novi proizvod','Brend','Edukacija','Sezona','Lokalna promocija'];
+
+const purposeBriefs={
+ 'Reklama':{hook:'Pažnja / problem / potreba',headline:'Jasna glavna poruka ponude',benefit:'Zašto je ponuda korisna kupcu',proof:'Dokaz, kvalitet ili razlog za poverenje',cta:'Pozovi kupca na sledeći korak'},
+ 'Prodaja':{hook:'Ponuda koja privlači pažnju',headline:'Šta se prodaje i zašto sada',benefit:'Ključna korist proizvoda',proof:'Cena, dostupnost ili konkretna vrednost',cta:'Poruči / kupi / javi se'},
+ 'Akcija':{hook:'Akcija / ograničena ponuda',headline:'Šta je sniženo ili posebno',benefit:'Ušteda ili dodatna vrednost',proof:'Period važenja ili dostupnost',cta:'Iskoristi ponudu'},
+ 'Novi proizvod':{hook:'Predstavljanje noviteta',headline:'Novi proizvod u fokusu',benefit:'Glavna karakteristika i korist',proof:'Poreklo, kvalitet ili posebnost',cta:'Saznaj više / poruči'},
+ 'Brend':{hook:'Priča koja gradi prepoznatljivost',headline:'Ko smo i po čemu smo posebni',benefit:'Vrednost za kupca',proof:'Priča, poreklo, iskustvo ili standard',cta:'Upoznaj brend'},
+ 'Edukacija':{hook:'Korisna činjenica ili pitanje',headline:'Šta kupac treba da zna',benefit:'Praktična korist informacije',proof:'Činjenica ili izvor koji podržava poruku',cta:'Saznaj više'},
+ 'Sezona':{hook:'Sezonska potreba',headline:'Ponuda za aktuelni period',benefit:'Zašto je sada pravi trenutak',proof:'Dostupnost / sezonski detalj',cta:'Poruči na vreme'},
+ 'Lokalna promocija':{hook:'Poziv lokalnoj zajednici',headline:'Ponuda dostupna u vašem kraju',benefit:'Blizina, svežina ili lokalna vrednost',proof:'Lokacija / radno vreme / dostupnost',cta:'Poseti nas / javi se'}
+};
+function renderContentBrief(ind,purpose){
+ const brief=purposeBriefs[purpose]||purposeBriefs.Reklama, box=document.getElementById('contentBrief');if(!box)return;
+ box.hidden=false;box.innerHTML='<h3>Content Brief · '+ind.name+'</h3><div class="brief-grid">'+[['Hook',brief.hook],['Naslov',brief.headline],['Benefit',brief.benefit],['Dokaz',brief.proof],['CTA',brief.cta],['Kanali','Instagram · Facebook · Pinterest · Story / Reel']].map(x=>'<div class="brief-item"><strong>'+x[0]+'</strong>'+x[1]+'</div>').join('')+'</div>';
+}
+\nconst campaignPurposes=['Reklama','Prodaja','Akcija','Novi proizvod','Brend','Edukacija','Sezona','Lokalna promocija'];
 const campaignFormats=['Instagram objava','Story / Reel','Facebook objava','Pinterest pin','Promo poster','Banner'];
 const ci=document.getElementById('campaignIndustry'),cp=document.getElementById('campaignPurpose'),cf=document.getElementById('campaignFormats'),cr=document.getElementById('campaignResult');
 function initCampaignBuilder(){
@@ -37,7 +52,7 @@ function initCampaignBuilder(){
    const selected=[...cf.querySelectorAll('.campaign-format.active')].map(x=>x.textContent);
    if(!selected.length){cr.hidden=false;cr.innerHTML='<strong>Izaberi bar jedan format.</strong>';return}
    cr.hidden=false;
-   cr.innerHTML='<strong>'+ind.name+' · '+cp.value+'</strong><div>Pripremljen paket za '+selected.length+' formata:</div><ul>'+selected.map(x=>'<li>'+x+'</li>').join('')+'</ul><div style="margin-top:12px"><button id="openCampaignMockup" class="btn" type="button">Nastavi u Mockup Studio</button></div>';
+   renderContentBrief(ind,cp.value); cr.innerHTML='<strong>'+ind.name+' · '+cp.value+'</strong><div>Pripremljen paket za '+selected.length+' formata:</div><ul>'+selected.map(x=>'<li>'+x+'</li>').join('')+'</ul><div style="margin-top:12px"><button id="openCampaignMockup" class="btn" type="button">Nastavi u Mockup Studio</button></div>';
    document.getElementById('openCampaignMockup').onclick=()=>location.href='mockup.html';
  };
 }
