@@ -79,7 +79,9 @@ function startDrag(e){
   document.addEventListener('pointermove',move);document.addEventListener('pointerup',up);
 }
 document.querySelectorAll('[data-add]').forEach(b=>b.addEventListener('click',()=>addElement(b.dataset.add)));
-document.getElementById('canvasUpload').addEventListener('change',e=>{const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=()=>addElement('image',r.result);r.readAsDataURL(file)});
+const canvasUpload=document.getElementById('canvasUpload');
+document.getElementById('uploadTrigger').addEventListener('click',()=>canvasUpload.click());
+canvasUpload.addEventListener('change',e=>{const file=e.target.files&&e.target.files[0];if(!file)return;if(!file.type.startsWith('image/')){alert('Molimo izaberi sliku.');return;}const r=new FileReader();r.onload=()=>addElement('image',r.result);r.onerror=()=>alert('Slika nije mogla da se učita.');r.readAsDataURL(file);e.target.value='';});
 document.getElementById('pageFormat').addEventListener('change',render);
 document.getElementById('gridToggle').addEventListener('change',renderPage);
 document.getElementById('zoomIn').onclick=()=>{zoom=Math.min(1.5,zoom+.1);document.getElementById('zoomValue').textContent=Math.round(zoom*100)+'%';renderPage()};
