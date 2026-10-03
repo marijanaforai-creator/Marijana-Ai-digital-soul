@@ -21,6 +21,91 @@ const rotateRange=document.getElementById('rotateRange');
 const positionX=document.getElementById('positionX');
 const positionY=document.getElementById('positionY');
 const bgColor=document.getElementById('bgColor');
+const colorPrompt=document.getElementById('colorPrompt');
+const applyColorPrompt=document.getElementById('applyColorPrompt');
+const colorPalette=document.getElementById('colorPalette');
+const colorPromptStatus=document.getElementById('colorPromptStatus');
+
+const COLOR_PALETTE=[
+  ['Ivory','#F7F3FB'],['White','#FFFFFF'],['Black','#111111'],['Charcoal','#28222F'],
+  ['Champagne Gold','#C8A96B'],['Gold','#D4AF37'],['Rose Gold','#B76E79'],['Silver','#C0C0C0'],
+  ['Sage Green','#8EA386'],['Deep Sage','#5F765F'],['Mint','#AAF0D1'],['Emerald','#2E8B57'],
+  ['Olive','#808000'],['Forest Green','#228B22'],['Teal','#008080'],['Turquoise','#40E0D0'],
+  ['Azure','#007FFF'],['Sky Blue','#87CEEB'],['Navy','#0B1F3A'],['Cobalt','#0047AB'],
+  ['Royal Blue','#4169E1'],['Lavender','#B57EDC'],['Lilac','#C8A2C8'],['Purple','#6F42C1'],
+  ['Plum','#5B2C6F'],['Violet','#8F00FF'],['Magenta','#C2185B'],['Fuchsia','#FF00FF'],
+  ['Blush','#F4C2C2'],['Dusty Rose','#C08081'],['Terracotta','#C96F4A'],['Coral','#FF7F50'],
+  ['Peach','#FFCBA4'],['Salmon','#FA8072'],['Red','#C62828'],['Burgundy','#800020'],
+  ['Wine','#722F37'],['Orange','#F57C00'],['Amber','#FFBF00'],['Yellow','#F4D03F'],
+  ['Cream','#FFFDD0'],['Beige','#E8DED0'],['Taupe','#8B7D6B'],['Mocha','#8B5E3C'],
+  ['Cocoa','#6F4E37'],['Brown','#795548'],['Sand','#C2B280'],['Stone','#A9A9A9'],
+  ['Warm Gray','#8A817C'],['Cool Gray','#7A869A'],['Graphite','#36454F'],['Slate','#708090']
+];
+
+const COLOR_ALIASES={
+  'ivory':'#F7F3FB','slonova kost':'#F7F3FB','bela':'#FFFFFF','white':'#FFFFFF','crna':'#111111','black':'#111111',
+  'charcoal':'#28222F','champagne gold':'#C8A96B','champagne':'#C8A96B','zlatna':'#D4AF37','gold':'#D4AF37',
+  'rose gold':'#B76E79','rosegold':'#B76E79','srebrna':'#C0C0C0','silver':'#C0C0C0','sage green':'#8EA386',
+  'sage':'#8EA386','zelena žalfija':'#8EA386','mint':'#AAF0D1','menta':'#AAF0D1','emerald':'#2E8B57',
+  'smaragdna':'#2E8B57','olive':'#808000','maslinasta':'#808000','forest green':'#228B22','teal':'#008080',
+  'tirkizna':'#40E0D0','turquoise':'#40E0D0','azure':'#007FFF','azurna':'#007FFF','sky blue':'#87CEEB',
+  'svetlo plava':'#87CEEB','navy':'#0B1F3A','mornarsko plava':'#0B1F3A','cobalt':'#0047AB','kobalt':'#0047AB',
+  'royal blue':'#4169E1','lavender':'#B57EDC','lavanda':'#B57EDC','lilac':'#C8A2C8','lila':'#C8A2C8',
+  'purple':'#6F42C1','ljubičasta':'#6F42C1','plum':'#5B2C6F','violet':'#8F00FF','ljubičasto':'#6F42C1',
+  'magenta':'#C2185B','fuchsia':'#FF00FF','blush':'#F4C2C2','dusty rose':'#C08081','terracotta':'#C96F4A',
+  'terakota':'#C96F4A','coral':'#FF7F50','koralna':'#FF7F50','peach':'#FFCBA4','breskva':'#FFCBA4',
+  'salmon':'#FA8072','losos':'#FA8072','red':'#C62828','crvena':'#C62828','burgundy':'#800020','bordo':'#800020',
+  'wine':'#722F37','vinska':'#722F37','orange':'#F57C00','narandžasta':'#F57C00','amber':'#FFBF00','ćilibar':'#FFBF00',
+  'yellow':'#F4D03F','žuta':'#F4D03F','cream':'#FFFDD0','krem':'#FFFDD0','beige':'#E8DED0','bež':'#E8DED0',
+  'taupe':'#8B7D6B','mocha':'#8B5E3C','moka':'#8B5E3C','cocoa':'#6F4E37','kakao':'#6F4E37',
+  'brown':'#795548','braon':'#795548','sand':'#C2B280','pesak':'#C2B280','stone':'#A9A9A9','kamen':'#A9A9A9',
+  'graphite':'#36454F','grafit':'#36454F','slate':'#708090'
+};
+
+function normalizeColorPrompt(value){
+  const text=String(value||'').trim().toLowerCase();
+  const hex=text.match(/#[0-9a-f]{3,8}\b/i);
+  if(hex)return hex[0].length===4 ? '#'+hex[0].slice(1).split('').map(x=>x+x).join('') : hex[0].slice(0,7).toUpperCase();
+  const rgb=text.match(/rgba?\s*\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}(?:\s*,\s*(?:0|1|0?\.\d+))?\s*\)/i);
+  if(rgb)return rgb[0];
+  const ordered=Object.keys(COLOR_ALIASES).sort((a,b)=>b.length-a.length);
+  for(const name of ordered) if(text.includes(name)) return COLOR_ALIASES[name];
+  return null;
+}
+
+function applyPromptColor(value){
+  const color=normalizeColorPrompt(value);
+  if(!color){
+    if(colorPromptStatus)colorPromptStatus.textContent='Nisam prepoznala boju. Probaj naziv boje ili HEX, npr. #8EA386.';
+    return false;
+  }
+  if(color.startsWith('#')) bgColor.value=color;
+  mockupStage.style.background=color;
+  if(colorPromptStatus)colorPromptStatus.textContent='Pozadina je postavljena na '+color+'.';
+  return true;
+}
+
+function renderColorPalette(){
+  if(!colorPalette)return;
+  colorPalette.innerHTML='';
+  COLOR_PALETTE.forEach(([name,color])=>{
+    const button=document.createElement('button');
+    button.type='button';
+    button.className='palette-swatch';
+    button.title=name+' — '+color;
+    button.setAttribute('aria-label',name+' '+color);
+    button.style.background=color;
+    button.innerHTML='<span>'+name+'</span>';
+    button.onclick=()=>{
+      bgColor.value=color;
+      mockupStage.style.background=color;
+      if(colorPrompt)colorPrompt.value=name;
+      if(colorPromptStatus)colorPromptStatus.textContent='Izabrana boja: '+name+' ('+color+').';
+    };
+    colorPalette.appendChild(button);
+  });
+}
+
 const mockupStage=document.getElementById('mockupStage');
 const mockupObject=document.getElementById('mockupObject');
 const sceneTitle=document.getElementById('sceneTitle');
@@ -732,6 +817,9 @@ perspectiveRange.addEventListener('input',e=>{perspective=Number(e.target.value)
 tiltXRange.addEventListener('input',e=>{tiltX=Number(e.target.value);updateTransform();});
 tiltYRange.addEventListener('input',e=>{tiltY=Number(e.target.value);updateTransform();});
 bgColor.addEventListener('input',e=>{mockupStage.style.background=e.target.value;});
+applyColorPrompt?.addEventListener('click',()=>applyPromptColor(colorPrompt?.value));
+colorPrompt?.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();applyPromptColor(colorPrompt.value);}});
+renderColorPalette();
 resetBtn.addEventListener('click',resetAll);
 saveTemplateBtn.addEventListener('click',saveTemplate);
 templateSearch?.addEventListener('input',renderTemplateLibrary);
