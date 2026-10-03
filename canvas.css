@@ -1,0 +1,51 @@
+.canvas-studio{min-height:calc(100vh - 82px);background:#f1eee7}
+.canvas-topbar{height:82px;background:#fff;border-bottom:1px solid rgba(37,37,34,.1);display:flex;align-items:center;justify-content:space-between;padding:0 24px;gap:20px}
+.canvas-topbar h1{margin:0;font:500 30px/1 'Cormorant Garamond',serif;color:var(--emerald)}
+.canvas-topbar .kicker{font-size:9px;letter-spacing:.16em;color:var(--deep-sage);font-weight:700;margin-bottom:5px}
+.canvas-actions{display:flex;align-items:center;gap:7px}
+.tool-btn{border:1px solid rgba(37,37,34,.16);background:#fff;padding:9px 12px;cursor:pointer;font:600 11px Montserrat,sans-serif;color:#30332f;border-radius:4px}
+.tool-btn:hover{border-color:var(--deep-sage)}
+.tool-btn.primary{background:var(--emerald);color:#fff;border-color:var(--emerald)}
+.tool-btn.danger{color:#8c3434}.tool-btn.full{width:100%}
+#zoomValue{min-width:42px;text-align:center;font-size:11px}
+.canvas-layout{display:grid;grid-template-columns:76px minmax(0,1fr) 290px;height:calc(100vh - 164px)}
+.canvas-sidebar{background:#fff;border-right:1px solid rgba(37,37,34,.1);overflow:auto}
+.right-sidebar{border-right:0;border-left:1px solid rgba(37,37,34,.1);padding:18px}
+.left-sidebar{padding:10px 8px;display:flex;flex-direction:column;gap:6px}
+.side-tool{min-height:54px;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:#464942;cursor:pointer;text-decoration:none;font-size:19px;border-radius:5px}
+.side-tool span{font-size:8px;text-transform:uppercase;letter-spacing:.05em}
+.side-tool:hover,.side-tool.active{background:#f0eee7;color:var(--emerald)}
+.upload-tool input{display:none}.tool-divider{height:1px;background:rgba(37,37,34,.1);margin:5px 0}
+.workspace-shell{min-width:0;display:flex;flex-direction:column}
+.workspace-toolbar{height:58px;background:#faf9f6;border-bottom:1px solid rgba(37,37,34,.08);display:flex;align-items:center;justify-content:space-between;padding:0 18px}
+.format-picker{display:flex;align-items:center;gap:8px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+.format-picker select{padding:8px 10px;border:1px solid rgba(37,37,34,.14);background:#fff;font:inherit;text-transform:none;letter-spacing:0;font-weight:500}
+.workspace-options{display:flex;gap:15px;font-size:10px;color:#565a53}
+.canvas-viewport{flex:1;overflow:auto;display:flex;align-items:center;justify-content:center;padding:55px;background:#ddd9d0}
+.canvas-page{position:relative;width:600px;height:600px;background:#fff;box-shadow:0 20px 50px rgba(0,0,0,.18);transform-origin:center;overflow:hidden;flex:none}
+.canvas-grid{position:absolute;inset:0;display:none;background-image:linear-gradient(rgba(80,80,80,.09) 1px,transparent 1px),linear-gradient(90deg,rgba(80,80,80,.09) 1px,transparent 1px);background-size:20px 20px;pointer-events:none}
+.canvas-page.show-grid .canvas-grid{display:block}
+#canvasElements{position:absolute;inset:0}
+.canvas-element{position:absolute;box-sizing:border-box;cursor:move;user-select:none;transform-origin:center;border:1px solid transparent}
+.canvas-element.selected{border:1px dashed var(--deep-sage);outline:2px solid rgba(142,163,134,.18)}
+.canvas-element.text-element{font-family:'Cormorant Garamond',serif;display:flex;align-items:center;justify-content:center;white-space:pre-wrap;text-align:center}
+.canvas-element.shape{background:#8EA386}
+.canvas-element.circle{border-radius:50%;background:#C8A96B}
+.canvas-element img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.canvas-element.mockup-element{background:linear-gradient(145deg,#1c1d1c,#4d514c);border-radius:18px;box-shadow:0 18px 35px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;color:#fff;font:700 11px Montserrat,sans-serif;letter-spacing:.12em}
+.workspace-footer{height:42px;background:#faf9f6;border-top:1px solid rgba(37,37,34,.08);display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:10px;color:#70736c}
+.inspector-section{padding-bottom:18px;margin-bottom:18px;border-bottom:1px solid rgba(37,37,34,.1)}
+.inspector-title{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--emerald);margin-bottom:13px}
+.right-sidebar label{display:block;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;color:#62655e}
+.right-sidebar input[type=text],.right-sidebar input[type=number]{width:100%;box-sizing:border-box;margin-top:5px;padding:8px;border:1px solid rgba(37,37,34,.15);font:11px Montserrat,sans-serif;background:#fff}
+.right-sidebar input[type=range],.right-sidebar input[type=color]{width:100%;margin-top:6px}.right-sidebar input[type=color]{height:34px;padding:2px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:8px}.inspector-buttons{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:12px}
+.empty-inspector{font-size:11px;line-height:1.5;color:#777}
+.layers-list,.pages-list{display:flex;flex-direction:column;gap:5px}
+.layer-row,.page-row{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:8px;background:#f7f5f0;border:1px solid transparent;cursor:pointer;font-size:10px}
+.layer-row.active,.page-row.active{border-color:var(--sage);background:#f0eee7}
+.layer-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.layer-actions{display:flex;gap:3px}
+.layer-actions button{border:0;background:transparent;cursor:pointer;font-size:11px}
+.page-row{justify-content:flex-start}.page-thumb{width:30px;height:30px;background:#fff;border:1px solid rgba(37,37,34,.12);display:flex;align-items:center;justify-content:center;font-size:8px}
+@media(max-width:1000px){.canvas-layout{grid-template-columns:64px minmax(0,1fr);height:auto;min-height:calc(100vh - 164px)}.right-sidebar{grid-column:1/-1;border-left:0;border-top:1px solid rgba(37,37,34,.1)}.canvas-viewport{min-height:650px}}
+@media(max-width:650px){.canvas-topbar{height:auto;padding:14px;align-items:flex-start;flex-direction:column}.canvas-actions{width:100%;overflow:auto}.canvas-layout{grid-template-columns:58px minmax(0,1fr)}.workspace-toolbar{height:auto;padding:10px;flex-direction:column;align-items:flex-start;gap:8px}.canvas-page{width:360px;height:360px}.canvas-viewport{padding:35px 20px;min-height:480px}}
