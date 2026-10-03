@@ -348,10 +348,10 @@ function renderTemplateLibrary(resetVisible=true){
     const card=document.createElement('article');
     card.className='template-card';
     const active=favorites.includes(t.id);
-    card.innerHTML=\`<div class="template-preview" style="background:\${t.bg}"><div class="mini-object \${t.shape}"></div></div>
-      <div class="template-meta"><div><strong>\${t.name}</strong><small>\${sceneNames[t.scene]||t.scene}</small></div>
-      <button class="template-fav" type="button" aria-label="Favorit">\${active?'♥':'♡'}</button></div>
-      <button class="btn primary template-use" type="button">Koristi šablon</button>\`;
+    card.innerHTML=`<div class="template-preview" style="background:${t.bg}"><div class="mini-object ${t.shape}"></div></div>
+      <div class="template-meta"><div><strong>${t.name}</strong><small>${sceneNames[t.scene]||t.scene}</small></div>
+      <button class="template-fav" type="button" aria-label="Favorit">${active?'♥':'♡'}</button></div>
+      <button class="btn primary template-use" type="button">Koristi šablon</button>`;
     card.querySelector('.template-fav').onclick=()=>{
       const next=getFavorites().filter(id=>id!==t.id);
       if(!active)next.push(t.id);
@@ -365,7 +365,7 @@ function renderTemplateLibrary(resetVisible=true){
       mockupStage.style.background=t.bg;
       setScene(t.scene);
       window.scrollTo({top:document.querySelector('.mockup-workspace').offsetTop-20,behavior:'smooth'});
-      statusText.textContent=\`Izabran je šablon „\${t.name}“.\`;
+      statusText.textContent=`Izabran je šablon „${t.name}“.`;
     };
     templateGrid.appendChild(card);
   });
@@ -373,7 +373,7 @@ function renderTemplateLibrary(resetVisible=true){
     const more=document.createElement('button');
     more.type='button';
     more.className='btn template-load-more';
-    more.textContent=\`Prikaži još \${Math.min(40,list.length-visible.length)} šablona\`;
+    more.textContent=`Prikaži još ${Math.min(40,list.length-visible.length)} šablona`;
     more.onclick=()=>{libraryVisibleCount+=40;renderTemplateLibrary(false);};
     templateGrid.appendChild(more);
   }
