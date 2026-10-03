@@ -154,3 +154,36 @@
 
 .batch-export-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:18px;padding-top:18px;border-top:1px solid rgba(37,37,34,.08)}
 .batch-export-actions .btn{min-width:170px}
+
+
+/* Mobilna navigacija — Marijana AI Studio */
+.mobile-menu-toggle{display:none;border:1px solid rgba(185,163,227,.35);background:rgba(59,35,95,.75);color:#fff;border-radius:10px;width:44px;height:44px;font-size:23px;cursor:pointer;align-items:center;justify-content:center}
+@media(max-width:700px){
+  .site-header .nav{position:relative;display:flex;align-items:center;justify-content:space-between}
+  .mobile-menu-toggle{display:flex}
+  .site-header .nav-links{
+    display:none;
+    position:absolute;
+    z-index:50;
+    top:calc(100% + 10px);
+    left:16px;
+    right:16px;
+    padding:12px;
+    flex-direction:column;
+    gap:6px;
+    background:rgba(18,10,32,.98);
+    border:1px solid rgba(185,163,227,.25);
+    border-radius:16px;
+    box-shadow:0 18px 45px rgba(0,0,0,.35);
+  }
+  .site-header .nav-links.mobile-open{display:flex}
+  .site-header .nav-links a{
+    display:block;
+    padding:13px 14px;
+    border-radius:10px;
+  }
+  .site-header .nav-links a:hover,
+  .site-header .nav-links a[aria-current="page"]{
+    background:linear-gradient(90deg,rgba(118,84,168,.55),rgba(59,35,95,.55));
+  }
+}
