@@ -297,10 +297,82 @@ function renderSavedPromoPacks(){
  const packs=JSON.parse(localStorage.getItem('digitalSoulPromoPacks')||'[]');
  if(!packs.length){wrap.innerHTML='<div class="saved-pack-empty">Još nema sačuvanih promo paketa.</div>';return}
  wrap.innerHTML=packs.map((p,i)=>'<article class="saved-pack"><strong>'+p.name+'</strong><small>'+p.channels.length+' kanala · '+new Date(p.created).toLocaleDateString('sr-RS')+'</small><div><button class="btn load-pack" data-index="'+i+'">Otvori</button><button class="btn delete-pack" data-index="'+i+'">Obriši</button></div></article>').join('');
- wrap.querySelectorAll('.load-pack').forEach(b=>b.onclick=()=>{const p=packs[Number(b.dataset.index)];document.getElementById('packName').value=p.name;document.getElementById('packGoal').value=p.goal;promoPackState.channels=p.channels;promoPackState.results=p.results;initPromoPackOrchestrator();document.getElementById('packResult').hidden=false;document.getElementById('packResult').innerHTML='<div class="pack-summary"><strong>'+p.name+'</strong><span>'+p.goal+'</span><span>'+p.results.length+' kanala</span></div><div class="pack-cards">'+p.results.map(x=>'<article class="pack-card"><div class="pack-card-head"><strong>'+x.channel+'</strong></div><h4>'+x.title+'</h4><textarea readonly>'+x.body+'</textarea><small>'+x.meta+'</small></article>').join('')+'</div>'});
+ wrap.querySelectorAll('.load-pack').forEach(b=>b.onclick=()=>{const p=packs[Number(b.dataset.index)];document.getElementById('packName').value=p.name;document.getElementById('packGoal').value=p.goal;promoPackState.channels=p.channels;promoPackState.results=p.results;initPromoPackOrchestrator();initCco();document.getElementById('packResult').hidden=false;document.getElementById('packResult').innerHTML='<div class="pack-summary"><strong>'+p.name+'</strong><span>'+p.goal+'</span><span>'+p.results.length+' kanala</span></div><div class="pack-cards">'+p.results.map(x=>'<article class="pack-card"><div class="pack-card-head"><strong>'+x.channel+'</strong></div><h4>'+x.title+'</h4><textarea readonly>'+x.body+'</textarea><small>'+x.meta+'</small></article>').join('')+'</div>'});
  wrap.querySelectorAll('.delete-pack').forEach(b=>b.onclick=()=>{packs.splice(Number(b.dataset.index),1);localStorage.setItem('digitalSoulPromoPacks',JSON.stringify(packs));renderSavedPromoPacks()});
 }
-\ndocument.querySelectorAll('.category').forEach(x=>x.classList.toggle('active',x.dataset.category===category));search.value=p.name.split(' ')[0];render();renderIndustryPacks();document.getElementById('libraryGrid').scrollIntoView({behavior:'smooth',block:'start'})};wrap.appendChild(el)})
+\n
+const ccoChannels=['Instagram','Facebook','Pinterest','TikTok','LinkedIn','Email','Web'];
+const ccoContent=[
+ {type:'Hook',purpose:'Privuci pažnju',format:'Objava'},
+ {type:'Problem → rešenje',purpose:'Pokaži potrebu',format:'Objava'},
+ {type:'Edukacija',purpose:'Izgradi poverenje',format:'Carousel / Pin'},
+ {type:'Benefit',purpose:'Objasni vrednost',format:'Reel'},
+ {type:'Dokaz',purpose:'Podrži odluku',format:'Objava'},
+ {type:'Story',purpose:'Poveži se sa publikom',format:'Story'},
+ {type:'Ponuda',purpose:'Pokreni akciju',format:'Promo'},
+ {type:'FAQ',purpose:'Ukloni prepreku',format:'Objava'},
+ {type:'Behind the scenes',purpose:'Humanizuj brend',format:'Reel'},
+ {type:'CTA',purpose:'Usmeri sledeći korak',format:'Objava'},
+ {type:'Reminder',purpose:'Podseti publiku',format:'Story'},
+ {type:'Recap',purpose:'Zaokruži kampanju',format:'Objava'}
+];
+let ccoState={extra:[],plan:[]};
+function initCco(){
+ const box=document.getElementById('ccoChannels');if(!box)return;
+ box.innerHTML=ccoChannels.map(x=>'<button type="button" class="cco-channel" data-channel="'+x+'">'+x+'</button>').join('');
+ box.querySelectorAll('.cco-channel').forEach(b=>b.onclick=()=>{b.classList.toggle('active')});
+ document.getElementById('buildCco').onclick=()=>buildCco(false);
+ document.getElementById('regenCco').onclick=()=>buildCco(true);
+ document.getElementById('saveCco').onclick=saveCco;
+ document.getElementById('copyCco').onclick=copyCco;
+ renderSavedCco();
+}
+function ccoData(){
+ const p=JSON.parse(localStorage.getItem('digitalSoulProductInput')||'{}');
+ const o=JSON.parse(localStorage.getItem('digitalSoulOffer')||'{}');
+ return {name:p.productName||'Proizvod',benefit:p.productBenefit||'glavna korist',price:o.offerPrice||p.productPrice||'cena',cta:p.productCta||'Saznaj više'};
+}
+function ccoType(day,intensity,days){
+ const base=ccoContent[(day-1)%ccoContent.length];
+ if(intensity==='sales' && day%3===0)return {type:'Ponuda',purpose:'Prodajna poruka',format:'Promo'};
+ if(intensity==='education' && day%3===1)return {type:'Edukacija',purpose:'Obrazovanje publike',format:'Carousel / Pin'};
+ if(intensity==='brand' && day%3===2)return {type:'Story',purpose:'Brend priča',format:'Story'};
+ return base;
+}
+function buildCco(regen){
+ const days=Number(document.getElementById('ccoDays').value),goal=document.getElementById('ccoGoal').value,intensity=document.getElementById('ccoIntensity').value,primary=document.getElementById('ccoPrimary').value;
+ const selected=[primary,...[...document.querySelectorAll('.cco-channel.active')].map(x=>x.dataset.channel).filter(x=>x!==primary)];
+ const d=ccoData();
+ ccoState.plan=Array.from({length:days},(_,i)=>{
+  const day=i+1,t=ccoType(day,intensity,days),channel=selected[(i+(regen?1:0))%selected.length];
+  const action=t.type==='Ponuda'?'Koristi Offer Engine + Visual Promo Engine':t.type==='Edukacija'?'Koristi Content Generator':'Generiši sadržaj za '+channel;
+  return {day,channel,type:t.type,purpose:t.purpose,format:t.format,action,topic:d.name+' — '+d.benefit,cta:d.cta};
+ });
+ renderCco(goal,primary);
+}
+function renderCco(goal,primary){
+ const box=document.getElementById('ccoResult');box.hidden=false;
+ box.innerHTML='<div class="cco-summary"><strong>'+ccoData().name+'</strong><span>'+goal+'</span><span>'+ccoState.plan.length+' dana</span><span>Primarni: '+primary+'</span></div><div class="cco-timeline">'+ccoState.plan.map(x=>'<article class="cco-day"><div class="cco-day-num">DAN '+x.day+'</div><div><strong>'+x.type+'</strong><small>'+x.channel+' · '+x.format+'</small><p>'+x.topic+'</p><em>'+x.purpose+'</em><div class="cco-next">'+x.action+'</div></div></article>').join('')+'</div>';
+}
+function copyCco(){
+ if(!ccoState.plan.length)buildCco(false);
+ navigator.clipboard?.writeText(ccoState.plan.map(x=>'Dan '+x.day+' | '+x.channel+' | '+x.type+' | '+x.topic+' | '+x.action).join('\n'));
+}
+function saveCco(){
+ if(!ccoState.plan.length)buildCco(false);
+ const plans=JSON.parse(localStorage.getItem('digitalSoulContentCampaignPlans')||'[]');
+ plans.unshift({id:Date.now(),name:ccoData().name+' kampanja',goal:document.getElementById('ccoGoal').value,days:ccoState.plan.length,plan:ccoState.plan,created:new Date().toISOString()});
+ localStorage.setItem('digitalSoulContentCampaignPlans',JSON.stringify(plans.slice(0,20)));renderSavedCco();
+}
+function renderSavedCco(){
+ const box=document.getElementById('ccoSavedList');if(!box)return;
+ const plans=JSON.parse(localStorage.getItem('digitalSoulContentCampaignPlans')||'[]');
+ box.innerHTML=plans.length?plans.map((p,i)=>'<article class="cco-saved-item"><strong>'+p.name+'</strong><small>'+p.days+' dana · '+new Date(p.created).toLocaleDateString('sr-RS')+'</small><button class="btn cco-open" data-i="'+i+'">Otvori</button><button class="btn cco-delete" data-i="'+i+'">Obriši</button></article>').join(''):'<span class="cco-empty">Još nema sačuvanih planova.</span>';
+ box.querySelectorAll('.cco-open').forEach(b=>b.onclick=()=>{const p=plans[Number(b.dataset.i)];ccoState.plan=p.plan;document.getElementById('ccoResult').hidden=false;renderCco(p.goal,'Sačuvano')});
+ box.querySelectorAll('.cco-delete').forEach(b=>b.onclick=()=>{plans.splice(Number(b.dataset.i),1);localStorage.setItem('digitalSoulContentCampaignPlans',JSON.stringify(plans));renderSavedCco()});
+}
+
+document.querySelectorAll('.category').forEach(x=>x.classList.toggle('active',x.dataset.category===category));search.value=p.name.split(' ')[0];render();renderIndustryPacks();document.getElementById('libraryGrid').scrollIntoView({behavior:'smooth',block:'start'})};wrap.appendChild(el)})
 }
 function render(){
 let q=(search.value||'').toLowerCase().trim(), list;

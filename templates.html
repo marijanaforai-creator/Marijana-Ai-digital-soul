@@ -67,7 +67,21 @@
 </div>
 <button id="buildCampaign2" class="btn campaign2-build" type="button">Kreiraj kampanju</button>
 <div id="campaign2Result" class="campaign2-result" hidden></div>
-</div></section><section class="campaign-builder"><div class="container"><div class="kicker">CAMPAIGN BUILDER</div><h2>Kreiraj reklamni paket</h2><p>Izaberi delatnost, cilj kampanje i formate koje želiš da pripremiš.</p><div class="campaign-controls"><label>Delatnost<select id="campaignIndustry"></select></label><label>Cilj kampanje<select id="campaignPurpose"></select></label></div><div id="campaignFormats" class="campaign-formats"></div><button id="buildCampaign" class="btn campaign-build" type="button">Kreiraj paket</button><div id="campaignResult" class="campaign-result" hidden></div><div id="contentBrief" class="content-brief" hidden></div></div></section><section class="visual-promo-engine"><div class="container">
+</div></section><section class="campaign-builder"><div class="container"><div class="kicker">CAMPAIGN BUILDER</div><h2>Kreiraj reklamni paket</h2><p>Izaberi delatnost, cilj kampanje i formate koje želiš da pripremiš.</p><div class="campaign-controls"><label>Delatnost<select id="campaignIndustry"></select></label><label>Cilj kampanje<select id="campaignPurpose"></select></label></div><div id="campaignFormats" class="campaign-formats"></div><button id="buildCampaign" class="btn campaign-build" type="button">Kreiraj paket</button><div id="campaignResult" class="campaign-result" hidden></div><div id="contentBrief" class="content-brief" hidden></div></div></section><section class="content-campaign-orchestrator"><div class="container">
+<div class="kicker">CONTENT → CAMPAIGN ORCHESTRATOR</div>
+<h2>Planiraj celu kampanju</h2>
+<p>Od jednog proizvoda napravi strukturisan plan sadržaja po danima, kanalima i ciljevima.</p>
+<div class="cco-grid">
+<label>Cilj<select id="ccoGoal"><option>Prodaja</option><option>Lead generation</option><option>Brend awareness</option><option>Novi proizvod</option><option>Akcija</option><option>Lokalna promocija</option><option>Edukacija</option></select></label>
+<label>Trajanje<select id="ccoDays"><option value="7">7 dana</option><option value="14">14 dana</option><option value="30">30 dana</option></select></label>
+<label>Intenzitet<select id="ccoIntensity"><option value="balanced">Uravnoteženo</option><option value="sales">Prodajno</option><option value="education">Edukativno</option><option value="brand">Brend</option></select></label>
+<label>Primarni kanal<select id="ccoPrimary"><option>Instagram</option><option>Facebook</option><option>Pinterest</option><option>TikTok</option><option>LinkedIn</option><option>Email</option><option>Web</option></select></label>
+<label class="full">Dodatni kanali<div id="ccoChannels" class="cco-channels"></div></label>
+</div>
+<div class="cco-actions"><button id="buildCco" class="btn cco-primary" type="button">Kreiraj plan</button><button id="regenCco" class="btn" type="button">Promeni raspored</button><button id="saveCco" class="btn" type="button">Sačuvaj plan</button><button id="copyCco" class="btn" type="button">Kopiraj plan</button></div>
+<div id="ccoResult" class="cco-result" hidden></div>
+<div class="cco-saved"><h3>Sačuvani planovi</h3><div id="ccoSavedList"></div></div>
+</div></section><section class="visual-promo-engine"><div class="container">
 <div class="kicker">VISUAL PROMO ENGINE</div>
 <h2>Vizuelni promo studio</h2>
 <p>Pretvori ponudu u komplet vizuala za društvene mreže, email, web i štampu.</p>
