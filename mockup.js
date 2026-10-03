@@ -111,6 +111,148 @@ function renderColorPalette(){
   });
 }
 
+const paletteCategory=document.getElementById('paletteCategory');
+const paletteLicenseNote=document.getElementById('paletteLicenseNote');
+
+const COLOR_LIBRARY=[
+  ['Royal Luxury',['#111111','#2B1B2B','#6F4E7C','#C8A96B','#F7F3FB'],'luxury'],
+  ['Champagne Luxe',['#F7F3EA','#E8D5B7','#C8A96B','#8B6B3F','#2B2520'],'luxury'],
+  ['Black Gold',['#0F0F0F','#252525','#6B542C','#D4AF37','#FFF8E7'],'luxury'],
+  ['Ivory Gold',['#FFFDF5','#F4E9D8','#DCC49A','#B58B4C','#352C22'],'luxury'],
+  ['Plum Gold',['#241326','#4C275A','#79518A','#C8A96B','#F6EEDC'],'luxury'],
+  ['Soft Luxury',['#F8F4EE','#E7DED2','#C9B8A5','#8E7761','#3B3027'],'luxury'],
+
+  ['Sage Pastel',['#EAF1EA','#D5E2D5','#B9CCB9','#8EA386','#526A55'],'pastel'],
+  ['Blush Pastel',['#FFF3F5','#F8DDE4','#F1BFCB','#D99AA9','#9D6674'],'pastel'],
+  ['Lavender Pastel',['#F7F2FC','#E9DDF5','#D6C1EA','#BFA3D9','#80639A'],'pastel'],
+  ['Peach Pastel',['#FFF6ED','#FFE1C7','#FFC8A3','#EFA47F','#B96D4E'],'pastel'],
+  ['Blue Pastel',['#F1F7FC','#DDECF7','#BBD8EA','#8FBBD2','#5C8399'],'pastel'],
+  ['Mint Pastel',['#F0FBF6','#D6F0E5','#B4DEC9','#88C1A6','#4F876C'],'pastel'],
+
+  ['Warm Ivory',['#FFFDF8','#F4EEE4','#E7DCCB','#CFC0AB','#8A7A67'],'neutral'],
+  ['Cool Neutral',['#FAFBFC','#E9EDF0','#C9D0D6','#8D98A2','#4A535B'],'neutral'],
+  ['Stone Neutral',['#F3F1ED','#DDD9D2','#BBB4A8','#898176','#514C45'],'neutral'],
+  ['Soft Gray',['#F7F7F7','#E7E7E7','#CFCFCF','#999999','#555555'],'neutral'],
+  ['Cream Taupe',['#FFFDF7','#F1E8DA','#D8C9B8','#A58F78','#5D5145'],'neutral'],
+  ['Minimal White',['#FFFFFF','#F8F8F6','#EEEEEA','#D8D8D2','#222222'],'neutral'],
+
+  ['Earth Clay',['#F2E4D5','#D8B79C','#B8795E','#81513F','#46332B'],'earth'],
+  ['Forest Earth',['#E9EFE7','#C5D3C0','#8EA386','#526A55','#24382A'],'earth'],
+  ['Terracotta Earth',['#FAE9DF','#EBC2A9','#C96F4A','#8F4B35','#4B2C23'],'earth'],
+  ['Desert Sand',['#FFF6E4','#E8D2A8','#C2B280','#9C7C4D','#5C4630'],'earth'],
+  ['Olive Earth',['#F0F0DF','#D8D8B0','#A6A65C','#707033','#39391D'],'earth'],
+  ['Mocha Earth',['#F2E6DA','#D4B49A','#A97958','#6F4E37','#33231A'],'earth'],
+
+  ['Azure Studio',['#EAF6FF','#BFE3F8','#66B9E8','#007FFF','#073B66'],'blue'],
+  ['Ocean Blue',['#EAF7FA','#B8E0E8','#4CA7B8','#176B87','#0A3442'],'blue'],
+  ['Navy Gold',['#EEF3F8','#AFC4D8','#486A88','#0B1F3A','#C8A96B'],'blue'],
+  ['Cobalt Clean',['#F0F5FF','#C7D8FF','#6E95E8','#0047AB','#122B63'],'blue'],
+  ['Sky Creative',['#F4FAFF','#D5EDFA','#9BD0ED','#4EA3D0','#23617E'],'blue'],
+  ['Royal Azure',['#EEF2FF','#BFCBFF','#7185E6','#4169E1','#202F85'],'blue'],
+
+  ['Sage Signature',['#F1F5EF','#D9E3D6','#B5C7B2','#8EA386','#536853'],'green'],
+  ['Deep Green',['#EDF5EE','#BFD5C2','#6F9B73','#2E6B3A','#17391E'],'green'],
+  ['Emerald Fresh',['#ECFAF1','#BDE8CC','#62C184','#2E8B57','#14502F'],'green'],
+  ['Teal Calm',['#EDF9F8','#BCE7E2','#6EC2B8','#008080','#124C4A'],'green'],
+  ['Olive Soft',['#F5F4E8','#DCDDAD','#B5B66B','#808000','#454500'],'green'],
+  ['Mint Studio',['#F1FCF8','#CFF2E4','#AAF0D1','#58B996','#286D55'],'green'],
+
+  ['Deep Purple',['#F4EFF9','#D8C7E6','#A889C1','#6F42C1','#35205D'],'purple'],
+  ['Violet Night',['#F3EEFF','#D2C0F3','#A47BDD','#8F00FF','#3C1268'],'purple'],
+  ['Lilac Editorial',['#FBF7FD','#EBDDF1','#C8A2C8','#916A99','#513A58'],'purple'],
+  ['Plum Studio',['#F4EDF5','#D5BBD9','#A776AC','#5B2C6F','#301735'],'purple'],
+  ['Lavender Calm',['#FBF9FF','#E7DDF8','#C9B4EC','#B57EDC','#65488A'],'purple'],
+  ['Purple Gold',['#EEE9F4','#C9B9D7','#7B5B8D','#5B2C6F','#C8A96B'],'purple'],
+
+  ['Blush Rose',['#FFF6F7','#F7DDE3','#F4C2C2','#C08081','#713D48'],'pink'],
+  ['Dusty Pink',['#FAF2F4','#E8CBD2','#CFA1AD','#A86D7D','#633D49'],'pink'],
+  ['Rose Gold',['#FFF5F3','#F1D0CB','#DCA39A','#B76E79','#6B3E47'],'pink'],
+  ['Berry Soft',['#FFF1F5','#F4C8D5','#D97B99','#A63D63','#5B2039'],'pink'],
+  ['Mauve',['#FAF3F7','#E7CDD9','#C99AAF','#986A84','#5A3B4C'],'pink'],
+  ['Coral Blush',['#FFF4EF','#FFD6C9','#FFAA91','#E47763','#8B4035'],'pink'],
+
+  ['Sunset Warm',['#FFF2E2','#FFD0A8','#FF9A62','#E65F3A','#702F28'],'warm'],
+  ['Amber Cream',['#FFF9E8','#FFE6A7','#FFBF00','#D88B00','#684500'],'warm'],
+  ['Peach Orange',['#FFF5E8','#FFD3A8','#FFCBA4','#F57C00','#873E00'],'warm'],
+  ['Terracotta Warm',['#FFF0E8','#F3C2AA','#C96F4A','#9C4932','#51261D'],'warm'],
+  ['Golden Sand',['#FFF9E9','#F3DFB0','#D5AE5A','#9D7227','#4D3914'],'warm'],
+  ['Warm Red',['#FFF0EE','#F4B7AF','#D96C61','#C62828','#681A17'],'warm'],
+
+  ['Neon Pop',['#101010','#FF00FF','#00F2FE','#B7FF00','#FFFFFF'],'bold'],
+  ['Electric Violet',['#160B22','#8F00FF','#FF00FF','#00F2FE','#FFFFFF'],'bold'],
+  ['Cyber Azure',['#08131F','#007FFF','#00F2FE','#B7FF00','#F7F3FB'],'bold'],
+  ['Neon Sunset',['#1B0B0B','#FF3B30','#FF9500','#FF00FF','#FFE600'],'bold'],
+  ['Candy Bold',['#FF4D8D','#FF8A00','#FFE600','#00D084','#6C5CE7'],'bold'],
+  ['Digital Soul',['#0D0818','#3B235F','#7654A8','#C8A96B','#F7F3FB'],'bold'],
+
+  ['Monochrome Black',['#000000','#202020','#444444','#777777','#FFFFFF'],'monochrome'],
+  ['Monochrome Navy',['#06111D','#102A43','#1D4E73','#5B8DB8','#EAF4FF'],'monochrome'],
+  ['Monochrome Sage',['#1D2A20','#344B39','#526A55','#8EA386','#EAF1EA'],'monochrome'],
+  ['Monochrome Purple',['#20132A','#35205D','#513A58','#80639A','#EDE3F5'],'monochrome'],
+  ['Monochrome Rose',['#3B1E27','#633D49','#986A84','#C08081','#F8E6EB'],'monochrome'],
+  ['Monochrome Gold',['#33270E','#5C4616','#8C6B24','#C8A96B','#FFF5D9'],'monochrome']
+];
+
+const GRADIENT_LIBRARY=[
+ ['Champagne Glow',['#F7F3EA','#C8A96B']],
+ ['Luxury Black Gold',['#111111','#6B542C','#C8A96B']],
+ ['Sage Mist',['#EAF1EA','#8EA386']],
+ ['Sage Deep',['#D5E2D5','#526A55']],
+ ['Lavender Dream',['#F7F2FC','#BFA3D9']],
+ ['Lilac Sky',['#E9DDF5','#80639A']],
+ ['Blush Sunset',['#FFF3F5','#D99AA9','#9D6674']],
+ ['Peach Cream',['#FFF6ED','#FFC8A3','#EFA47F']],
+ ['Azure Horizon',['#EAF6FF','#66B9E8','#007FFF']],
+ ['Ocean Depth',['#B8E0E8','#176B87','#0A3442']],
+ ['Emerald Flow',['#ECFAF1','#62C184','#14502F']],
+ ['Teal Wave',['#EDF9F8','#6EC2B8','#008080']],
+ ['Terracotta Sun',['#FAE9DF','#C96F4A','#4B2C23']],
+ ['Golden Sand',['#FFF9E9','#D5AE5A','#4D3914']],
+ ['Violet Electric',['#8F00FF','#FF00FF','#00F2FE']],
+ ['Cyber Purple',['#160B22','#6F42C1','#00F2FE']],
+ ['Rose Gold Shine',['#FFF5F3','#DCA39A','#B76E79']],
+ ['Night Plum',['#241326','#5B2C6F','#C8A96B']],
+ ['Ivory Fade',['#FFFFFF','#F7F3EA','#D8C9B8']],
+ ['Cool Silver',['#FFFFFF','#C9D0D6','#4A535B']],
+ ['Earth Blend',['#F2E4D5','#B8795E','#46332B']],
+ ['Forest Fade',['#E9EFE7','#8EA386','#24382A']],
+ ['Navy Luxury',['#EEF3F8','#0B1F3A','#C8A96B']],
+ ['Candy Dream',['#FF8A00','#FF4D8D','#6C5CE7']],
+ ['Rainbow Soft',['#FF9AA2','#FFDAC1','#E2F0CB','#B5EAD7','#C7CEEA']]
+];
+
+function renderColorLibrary(){
+  if(!colorPalette)return;
+  const category=paletteCategory?.value||'all';
+  const items=category==='gradient'
+    ? GRADIENT_LIBRARY.map(([name,colors])=>({name,colors,type:'gradient'}))
+    : COLOR_LIBRARY.filter(([, ,cat])=>category==='all'||cat===category).map(([name,colors])=>({name,colors,type:'palette'}));
+  colorPalette.innerHTML='';
+  items.forEach(item=>{
+    const button=document.createElement('button');
+    button.type='button';
+    button.className='palette-card '+(item.type==='gradient'?'gradient-card':'');
+    button.title=item.name;
+    button.setAttribute('aria-label',item.name);
+    button.style.background=item.type==='gradient'
+      ? `linear-gradient(135deg,${item.colors.join(',')})`
+      : `linear-gradient(90deg,${item.colors.join(',')})`;
+    button.innerHTML=`<span class="palette-card-name">${item.name}</span><span class="palette-card-hex">${item.colors.join(' · ')}</span>`;
+    button.onclick=()=>{
+      if(item.type==='gradient'){
+        mockupStage.style.background=`linear-gradient(135deg,${item.colors.join(',')})`;
+        if(colorPromptStatus)colorPromptStatus.textContent='Primenen gradient: '+item.name+'.';
+      }else{
+        bgColor.value=item.colors[0];
+        mockupStage.style.background=item.colors[0];
+        if(colorPrompt)colorPrompt.value=item.name;
+        if(colorPromptStatus)colorPromptStatus.textContent='Primenjena paleta: '+item.name+' · klikni boju u kartici samo preko HEX prompta ako želiš tačnu nijansu.';
+      }
+    };
+    colorPalette.appendChild(button);
+  });
+}
+
 const mockupStage=document.getElementById('mockupStage');
 const mockupObject=document.getElementById('mockupObject');
 const sceneTitle=document.getElementById('sceneTitle');
@@ -919,7 +1061,8 @@ applyMockupPrompt?.addEventListener('click',()=>applyMockupPromptInstruction(moc
 mockupPrompt?.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();applyMockupPromptInstruction(mockupPrompt.value);}});
 autoRotate3D?.addEventListener('change',updateTransform);
 colorPrompt?.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();applyPromptColor(colorPrompt.value);}});
-renderColorPalette();
+renderColorLibrary();
+paletteCategory?.addEventListener('change',renderColorLibrary);
 resetBtn.addEventListener('click',resetAll);
 saveTemplateBtn.addEventListener('click',saveTemplate);
 templateSearch?.addEventListener('input',renderTemplateLibrary);

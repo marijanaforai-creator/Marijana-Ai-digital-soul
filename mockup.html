@@ -218,8 +218,24 @@
             <small id="colorPromptStatus">Prepoznaje nazive boja, HEX kodove i RGB vrednosti.</small>
           </div>
           <div class="palette-control">
-            <label>Paleta boja</label>
-            <div id="colorPalette" class="color-palette" aria-label="Paleta boja"></div>
+            <label for="paletteCategory">Biblioteka boja</label>
+            <select id="paletteCategory" class="palette-category">
+              <option value="all">Sve palete</option>
+              <option value="luxury">Luxury / Elegant</option>
+              <option value="pastel">Pastelne</option>
+              <option value="neutral">Neutralne</option>
+              <option value="earth">Earth / Prirodne</option>
+              <option value="blue">Plave / Azure</option>
+              <option value="green">Zelene / Sage</option>
+              <option value="purple">Ljubičaste</option>
+              <option value="pink">Roze / Blush</option>
+              <option value="warm">Topli tonovi</option>
+              <option value="bold">Bold / Neon</option>
+              <option value="gradient">Gradienti / Prelazi</option>
+              <option value="monochrome">Monohromatske</option>
+            </select>
+            <div id="colorPalette" class="color-palette" aria-label="Biblioteka paleta boja"></div>
+            <small id="paletteLicenseNote" class="palette-license-note">Ugrađene palete su naše kombinacije i namenjene su za korišćenje u Studio projektima.</small>
           </div>
         </div>
 
