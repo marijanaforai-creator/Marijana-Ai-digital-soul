@@ -90,6 +90,28 @@
 <button id="downloadPromoPack" class="btn" type="button">Preuzmi komplet</button>
 <button id="createWholePromo" class="btn promo-primary" type="button">KREIRAJ CEO PROMO PAKET</button>
 </div>
+</div></section><section class="promo-pack-orchestrator"><div class="container">
+<div class="kicker">PROMO PACK ORCHESTRATOR</div>
+<h2>Kompletan promo paket iz jedne ponude</h2>
+<p>Izaberi kanale i generiši usklađen tekstualni i vizuelni paket iz već sačuvanih podataka.</p>
+<div class="pack-grid">
+<label>Naziv paketa<input id="packName" type="text" placeholder="npr. Jesenja kampanja"></label>
+<label>Cilj<select id="packGoal"><option>Prodaja</option><option>Lead generation</option><option>Brend awareness</option><option>Novi proizvod</option><option>Akcija</option><option>Lokalna promocija</option><option>Edukacija</option></select></label>
+<label class="full">Kanali<div id="packChannels" class="pack-channels"></div></label>
+</div>
+<div class="pack-toolbar">
+<button id="buildPack" class="btn pack-primary" type="button">Kreiraj komplet</button>
+<button id="refreshPack" class="btn" type="button">Generiši ponovo</button>
+<button id="copyPack" class="btn" type="button">Kopiraj sve</button>
+<button id="savePack" class="btn" type="button">Sačuvaj paket</button>
+<button id="openPackMockup" class="btn" type="button">Nastavi u Mockup Studio</button>
+</div>
+<div id="packWarnings" class="pack-warnings" hidden></div>
+<div id="packResult" class="pack-result" hidden></div>
+<div class="saved-pack-area">
+<h3>Sačuvani promo paketi</h3>
+<div id="savedPacks" class="saved-packs"></div>
+</div>
 </div></section><section class="library-main"><div class="container"><div class="library-layout"><aside class="library-sidebar"><h3>Kategorije</h3><button class="category active" data-category="all">Svi šabloni</button><button class="category" data-category="business">Business</button><button class="category" data-category="wellness">Wellness & Yoga</button><button class="category" data-category="product">Proizvodi</button><button class="category" data-category="social">Društvene mreže</button><button class="category" data-category="device">Uređaji</button><button class="category" data-category="lifestyle">Lifestyle</button><div class="library-divider"></div><button class="category" data-category="mine">Moji šabloni</button></aside>
 <section><div class="library-top"><strong id="libraryCount">0 šablona</strong><select id="librarySort"><option value="popular">Najpopularnije</option><option value="new">Najnovije</option><option value="az">A–Ž</option></select></div><div id="libraryGrid" class="library-grid"></div><div id="templateDetails" class="template-details" hidden></div><div id="libraryEmpty" class="library-empty" hidden>Nema rezultata. Probaj drugi pojam ili kategoriju.</div></section></div></div></section></main>
 <script src="templates.js"></script></body></html>
