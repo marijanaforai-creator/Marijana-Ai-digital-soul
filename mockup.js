@@ -122,6 +122,8 @@ function initBatchEngine(){
   });
   document.querySelectorAll('[data-batch-scene],[data-batch-format]').forEach(x=>x.addEventListener('change',updateBatchStatus));
   document.getElementById('generateBatch')?.addEventListener('click',generateBatch);
+document.getElementById('downloadBatchPngs')?.addEventListener('click',exportBatchPngs);
+document.getElementById('downloadBatchZip')?.addEventListener('click',exportBatchZip);
   updateBatchStatus();
 }
 function getBatchSelections(){
@@ -136,6 +138,75 @@ function updateBatchStatus(){
   const total=s.scenes.length*s.formats.length;
   el.textContent=total? `Biće pripremljeno ${total} mockup kombinacija.`:'Izaberi najmanje jednu scenu i jedan format.';
   el.classList.toggle('ready',!!total);
+}
+let lastBatch=[];
+function slugify(value){return value.toLowerCase().replace(/[^a-z0-9\\u00C0-\\u017F]+/gi,'-').replace(/^-|-$/g,'');}
+function getBatchImage(){
+  const img=document.getElementById('previewImage');
+  return img && img.src && img.src!=='about:blank' ? img : null;
+}
+function renderBatchCanvas(scene,format){
+  const size=formatSizes[format]||formatSizes.square||{w:1200,h:1200};
+  const canvas=document.createElement('canvas');
+  canvas.width=size.w; canvas.height=size.h;
+  const ctx=canvas.getContext('2d');
+  const preset=lifestylePresets[scene];
+  ctx.fillStyle=preset?.bg||bgColor.value||'#eee';
+  ctx.fillRect(0,0,size.w,size.h);
+  const img=getBatchImage();
+  const scale=Math.min(size.w,size.h)*0.42;
+  const iw=img?.naturalWidth||1, ih=img?.naturalHeight||1;
+  const ratio=Math.min(scale/iw,scale/ih);
+  const w=iw*ratio,h=ih*ratio;
+  const x=(size.w-w)/2,y=(size.h-h)/2;
+  if(img)ctx.drawImage(img,x,y,w,h);
+  ctx.fillStyle='rgba(0,0,0,.08)';
+  ctx.fillRect(0,size.h-42,size.w,42);
+  ctx.fillStyle='#333';
+  ctx.font=`600 ${Math.max(18,size.w/55)}px Arial`;
+  ctx.fillText(sceneNames[scene]||scene,24,size.h-16);
+  return canvas;
+}
+function createBatchFile(scene,format){
+  const canvas=renderBatchCanvas(scene,format);
+  return new Promise(resolve=>canvas.toBlob(blob=>resolve({
+    blob,
+    name:`${slugify(sceneNames[scene]||scene)}-${slugify(format)}.png`
+  }),'image/png'));
+}
+async function exportBatchPngs(){
+  const s=getBatchSelections();
+  if(!s.scenes.length||!s.formats.length){updateBatchStatus();return;}
+  const files=[];
+  for(const scene of s.scenes)for(const format of s.formats)files.push(await createBatchFile(scene,format));
+  files.forEach(file=>{
+    const url=URL.createObjectURL(file.blob);
+    const a=document.createElement('a');a.href=url;a.download=file.name;a.click();
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+  });
+  const status=document.getElementById('batchStatus');
+  if(status)status.textContent=`Preuzeto ${files.length} PNG fajlova.`;
+  lastBatch=files;
+}
+async function exportBatchZip(){
+  const s=getBatchSelections();
+  if(!s.scenes.length||!s.formats.length){updateBatchStatus();return;}
+  const files=[];
+  for(const scene of s.scenes)for(const format of s.formats)files.push(await createBatchFile(scene,format));
+  if(!window.JSZip){
+    const status=document.getElementById('batchStatus');
+    if(status)status.textContent='ZIP modul nije učitan. PNG export je dostupan pojedinačno.';
+    return;
+  }
+  const zip=new JSZip();
+  files.forEach(file=>zip.file(file.name,file.blob));
+  const blob=await zip.generateAsync({type:'blob'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='mockup-batch.zip';a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+  const status=document.getElementById('batchStatus');
+  if(status)status.textContent=`ZIP paket je spreman: ${files.length} PNG fajlova.`;
+  lastBatch=files;
 }
 function generateBatch(){
   const s=getBatchSelections(), results=document.getElementById('batchResults'), status=document.getElementById('batchStatus');
