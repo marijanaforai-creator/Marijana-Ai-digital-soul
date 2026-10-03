@@ -329,3 +329,8 @@
   55%{opacity:.82;transform:scale(.96);filter:blur(1px)}
   100%{opacity:1;transform:scale(1);filter:blur(0)}
 }
+
+/* Prazan beli layout — bez dekoracija i teksta */
+.mockup-stage.blank-white-layout{background:#FFFFFF!important}
+.mockup-stage.blank-white-layout .scene-decoration,
+.mockup-stage.blank-white-layout .scene-label{display:none!important}
