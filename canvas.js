@@ -147,6 +147,25 @@ function putImageIntoFrame(src){
   requestAnimationFrame(()=>{const node=document.querySelector('.frame-element[data-id="'+el.id+'"] img.frame-content');if(node){node.classList.remove('frame-suck-in');void node.offsetWidth;node.classList.add('frame-suck-in')}});
   return true;
 }
+
+// Drag & drop slike direktno na Oblik, Krug ili Frame — Canva princip.
+function bindFrameDropTargets(){
+  document.querySelectorAll('.canvas-element.shape,.canvas-element.circle,.canvas-element.frame-element').forEach(node=>{
+    node.addEventListener('dragover',e=>{e.preventDefault();node.classList.add('frame-suck-target');});
+    node.addEventListener('dragleave',()=>node.classList.remove('frame-suck-target'));
+    node.addEventListener('drop',e=>{
+      e.preventDefault();
+      node.classList.remove('frame-suck-target');
+      const file=e.dataTransfer.files&&e.dataTransfer.files[0];
+      if(!file||!file.type.startsWith('image/'))return;
+      const id=Number(node.dataset.id);
+      selectedId=id;
+      const reader=new FileReader();
+      reader.onload=()=>putImageIntoFrame(reader.result);
+      reader.readAsDataURL(file);
+    });
+  });
+}
 document.getElementById('uploadTrigger').addEventListener('click',()=>canvasUpload.click());
 canvasUpload.addEventListener('change',e=>{const file=e.target.files&&e.target.files[0];if(!file)return;if(!file.type.startsWith('image/')){alert('Molimo izaberi sliku.');return;}const r=new FileReader();r.onload=()=>{if(!putImageIntoFrame(r.result))addElement('image',r.result);};r.onerror=()=>alert('Slika nije mogla da se učita.');r.readAsDataURL(file);e.target.value='';});
 document.getElementById('pageFormat').addEventListener('change',render);
