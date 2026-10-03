@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="sr-Latn-RS">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Canvas Studio — Marijana AI Digital Soul</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="canvas.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a class="logo" href="index.html">MARIJANA<span>AI DIGITAL SOUL</span></a>
+    <nav class="nav-links">
+      <a href="index.html">Početna</a>
+      <a href="canvas.html" aria-current="page">Canvas Studio</a>
+      <a href="mockup.html">Advanced 3D Mockup</a>
+      <a href="index.html#ai">AI alati</a>
+      <a href="templates.html">Biblioteka šablona</a>
+    </nav>
+  </div>
+</header>
+
+<main class="canvas-studio">
+  <div class="canvas-topbar">
+    <div>
+      <div class="kicker">MARIJANA AI STUDIO</div>
+      <h1>Canvas Studio</h1>
+    </div>
+    <div class="canvas-actions">
+      <button id="undoBtn" class="tool-btn" type="button">↶</button>
+      <button id="redoBtn" class="tool-btn" type="button">↷</button>
+      <button id="zoomOut" class="tool-btn" type="button">−</button>
+      <span id="zoomValue">100%</span>
+      <button id="zoomIn" class="tool-btn" type="button">+</button>
+      <button id="downloadCanvas" class="tool-btn primary" type="button">Izvezi PNG</button>
+    </div>
+  </div>
+
+  <div class="canvas-layout">
+    <aside class="canvas-sidebar left-sidebar">
+      <button class="side-tool active" data-tool="select">↖ <span>Selektuj</span></button>
+      <button class="side-tool" data-add="text">T <span>Tekst</span></button>
+      <button class="side-tool" data-add="image">▧ <span>Slika</span></button>
+      <button class="side-tool" data-add="rect">□ <span>Oblik</span></button>
+      <button class="side-tool" data-add="circle">○ <span>Krug</span></button>
+      <label class="side-tool upload-tool">＋ <span>Upload</span><input id="canvasUpload" type="file" accept="image/*"></label>
+      <div class="tool-divider"></div>
+      <button class="side-tool" data-add="mockup">◇ <span>Mockup</span></button>
+      <a class="side-tool link-tool" href="mockup.html">3D <span>Advanced 3D</span></a>
+    </aside>
+
+    <section class="workspace-shell">
+      <div class="workspace-toolbar">
+        <div class="format-picker">
+          <label>Format</label>
+          <select id="pageFormat">
+            <option value="square">Instagram / Kvadrat 1200×1200</option>
+            <option value="portrait">Instagram / Portret 1080×1350</option>
+            <option value="story">Story / Reel 1080×1920</option>
+            <option value="pin">Pinterest 1000×1500</option>
+            <option value="landscape">Pejzaž 1600×900</option>
+          </select>
+        </div>
+        <div class="workspace-options">
+          <label><input id="gridToggle" type="checkbox"> Mreža</label>
+          <label><input id="snapToggle" type="checkbox" checked> Snap</label>
+        </div>
+      </div>
+      <div id="canvasViewport" class="canvas-viewport">
+        <div id="canvasPage" class="canvas-page">
+          <div class="canvas-grid"></div>
+          <div id="canvasElements"></div>
+        </div>
+      </div>
+      <div class="workspace-footer">
+        <span id="canvasHint">Klikni element da ga izabereš. Prevuci ga po platnu.</span>
+        <button id="centerSelected" class="tool-btn" type="button">Centriraj</button>
+      </div>
+    </section>
+
+    <aside class="canvas-sidebar right-sidebar">
+      <section class="inspector-section">
+        <div class="inspector-title">Element</div>
+        <div id="emptyInspector" class="empty-inspector">Izaberi element da otvoriš podešavanja.</div>
+        <div id="inspector" hidden>
+          <label>Naziv<input id="elName" type="text"></label>
+          <div class="two-col">
+            <label>X<input id="elX" type="number"></label>
+            <label>Y<input id="elY" type="number"></label>
+          </div>
+          <div class="two-col">
+            <label>Širina<input id="elW" type="number" min="10"></label>
+            <label>Visina<input id="elH" type="number" min="10"></label>
+          </div>
+          <label>Rotacija <output id="elRotationValue">0°</output><input id="elRotation" type="range" min="-180" max="180" value="0"></label>
+          <label>Opacity <output id="elOpacityValue">100%</output><input id="elOpacity" type="range" min="0" max="100" value="100"></label>
+          <label>Boja<input id="elColor" type="color" value="#8EA386"></label>
+          <label id="textControl">Tekst<input id="elText" type="text"></label>
+          <label id="fontControl">Veličina teksta<input id="elFontSize" type="number" min="8" max="180" value="48"></label>
+          <div class="inspector-buttons">
+            <button id="duplicateEl" class="tool-btn" type="button">Dupliraj</button>
+            <button id="deleteEl" class="tool-btn danger" type="button">Obriši</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="inspector-section">
+        <div class="inspector-title">Slojevi</div>
+        <div id="layersList" class="layers-list"></div>
+      </section>
+
+      <section class="inspector-section">
+        <div class="inspector-title">Stranice</div>
+        <div id="pagesList" class="pages-list"></div>
+        <button id="addPage" class="tool-btn full" type="button">＋ Dodaj stranicu</button>
+      </section>
+    </aside>
+  </div>
+</main>
+<script src="canvas.js"></script>
+</body>
+</html>
