@@ -83,7 +83,7 @@ const lifestylePresets={
 };
 
 const templatePresets={
-  'blank-white':{bg:'#FFFFFF',scene:'phone'},
+  'blank-white':{bg:'#FFFFFF',scene:null},
   classic:{bg:'#E8DED0',scene:'phone'},
   luxury:{bg:'#151515',scene:'planner'},
   minimal:{bg:'#F3F1EB',scene:'poster'},
@@ -329,6 +329,7 @@ function setScene(value){
   }
   mockupObject.className=`mockup-object ${value}-object`;
   mockupStage.className=`mockup-stage scene-${value}`;
+  mockupStage.classList.toggle('blank-white-layout', templateSelect?.value==='blank-white');
   sceneTitle.textContent=sceneNames[value]||'Mockup';
   sceneLabel.textContent=(sceneNames[value]||'DIGITAL SOUL STUDIO').toUpperCase();
   if(images.length)statusText.textContent=`Slika je postavljena u scenu: ${sceneNames[value]||value}.`;
@@ -338,8 +339,12 @@ function applyTemplate(value){
   const preset=templatePresets[value]||templatePresets.classic;
   bgColor.value=preset.bg;
   mockupStage.style.background=preset.bg;
-  sceneSelect.value=preset.scene;
-  setScene(preset.scene);
+  if(preset.scene){
+    sceneSelect.value=preset.scene;
+    setScene(preset.scene);
+  }else{
+    setScene(sceneSelect.value);
+  }
   statusText.textContent=`Primenen je šablon: ${templateSelect.options[templateSelect.selectedIndex].text}.`;
 }
 
@@ -438,6 +443,7 @@ function resetAll(){
   previewImage.style.display='none';
   renderImageStrip();
   sceneSelect.value='phone';
+  templateSelect.value='blank-white';
   formatSelect.value='square';
   fitSelect.value='cover';
   scaleRange.value=100;
