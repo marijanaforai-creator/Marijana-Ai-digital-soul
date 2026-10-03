@@ -10,6 +10,7 @@ function snapshot(){history.push(JSON.stringify(pages));if(history.length>30)his
 function restore(data){pages=JSON.parse(data);pages.forEach(p=>p.elements.forEach(el=>{if(el.visible===undefined)el.visible=true;if(el.locked===undefined)el.locked=false}));selectedId=null;render()}
 function render(){
   renderPage();renderLayers();renderPages();renderInspector();
+  if(typeof bindFrameDropTargets==='function')bindFrameDropTargets();
 }
 function renderPage(){
   const f=formats[document.getElementById('pageFormat').value]||formats.square;
