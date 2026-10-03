@@ -303,3 +303,29 @@
     background:linear-gradient(180deg,#1A0D2B,#0D0818);
   }
 }
+
+
+/* Smart Surface — slika se vizuelno usisava u frame i ostaje isečena unutar površine */
+.device-screen{
+  clip-path:inset(0 round 6px);
+  isolation:isolate;
+}
+.device-screen img{
+  position:relative;
+  z-index:2;
+  transform-origin:center;
+  will-change:transform,opacity,filter;
+}
+.mockup-suck-in{
+  animation:mockupSuckIn .48s cubic-bezier(.22,.8,.25,1) both;
+}
+.device-screen.drop-ready{
+  outline:2px solid #C8A96B;
+  outline-offset:-2px;
+  box-shadow:inset 0 0 0 999px rgba(118,84,168,.10),0 0 0 4px rgba(200,169,107,.16);
+}
+@keyframes mockupSuckIn{
+  0%{opacity:0;transform:scale(1.18);filter:blur(5px)}
+  55%{opacity:.82;transform:scale(.96);filter:blur(1px)}
+  100%{opacity:1;transform:scale(1);filter:blur(0)}
+}
