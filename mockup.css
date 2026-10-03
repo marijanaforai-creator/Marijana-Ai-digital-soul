@@ -1,3 +1,14 @@
+/* Marijana AI Studio — ljubičasti vizuelni sistem */
+:root{
+  --ivory:#F7F3FB;
+  --beige:#E8DDF2;
+  --sage:#B9A3E3;
+  --deep-sage:#7654A8;
+  --emerald:#3B235F;
+  --gold:#C8A96B;
+  --charcoal:#28222F;
+  --white:#FFFFFF;
+}
 .mockup-page{background:var(--ivory);min-height:calc(100vh - 82px)}
 .mockup-hero{background:var(--emerald);color:var(--ivory);padding:85px 0 70px}
 .mockup-hero .kicker{color:var(--sage)}
@@ -123,7 +134,7 @@
 .batch-group h3{margin:0 0 10px;font-size:15px}
 .batch-options{display:flex;flex-wrap:wrap;gap:9px}
 .batch-option{display:inline-flex;align-items:center;gap:7px;padding:9px 11px;border:1px solid rgba(37,37,34,.13);background:#fafaf8;cursor:pointer;font-size:12px}
-.batch-option:has(input:checked){border-color:var(--sage);background:rgba(142,163,134,.13)}
+.batch-option:has(input:checked){border-color:var(--sage);background:rgba(185,163,227,.18)}
 .batch-option input{accent-color:#8ea386}
 .batch-actions{display:flex;flex-wrap:wrap;gap:9px;border-top:1px solid rgba(37,37,34,.08);padding-top:18px}
 .batch-status{margin-top:15px;font-size:12px;color:#666}
