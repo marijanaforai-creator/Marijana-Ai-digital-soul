@@ -281,7 +281,7 @@ applyLibraryTemplateFromUrl();
 }
 
 function updateTransform(){
-  mockupObject.style.transform=`translate(${offsetX/2}%,${offsetY/2}%) scale(${objectScale/100}) rotate(${objectRotation}deg)`;
+  mockupObject.style.transform=`perspective(1200px) translate(${offsetX/2}%,${offsetY/2}%) rotateX(${tiltX}deg) rotateY(${perspective}deg) rotateZ(${tiltY}deg) scale(${objectScale/100}) rotate(${objectRotation}deg)`;
   scaleValue.textContent=`${objectScale}%`;
   rotateValue.textContent=`${objectRotation}°`;
   positionXValue.textContent=offsetX;
@@ -311,6 +311,7 @@ function selectImage(index){
   previewImage.src=images[index].data;
   previewImage.style.display='block';
   renderImageStrip();
+loadTransferredCanvasDesign();
 renderSavedTemplates();
 renderTemplateLibrary();
   statusText.textContent=`Aktivna je slika ${index+1} od ${images.length}.`;
@@ -398,6 +399,14 @@ function setFit(){
   previewImage.classList.add(`fit-${fitSelect.value}`);
 }
 
+function loadTransferredCanvasDesign(){
+  const data=sessionStorage.getItem('marijanaMockupSource');
+  if(!data)return;
+  images=[{data,name:sessionStorage.getItem('marijanaMockupSourceName')||'Canvas dizajn'}];
+  activeImageIndex=0;
+  selectImage(0);
+  statusText.textContent='Canvas dizajn je automatski prenet u 3D Mockup. Izaberi scenu i prilagodi perspektivu.';
+}
 function loadImages(files){
   const selected=Array.from(files).filter(file=>file.type.startsWith('image/')).slice(0,4);
   if(!selected.length){
