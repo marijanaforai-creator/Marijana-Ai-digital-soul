@@ -180,7 +180,12 @@ async function renderCanvasToDataURL(){
     if(el.type==='text'){
       ctx.fillStyle=el.color;ctx.font='500 '+(el.fontSize*sx)+'px Cormorant Garamond, serif';
       ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(el.text,0,0);
-    }else if(el.type==='image'&&imageCache[el.id]){
+    }else if((el.type==='image'||el.type==='frame')&&imageCache[el.id]){
+      if(el.type==='frame'){
+        ctx.beginPath();
+        if(el.frameShape==='circle')ctx.arc(0,0,Math.min(el.w*sx,el.h*sy)/2,0,Math.PI*2);else ctx.rect(-el.w*sx/2,-el.h*sy/2,el.w*sx,el.h*sy);
+        ctx.clip();
+      }
       ctx.drawImage(imageCache[el.id],-el.w*sx/2,-el.h*sy/2,el.w*sx,el.h*sy);
     }else{
       ctx.fillStyle=el.color;ctx.beginPath();
