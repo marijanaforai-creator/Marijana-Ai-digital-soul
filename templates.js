@@ -32,6 +32,43 @@ function initProductInput(){
  productInputFields.forEach(id=>{const el=document.getElementById(id);if(el&&data[id])el.value=data[id]});
  save.onclick=()=>{const out={};productInputFields.forEach(id=>{const el=document.getElementById(id);if(el)out[id]=el.value.trim()});localStorage.setItem(key,JSON.stringify(out));const ok=document.getElementById('productSaved');ok.hidden=false;setTimeout(()=>ok.hidden=true,2200)};
 }
+\n
+const audienceProfiles={
+ general:'Koristi jasnu i razumljivu komunikaciju bez pretpostavki o predznanju.',
+ local:'Naglasak na lokaciji, dostupnosti, poverenju i praktičnim informacijama.',
+ b2c:'Fokus na korist za pojedinca, jednostavnu ponudu i jasan sledeći korak.',
+ b2b:'Fokus na poslovnu vrednost, rezultat, proces i relevantne informacije.',
+ professionals:'Koristi precizniji terminološki i stručniji ton.',
+ beginners:'Objasni jednostavno, korak po korak, bez nepotrebnog žargona.',
+ returning:'Nadoveži se na postojeći odnos, prethodno iskustvo i sledeću vrednost.'
+};
+const platformProfiles={
+ Instagram:'Vizuelno, kratko, jak početak i jasan CTA.',
+ Facebook:'Kontekstualnije, razgovorno i pogodno za detaljniji opis.',
+ Pinterest:'Opisno, korisno i fokusirano na temu, pretragu i dugoročnu vrednost.',
+ LinkedIn:'Profesionalno, konkretno i usmereno na poslovnu vrednost.',
+ TikTok:'Brz hook, kratke scene i prirodan govor.',
+ Email:'Jasan subject, uvod, vrednost i jedan primarni CTA.',
+ Web:'Informativno, strukturisano i prilagođeno skeniranju.'
+};
+const formatProfiles={
+ Objavа:'Strukturirana objava sa hookom, glavnom porukom i CTA-om.',
+ 'Story':'Kratke sekvence sa jednom porukom po ekranu.',
+ 'Reel / TikTok':'Hook → problem/tema → benefit → CTA.',
+ Pin:'Naslov + koristan opis + ključna tema + CTA.',
+ Email:'Subject → uvod → vrednost → CTA.',
+ Oglas:'Hook → ponuda/benefit → dokaz → CTA.',
+ Blog:'Naslov → uvod → podnaslovi → vrednost → zaključak.'
+};
+function initAudienceEngine(){
+ const apply=document.getElementById('applyAudience');if(!apply)return;
+ apply.onclick=()=>{
+  const a=document.getElementById('audienceType').value,p=document.getElementById('contentPlatform').value,f=document.getElementById('contentFormat').value;
+  localStorage.setItem('digitalSoulAudienceSettings',JSON.stringify({audience:a,platform:p,format:f}));
+  const box=document.getElementById('audienceGuidance');box.hidden=false;
+  box.innerHTML='<strong>Prilagođavanje:</strong><br>'+audienceProfiles[a]+'<br><br><strong>'+p+':</strong> '+platformProfiles[p]+'<br><strong>'+f+':</strong> '+(formatProfiles[f]||'Prilagodi strukturu izabranom formatu.');
+ };
+}
 \nconst purposeBriefs={
  'Reklama':{hook:'Pažnja / problem / potreba',headline:'Jasna glavna poruka ponude',benefit:'Zašto je ponuda korisna kupcu',proof:'Dokaz, kvalitet ili razlog za poverenje',cta:'Pozovi kupca na sledeći korak'},
  'Prodaja':{hook:'Ponuda koja privlači pažnju',headline:'Šta se prodaje i zašto sada',benefit:'Ključna korist proizvoda',proof:'Cena, dostupnost ili konkretna vrednost',cta:'Poruči / kupi / javi se'},
@@ -98,4 +135,4 @@ function showDetails(t){
  details.scrollIntoView({behavior:'smooth',block:'start'});
 }
 document.querySelectorAll('.category').forEach(b=>b.onclick=()=>{category=b.dataset.category;document.querySelectorAll('.category').forEach(x=>x.classList.remove('active'));b.classList.add('active');render()});
-search.oninput=render;sort.onchange=render;initCampaignBuilder();initProductInput();initCorrectionEngine();initRepurposeEngine();document.getElementById('generateContent')?.addEventListener('click',generateContent);document.getElementById('libraryFavorites').onclick=()=>{category=category==='mine'?'all':'mine';document.querySelectorAll('.category').forEach(x=>x.classList.toggle('active',x.dataset.category===category));render()};render();
+search.oninput=render;sort.onchange=render;initCampaignBuilder();initProductInput();initCorrectionEngine();initRepurposeEngine();initAudienceEngine();document.getElementById('generateContent')?.addEventListener('click',generateContent);document.getElementById('libraryFavorites').onclick=()=>{category=category==='mine'?'all':'mine';document.querySelectorAll('.category').forEach(x=>x.classList.toggle('active',x.dataset.category===category));render()};render();
