@@ -187,3 +187,119 @@
     background:linear-gradient(90deg,rgba(118,84,168,.72),rgba(59,35,95,.72));color:#F7E8BF;border-left:3px solid #C8A96B;
   }
 }
+
+
+/* MOCKUP STUDIO — tamna ljubičasta + champagne gold, prema novom vizuelnom pravcu */
+.mockup-body{
+  background:#0D0818;
+  color:#F7F3FB;
+}
+.mockup-body .site-header{
+  position:relative;
+  background:linear-gradient(180deg,#130B24 0%,#0B0714 100%);
+  border-bottom:1px solid rgba(200,169,107,.18);
+  backdrop-filter:none;
+}
+.mockup-body .site-header .nav{
+  min-height:82px;
+}
+.mockup-body .logo{
+  color:#FFFFFF;
+}
+.mockup-body .logo span{
+  color:#CBB0EA;
+}
+.mockup-body .nav-links a{
+  color:#E8DDF2;
+}
+.mockup-body .nav-links a:hover{
+  color:#F0D59A;
+}
+.mockup-body .nav-links a[aria-current="page"]{
+  color:#FFFFFF;
+  background:linear-gradient(90deg,#6B35A0,#3B1B63);
+  border-left:3px solid #C8A96B;
+  padding:10px 14px;
+  border-radius:0 10px 10px 0;
+}
+.mockup-body .mobile-menu-toggle{
+  border-color:#C8A96B;
+  background:linear-gradient(135deg,#3B235F,#7654A8);
+  color:#F7E8BF;
+}
+.mockup-body .mockup-hero{
+  background:
+    radial-gradient(circle at 72% 18%,rgba(126,61,190,.45),transparent 32%),
+    radial-gradient(circle at 25% 70%,rgba(74,31,119,.38),transparent 38%),
+    linear-gradient(135deg,#3B1F63 0%,#24113E 45%,#0D0818 100%);
+  border-bottom:1px solid rgba(200,169,107,.14);
+}
+.mockup-body .mockup-hero .kicker{
+  color:#CBB0EA;
+}
+.mockup-body .mockup-hero h1{
+  color:#FFFFFF;
+}
+.mockup-body .mockup-hero h1 em{
+  color:#D8B76B;
+}
+.mockup-body .mockup-hero p{
+  color:rgba(247,243,251,.72);
+}
+.mockup-body .template-library,
+.mockup-body .batch-engine{
+  background:
+    linear-gradient(180deg,#140A22 0%,#0D0818 100%);
+  color:#F7F3FB;
+}
+.mockup-body .template-library .kicker{
+  color:#A98BCB;
+}
+.mockup-body .template-library h2{
+  color:#FFFFFF;
+}
+.mockup-body .template-library-head p{
+  color:rgba(247,243,251,.65);
+}
+.mockup-body .template-tools input,
+.mockup-body .template-tools select{
+  background:#1B102A;
+  color:#F7F3FB;
+  border-color:rgba(200,169,107,.28);
+}
+.mockup-body .template-tools input::placeholder{
+  color:rgba(247,243,251,.5);
+}
+.mockup-body .template-card{
+  background:#1A0F29;
+  border-color:rgba(200,169,107,.16);
+  color:#F7F3FB;
+}
+.mockup-body .template-meta small,
+.mockup-body .template-empty{
+  color:#B9A9C8;
+}
+.mockup-body .template-preview{
+  background:#24133A !important;
+}
+.mockup-body .batch-panel{
+  background:#1A0F29;
+  border-color:rgba(200,169,107,.18);
+}
+.mockup-body .batch-option{
+  background:#24133A;
+  color:#F7F3FB;
+  border-color:rgba(200,169,107,.2);
+}
+.mockup-body .batch-option:has(input:checked){
+  border-color:#C8A96B;
+  background:rgba(118,84,168,.22);
+}
+@media(max-width:700px){
+  .mockup-body .site-header .nav{
+    min-height:78px;
+  }
+  .mockup-body .site-header .nav-links.mobile-open{
+    background:linear-gradient(180deg,#1A0D2B,#0D0818);
+  }
+}
