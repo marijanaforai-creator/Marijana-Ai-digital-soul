@@ -223,6 +223,16 @@ function generateBatch(){
   }));
   status.textContent=`Batch je pripremljen: ${s.scenes.length*s.formats.length} kombinacija.`;
 }
+function applyLibraryTemplateFromUrl(){
+  const id=new URLSearchParams(location.search).get('template');
+  if(!id)return;
+  const t=libraryTemplates?.find(x=>x.id===id);
+  if(!t)return;
+  if(sceneSelect)sceneSelect.value=t.scene;
+  if(bgColor)bgColor.value=t.bg;
+  setScene(t.scene);
+  if(statusText)statusText.textContent=`Izabran je šablon „${t.name}“ iz Biblioteke šablona.`;
+}
 function getFavorites(){
   return JSON.parse(localStorage.getItem(FAVORITES_KEY)||'[]');
 }
@@ -254,6 +264,7 @@ function renderTemplateLibrary(){
       localStorage.setItem(FAVORITES_KEY,JSON.stringify(next));
       renderTemplateLibrary();
 initBatchEngine();
+applyLibraryTemplateFromUrl();
     };
     card.querySelector('.template-use').onclick=()=>{
       sceneSelect.value=t.scene;
