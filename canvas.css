@@ -85,3 +85,53 @@
 .mockup-generate-controls select{height:36px;padding:0 10px;border:1px solid rgba(37,37,34,.18);background:#fff;font:inherit}
 .mockup-generate-controls .tool-btn{white-space:nowrap}
 @media(max-width:760px){.mockup-generate-controls{flex-direction:column;align-items:stretch}.mockup-generate-controls select,.mockup-generate-controls .tool-btn{width:100%}}
+
+
+/* Canva-style Frames — slika se usisava i postaje sadržaj oblika */
+.canvas-element.frame-element{
+  overflow:hidden;
+  background:#f4f0f8;
+  border:1px solid rgba(118,84,168,.35);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 10px 25px rgba(59,35,95,.10);
+}
+.canvas-element.frame-element.frame-rect{border-radius:0}
+.canvas-element.frame-element.frame-circle{border-radius:50%}
+.canvas-element.frame-element .frame-content{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
+  pointer-events:none;
+  user-select:none;
+}
+.canvas-element.frame-element.frame-circle .frame-content{border-radius:50%}
+.canvas-element.frame-element .frame-placeholder{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:12px;
+  color:#7654A8;
+  font:700 10px Montserrat,sans-serif;
+  letter-spacing:.08em;
+  pointer-events:none;
+}
+.canvas-element.frame-element .frame-content + .frame-placeholder{display:none}
+.canvas-element.frame-element.frame-suck-target{
+  outline:2px solid #C8A96B;
+  outline-offset:2px;
+}
+.frame-suck-in{
+  animation:canvasFrameSuck .52s cubic-bezier(.18,.82,.24,1) both;
+}
+@keyframes canvasFrameSuck{
+  0%{opacity:.05;transform:scale(1.22);filter:blur(5px)}
+  35%{opacity:.55;transform:scale(1.10);filter:blur(2px)}
+  72%{opacity:.9;transform:scale(.985);filter:blur(.5px)}
+  100%{opacity:1;transform:scale(1);filter:blur(0)}
+}
