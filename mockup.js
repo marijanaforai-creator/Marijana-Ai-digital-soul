@@ -87,6 +87,73 @@ const libraryTemplates=[
  {id:'document-stack',name:'Dokument — više strana',scene:'document-stack',category:'sheets',bg:'#E9E9E9',shape:'wide'},
  {id:'ebook-spread',name:'Ebook — otvorene strane',scene:'ebook-spread',category:'sheets',bg:'#DDD5C9',shape:'wide'}
 ];
+const templateNameOverrides={
+  'phone-clean':'Telefon — čisti okvir',
+  'laptop-business':'Laptop — Business',
+  'planner-luxury':'Planner — Luxury',
+  'poster-minimal':'Poster — Minimal',
+  'fitness-campaign':'Fitness — kampanja',
+  'hotel-premium':'Hotel — premium',
+  'restaurant-menu':'Restoran — meni',
+  'yoga-calm':'Yoga — Calm',
+  'beauty-editorial':'Beauty — editorial',
+  'social-story':'Društvene mreže — Story',
+  'office-pro':'Kancelarija — Pro',
+  'premium-product':'Proizvod — premium',
+  'packaging-studio':'Ambalaža — studio',
+  'desk-creator':'Radni sto — Creator',
+  'laptop-angle':'Laptop — ugao',
+  'multi-device':'Multi-device scena',
+  'isometric-cards':'Izometrijske kartice',
+  'floating-cards':'Lebdeće kartice',
+  'paper-stack':'Složeni papiri',
+  'magazine-spread':'Otvoreni magazin — spread',
+  'open-magazine':'Otvoreni magazin',
+  'desktop-scene':'Desktop scena',
+  'sheet-single':'List — jedna stranica',
+  'sheet-perspective':'List — perspektiva',
+  'sheet-scattered':'Rasuti listovi',
+  'sheet-stack':'Složeni listovi',
+  'web-pages':'Web stranice — galerija',
+  'web-foldout':'Web stranice — harmonika',
+  'document-stack':'Dokument — više strana',
+  'ebook-spread':'Ebook — otvorene strane'
+};
+libraryTemplates.forEach(t=>{if(templateNameOverrides[t.id])t.name=templateNameOverrides[t.id];});
+
+const libraryPalette=['#F7F3FB','#E8DED0','#F3F1EB','#151515','#DCE7DE','#DDE4EA','#E6D7C8','#E8DDE0','#DCE7F2','#EEE9DF','#E4D8C8','#E8E0D2'];
+const libraryGroups=[
+  {category:'sheets',count:24,prefix:'Listovi',scenes:['sheet-single','sheet-perspective','sheet-scattered','sheet-stack'],styles:['Ivory','Minimal','Editorial','Clean','Soft','Luxury','Classic','Modern']},
+  {category:'sheets',count:25,prefix:'Dokumenti i ebook',scenes:['document-stack','ebook-spread','sheet-stack','sheet-perspective'],styles:['Vodič','Ebook','Priručnik','Radna sveska','Planner','Workbook','PDF prezentacija','Premium izdanje']},
+  {category:'web',count:23,prefix:'Web prezentacije',scenes:['web-pages','web-foldout','laptop','multi-device'],styles:['Portfolio','Landing','Business','Studio','Minimal','Agency','Shop','Course']},
+  {category:'device',count:19,prefix:'Laptop kolekcija',scenes:['laptop','laptop-angle'],styles:['Clean','Business','Creator','Agency','Minimal','Luxury','Soft','Editorial']},
+  {category:'device',count:19,prefix:'Telefon kolekcija',scenes:['phone','social'],styles:['Clean','Story','App','Social','Creator','Wellness','Beauty','Business']},
+  {category:'3d',count:18,prefix:'Multi-device kolekcija',scenes:['multi-device','desktop-scene','laptop-angle'],styles:['Web','App','Business','Portfolio','Course','Launch','Agency','Studio']},
+  {category:'3d',count:12,prefix:'Magazin i knjiga',scenes:['magazine-spread','open-magazine','ebook-spread'],styles:['Editorial','Fashion','Business','Lifestyle','Travel','Wellness','Luxury','Minimal']},
+  {category:'3d',count:15,prefix:'3D kartice',scenes:['isometric-cards','floating-cards','paper-stack'],styles:['Minimal','Luxury','Launch','Offer','Quote','Feature','Product','Brand']},
+  {category:'3d',count:10,prefix:'Perspektivne kompozicije',scenes:['sheet-perspective','web-foldout','laptop-angle','isometric-cards'],styles:['Hero','Diagonal','Depth','Editorial','Modern','Premium','Soft','Bold']},
+  {category:'business',count:5,prefix:'Business scena',scenes:['business','office','hotel','restaurant','desk'],styles:['Pro','Premium','Modern','Clean','Luxury']}
+];
+
+const generatedLibraryTemplates=[];
+let generatedIndex=0;
+libraryGroups.forEach(group=>{
+  for(let i=0;i<group.count;i++){
+    const style=group.styles[i%group.styles.length];
+    const scene=group.scenes[i%group.scenes.length];
+    generatedIndex++;
+    generatedLibraryTemplates.push({
+      id:'library-200-'+String(generatedIndex).padStart(3,'0'),
+      name:group.prefix+' — '+style+(i>=group.styles.length?' '+(Math.floor(i/group.styles.length)+1):''),
+      scene,
+      category:group.category,
+      bg:libraryPalette[i%libraryPalette.length],
+      shape:(scene==='phone'||scene==='social'||scene==='planner')?'tall':'wide'
+    });
+  }
+});
+libraryTemplates.push(...generatedLibraryTemplates);
+
 
 const sceneNames={
   phone:'Telefon',laptop:'Laptop',planner:'Planner',poster:'Poster',
@@ -257,8 +324,10 @@ function applyLibraryTemplateFromUrl(){
 function getFavorites(){
   return JSON.parse(localStorage.getItem(FAVORITES_KEY)||'[]');
 }
-function renderTemplateLibrary(){
+let libraryVisibleCount=40;
+function renderTemplateLibrary(resetVisible=true){
   if(!templateGrid)return;
+  if(resetVisible)libraryVisibleCount=40;
   const query=(templateSearch?.value||'').trim().toLowerCase();
   const category=templateCategory?.value||'all';
   const onlyFavorites=favoritesOnly?.dataset.active==='true';
@@ -269,34 +338,45 @@ function renderTemplateLibrary(){
     const matchesFavorite=!onlyFavorites||favorites.includes(t.id);
     return matchesQuery&&matchesCategory&&matchesFavorite;
   });
-  if(!list.length){templateGrid.innerHTML='<div class="template-empty">Nema šablona koji odgovaraju izboru.</div>';return;}
+  if(!list.length){
+    templateGrid.innerHTML='<div class="template-empty">Nema šablona koji odgovaraju izboru.</div>';
+    return;
+  }
+  const visible=list.slice(0,libraryVisibleCount);
   templateGrid.innerHTML='';
-  list.forEach(t=>{
+  visible.forEach(t=>{
     const card=document.createElement('article');
     card.className='template-card';
     const active=favorites.includes(t.id);
-    card.innerHTML=`<div class="template-preview" style="background:${t.bg}"><div class="mini-object ${t.shape}"></div></div>
-      <div class="template-meta"><div><strong>${t.name}</strong><small>${sceneNames[t.scene]||t.scene}</small></div>
-      <button class="template-fav" type="button" aria-label="Favorit">${active?'♥':'♡'}</button></div>
-      <button class="btn primary template-use" type="button">Koristi šablon</button>`;
+    card.innerHTML=\`<div class="template-preview" style="background:\${t.bg}"><div class="mini-object \${t.shape}"></div></div>
+      <div class="template-meta"><div><strong>\${t.name}</strong><small>\${sceneNames[t.scene]||t.scene}</small></div>
+      <button class="template-fav" type="button" aria-label="Favorit">\${active?'♥':'♡'}</button></div>
+      <button class="btn primary template-use" type="button">Koristi šablon</button>\`;
     card.querySelector('.template-fav').onclick=()=>{
       const next=getFavorites().filter(id=>id!==t.id);
       if(!active)next.push(t.id);
       localStorage.setItem(FAVORITES_KEY,JSON.stringify(next));
-      renderTemplateLibrary();
-initBatchEngine();
-applyLibraryTemplateFromUrl();
+      renderTemplateLibrary(false);
     };
     card.querySelector('.template-use').onclick=()=>{
       sceneSelect.value=t.scene;
+      templateSelect.value='classic';
       bgColor.value=t.bg;
       mockupStage.style.background=t.bg;
       setScene(t.scene);
       window.scrollTo({top:document.querySelector('.mockup-workspace').offsetTop-20,behavior:'smooth'});
-      statusText.textContent=`Izabran je šablon „${t.name}“.`;
+      statusText.textContent=\`Izabran je šablon „\${t.name}“.\`;
     };
     templateGrid.appendChild(card);
   });
+  if(list.length>visible.length){
+    const more=document.createElement('button');
+    more.type='button';
+    more.className='btn template-load-more';
+    more.textContent=\`Prikaži još \${Math.min(40,list.length-visible.length)} šablona\`;
+    more.onclick=()=>{libraryVisibleCount+=40;renderTemplateLibrary(false);};
+    templateGrid.appendChild(more);
+  }
 }
 
 function updateTransform(){
