@@ -157,10 +157,10 @@
 
 
 /* Mobilna navigacija — Marijana AI Studio */
-.mobile-menu-toggle{display:none;border:1px solid #C8A96B;background:linear-gradient(135deg,#3B235F,#7654A8);color:#F7E8BF;border-radius:10px;width:44px;height:44px;font-size:23px;cursor:pointer;align-items:center;justify-content:center;box-shadow:0 5px 18px rgba(59,35,95,.35)}
+ .mobile-menu-toggle{display:none;border:1px solid #C8A96B;background:linear-gradient(135deg,#3B235F,#7654A8);color:#F7E8BF;border-radius:10px;width:44px;height:44px;font-size:23px;cursor:pointer;align-items:center;justify-content:center;box-shadow:0 5px 18px rgba(59,35,95,.35)}
 @media(max-width:700px){
-  .site-header .nav{position:relative;display:flex;align-items:center;justify-content:space-between}
-  .mobile-menu-toggle{display:flex}
+  .site-header .nav{position:relative;display:flex !important;align-items:center;justify-content:space-between}
+  .mobile-menu-toggle{display:flex !important}
   .site-header .nav-links{
     display:none;
     position:absolute;
