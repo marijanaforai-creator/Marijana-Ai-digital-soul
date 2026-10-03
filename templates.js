@@ -297,7 +297,7 @@ function renderSavedPromoPacks(){
  const packs=JSON.parse(localStorage.getItem('digitalSoulPromoPacks')||'[]');
  if(!packs.length){wrap.innerHTML='<div class="saved-pack-empty">Još nema sačuvanih promo paketa.</div>';return}
  wrap.innerHTML=packs.map((p,i)=>'<article class="saved-pack"><strong>'+p.name+'</strong><small>'+p.channels.length+' kanala · '+new Date(p.created).toLocaleDateString('sr-RS')+'</small><div><button class="btn load-pack" data-index="'+i+'">Otvori</button><button class="btn delete-pack" data-index="'+i+'">Obriši</button></div></article>').join('');
- wrap.querySelectorAll('.load-pack').forEach(b=>b.onclick=()=>{const p=packs[Number(b.dataset.index)];document.getElementById('packName').value=p.name;document.getElementById('packGoal').value=p.goal;promoPackState.channels=p.channels;promoPackState.results=p.results;initPromoPackOrchestrator();initCco();document.getElementById('packResult').hidden=false;document.getElementById('packResult').innerHTML='<div class="pack-summary"><strong>'+p.name+'</strong><span>'+p.goal+'</span><span>'+p.results.length+' kanala</span></div><div class="pack-cards">'+p.results.map(x=>'<article class="pack-card"><div class="pack-card-head"><strong>'+x.channel+'</strong></div><h4>'+x.title+'</h4><textarea readonly>'+x.body+'</textarea><small>'+x.meta+'</small></article>').join('')+'</div>'});
+ wrap.querySelectorAll('.load-pack').forEach(b=>b.onclick=()=>{const p=packs[Number(b.dataset.index)];document.getElementById('packName').value=p.name;document.getElementById('packGoal').value=p.goal;promoPackState.channels=p.channels;promoPackState.results=p.results;initPromoPackOrchestrator();initCco();initContentCalendar();document.getElementById('packResult').hidden=false;document.getElementById('packResult').innerHTML='<div class="pack-summary"><strong>'+p.name+'</strong><span>'+p.goal+'</span><span>'+p.results.length+' kanala</span></div><div class="pack-cards">'+p.results.map(x=>'<article class="pack-card"><div class="pack-card-head"><strong>'+x.channel+'</strong></div><h4>'+x.title+'</h4><textarea readonly>'+x.body+'</textarea><small>'+x.meta+'</small></article>').join('')+'</div>'});
  wrap.querySelectorAll('.delete-pack').forEach(b=>b.onclick=()=>{packs.splice(Number(b.dataset.index),1);localStorage.setItem('digitalSoulPromoPacks',JSON.stringify(packs));renderSavedPromoPacks()});
 }
 \n
@@ -370,6 +370,69 @@ function renderSavedCco(){
  box.innerHTML=plans.length?plans.map((p,i)=>'<article class="cco-saved-item"><strong>'+p.name+'</strong><small>'+p.days+' dana · '+new Date(p.created).toLocaleDateString('sr-RS')+'</small><button class="btn cco-open" data-i="'+i+'">Otvori</button><button class="btn cco-delete" data-i="'+i+'">Obriši</button></article>').join(''):'<span class="cco-empty">Još nema sačuvanih planova.</span>';
  box.querySelectorAll('.cco-open').forEach(b=>b.onclick=()=>{const p=plans[Number(b.dataset.i)];ccoState.plan=p.plan;document.getElementById('ccoResult').hidden=false;renderCco(p.goal,'Sačuvano')});
  box.querySelectorAll('.cco-delete').forEach(b=>b.onclick=()=>{plans.splice(Number(b.dataset.i),1);localStorage.setItem('digitalSoulContentCampaignPlans',JSON.stringify(plans));renderSavedCco()});
+}
+
+
+const calendarStatuses=['Ideja','U izradi','Spremno','Zakazano','Objavljeno'];
+let calendarItems=[];
+let calendarEditIndex=null;
+function calendarToday(){return new Date().toISOString().slice(0,10)}
+function initContentCalendar(){
+ const saved=JSON.parse(localStorage.getItem('digitalSoulContentCalendar')||'[]');
+ calendarItems=Array.isArray(saved)?saved:[];
+ document.getElementById('calendarView').onchange=renderCalendar;
+ document.getElementById('calendarFilter').onchange=renderCalendar;
+ document.getElementById('calendarAdd').onclick=()=>openCalendarEditor();
+ document.getElementById('calendarImportPlan').onclick=importLatestCalendarPlan;
+ document.getElementById('calSave').onclick=saveCalendarItem;
+ document.getElementById('calCancel').onclick=closeCalendarEditor;
+ renderCalendar();
+}
+function persistCalendar(){localStorage.setItem('digitalSoulContentCalendar',JSON.stringify(calendarItems))}
+function openCalendarEditor(index=null){
+ calendarEditIndex=index;
+ const e=document.getElementById('calendarEditor');e.hidden=false;
+ const x=index===null?{title:'',date:calendarToday(),channel:'Instagram',status:'Ideja',note:''}:calendarItems[index];
+ document.getElementById('calTitle').value=x.title||'';document.getElementById('calDate').value=x.date||calendarToday();document.getElementById('calChannel').value=x.channel||'Instagram';document.getElementById('calStatus').value=x.status||'Ideja';document.getElementById('calNote').value=x.note||'';
+ e.scrollIntoView({behavior:'smooth',block:'center'});
+}
+function closeCalendarEditor(){document.getElementById('calendarEditor').hidden=true;calendarEditIndex=null}
+function saveCalendarItem(){
+ const item={title:document.getElementById('calTitle').value.trim()||'Novi sadržaj',date:document.getElementById('calDate').value||calendarToday(),channel:document.getElementById('calChannel').value,status:document.getElementById('calStatus').value,note:document.getElementById('calNote').value.trim()};
+ if(calendarEditIndex===null)calendarItems.push({...item,id:Date.now()});else calendarItems[calendarEditIndex]={...calendarItems[calendarEditIndex],...item};
+ persistCalendar();closeCalendarEditor();renderCalendar();
+}
+function importLatestCalendarPlan(){
+ const plans=JSON.parse(localStorage.getItem('digitalSoulContentCampaignPlans')||'[]');
+ if(!plans.length){alert('Nema sačuvanog kampanjskog plana.');return}
+ const p=plans[0],start=new Date();
+ const imported=p.plan.map((x,i)=>{const d=new Date(start);d.setDate(start.getDate()+i);return{id:Date.now()+i,title:x.type+' — '+x.topic,date:d.toISOString().slice(0,10),channel:x.channel,status:'Ideja',note:x.action}});
+ calendarItems=[...calendarItems,...imported];persistCalendar();renderCalendar();
+}
+function filteredCalendar(){
+ const f=document.getElementById('calendarFilter').value;
+ return calendarItems.filter(x=>f==='all'||x.status===f).sort((a,b)=>a.date.localeCompare(b.date));
+}
+function renderCalendar(){
+ const board=document.getElementById('calendarBoard');if(!board)return;
+ const items=filteredCalendar(),view=document.getElementById('calendarView').value;
+ const counts={};calendarStatuses.forEach(s=>counts[s]=calendarItems.filter(x=>x.status===s).length);
+ document.getElementById('calendarStats').innerHTML=calendarStatuses.map(s=>'<div class="calendar-stat"><strong>'+counts[s]+'</strong><span>'+s+'</span></div>').join('');
+ if(!items.length){board.innerHTML='<div class="calendar-empty">Nema sadržaja za izabrani filter. Dodaj sadržaj ili uvezi kampanjski plan.</div>';return}
+ if(view==='list'){board.innerHTML='<div class="calendar-list">'+items.map((x)=>calendarCard(x,calendarItems.indexOf(x))).join('')+'</div>'}
+ else if(view==='month'){renderCalendarGrid(board,items,true)}
+ else {renderCalendarGrid(board,items,false)}
+ board.querySelectorAll('.calendar-edit').forEach(b=>b.onclick=()=>openCalendarEditor(Number(b.dataset.i)));
+ board.querySelectorAll('.calendar-delete').forEach(b=>b.onclick=()=>{calendarItems.splice(Number(b.dataset.i),1);persistCalendar();renderCalendar()});
+ board.querySelectorAll('.calendar-status').forEach(s=>s.onchange=()=>{calendarItems[Number(s.dataset.i)].status=s.value;persistCalendar();renderCalendar()});
+}
+function calendarCard(x,i){
+ return '<article class="calendar-card"><div class="calendar-card-top"><small>'+x.date+'</small><span class="calendar-channel">'+x.channel+'</span></div><strong>'+x.title+'</strong><p>'+x.note+'</p><select class="calendar-status" data-i="'+i+'">'+calendarStatuses.map(s=>'<option '+(x.status===s?'selected':'')+'>'+s+'</option>').join('')+'</select><button class="btn calendar-edit" data-i="'+i+'">Uredi</button><button class="btn calendar-delete" data-i="'+i+'">Obriši</button></article>'
+}
+function renderCalendarGrid(board,items,month){
+ const grouped={};items.forEach(x=>(grouped[x.date]??=[]).push(x));
+ const dates=Object.keys(grouped);
+ board.innerHTML='<div class="calendar-grid">'+dates.map(d=>'<div class="calendar-day"><div class="calendar-day-head"><strong>'+new Date(d+'T12:00:00').toLocaleDateString('sr-RS',{weekday:'short',day:'numeric',month:'short'})+'</strong><span>'+grouped[d].length+'</span></div>'+grouped[d].map(x=>calendarCard(x,calendarItems.indexOf(x))).join('')+'</div>').join('')+'</div>';
 }
 
 document.querySelectorAll('.category').forEach(x=>x.classList.toggle('active',x.dataset.category===category));search.value=p.name.split(' ')[0];render();renderIndustryPacks();document.getElementById('libraryGrid').scrollIntoView({behavior:'smooth',block:'start'})};wrap.appendChild(el)})
