@@ -21,7 +21,7 @@ function renderPage(){
   elementsEl.innerHTML='';
   current().elements.forEach(el=>{
     const node=document.createElement('div');
-    node.className='canvas-element '+(el.type==='text'?'text-element':el.type==='rect'?'shape':el.type==='circle'?'circle':el.type==='mockup'?'mockup-element':'image-element');
+    node.className='canvas-element '+(el.type==='text'?'text-element':el.type==='rect'?'shape':el.type==='circle'?'circle':el.type==='frame'?'frame-element':el.type==='mockup'?'mockup-element':'image-element');
     if(el.id===selectedId)node.classList.add('selected');
     node.dataset.id=el.id;
     node.dataset.locked=el.locked?'true':'false';
@@ -30,6 +30,12 @@ function renderPage(){
     node.style.transform='rotate('+el.rotation+'deg)';node.style.opacity=el.opacity/100;
     if(el.type==='text'){node.textContent=el.text;node.style.fontSize=el.fontSize+'px';node.style.color=el.color}
     else if(el.type==='image'){node.innerHTML='<img src="'+el.src+'" alt="">'}
+    else if(el.type==='frame'){
+      node.style.background=el.src?'#fff':el.color;
+      node.classList.add(el.frameShape==='circle'?'frame-circle':'frame-rect');
+      if(el.src) node.innerHTML='<img class="frame-content" src="'+el.src+'" alt=""><span class="frame-placeholder">'+(el.frameShape==='circle'?'UBACI SLIKU':'UBACI SLIKU U FRAME')+'</span>';
+      else node.innerHTML='<span class="frame-placeholder">＋ UBACI SLIKU</span>';
+    }
     else if(el.type==='rect'||el.type==='circle'){node.style.background=el.color}
     else if(el.type==='mockup'){node.textContent='3D MOCKUP';node.style.background=el.color}
     node.addEventListener('pointerdown',startDrag);
@@ -116,7 +122,9 @@ function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':
 function addElement(type,src){
   snapshot();
   const n=current().elements.length;
-  const el={id:nextId++,name:type==='text'?'Tekst':type==='image'?'Slika':type==='mockup'?'Mockup':'Oblik',type,visible:true,locked:false,x:80+n*15,y:80+n*15,w:type==='text'?300:type==='image'?260:type==='mockup'?280:220,h:type==='text'?90:type==='image'?260:type==='mockup'?360:160,rotation:0,opacity:100,color:type==='circle'?'#C8A96B':'#B9A3E3',text:type==='text'?'Novi tekst':'',fontSize:48,src:src||''};
+  const isFrame=type==='frame';
+  const frameShape=isFrame?'rect':'';
+  const el={id:nextId++,name:type==='text'?'Tekst':type==='image'?'Slika':type==='mockup'?'Mockup':isFrame?'Frame':'Oblik',type,frameShape,visible:true,locked:false,x:80+n*15,y:80+n*15,w:type==='text'?300:type==='image'?260:type==='mockup'?280:260,h:type==='text'?90:type==='image'?260:type==='mockup'?360:isFrame?260:160,rotation:0,opacity:100,color:type==='circle'?'#C8A96B':'#B9A3E3',text:type==='text'?'Novi tekst':'',fontSize:48,src:src||''};
   current().elements.push(el);selectedId=el.id;render();
 }
 function moveLayer(id,delta){snapshot();const arr=current().elements,i=arr.findIndex(e=>e.id===id),j=i+delta;if(j<0||j>=arr.length)return;[arr[i],arr[j]]=[arr[j],arr[i]];render()}
@@ -129,8 +137,18 @@ function startDrag(e){
 }
 document.querySelectorAll('[data-add]').forEach(b=>b.addEventListener('click',()=>{ if(b.dataset.add==='image'){canvasUpload?.click();return;} addElement(b.dataset.add); }));
 const canvasUpload=document.getElementById('canvasUpload');
+function putImageIntoFrame(src){
+  const el=findSelected();
+  if(!el||!['rect','circle','frame'].includes(el.type))return false;
+  snapshot();
+  if(el.type==='rect'){el.type='frame';el.name='Frame';el.frameShape='rect';}
+  if(el.type==='circle'){el.type='frame';el.name='Frame';el.frameShape='circle';}
+  el.src=src;el.color='#FFFFFF';render();
+  requestAnimationFrame(()=>{const node=document.querySelector('.frame-element[data-id="'+el.id+'"] img.frame-content');if(node){node.classList.remove('frame-suck-in');void node.offsetWidth;node.classList.add('frame-suck-in')}});
+  return true;
+}
 document.getElementById('uploadTrigger').addEventListener('click',()=>canvasUpload.click());
-canvasUpload.addEventListener('change',e=>{const file=e.target.files&&e.target.files[0];if(!file)return;if(!file.type.startsWith('image/')){alert('Molimo izaberi sliku.');return;}const r=new FileReader();r.onload=()=>addElement('image',r.result);r.onerror=()=>alert('Slika nije mogla da se učita.');r.readAsDataURL(file);e.target.value='';});
+canvasUpload.addEventListener('change',e=>{const file=e.target.files&&e.target.files[0];if(!file)return;if(!file.type.startsWith('image/')){alert('Molimo izaberi sliku.');return;}const r=new FileReader();r.onload=()=>{if(!putImageIntoFrame(r.result))addElement('image',r.result);};r.onerror=()=>alert('Slika nije mogla da se učita.');r.readAsDataURL(file);e.target.value='';});
 document.getElementById('pageFormat').addEventListener('change',render);
 document.getElementById('gridToggle').addEventListener('change',renderPage);
 document.getElementById('zoomIn').onclick=()=>{zoom=Math.min(1.5,zoom+.1);document.getElementById('zoomValue').textContent=Math.round(zoom*100)+'%';renderPage()};
@@ -152,7 +170,7 @@ async function renderCanvasToDataURL(){
   const ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);
   const baseW=Number(page.dataset.baseW||600),baseH=Number(page.dataset.baseH||600),sx=w/baseW,sy=h/baseH;
   const imageCache={};
-  await Promise.all(current().elements.filter(el=>el.type==='image'&&el.src).map(el=>new Promise(resolve=>{
+  await Promise.all(current().elements.filter(el=>(el.type==='image'||el.type==='frame')&&el.src).map(el=>new Promise(resolve=>{
     const img=new Image();img.onload=()=>{imageCache[el.id]=img;resolve()};img.onerror=resolve;img.src=el.src;
   })));
   current().elements.forEach(el=>{
@@ -178,10 +196,10 @@ async function exportCanvas(){
   const f=formats[document.getElementById('pageFormat').value]||formats.square,w=f[0],h=f[1],c=document.createElement('canvas');c.width=w;c.height=h;const ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);
   const baseW=Number(page.dataset.baseW||600),baseH=Number(page.dataset.baseH||600),sx=w/baseW,sy=h/baseH;
   const imageCache={};
-  await Promise.all(current().elements.filter(el=>el.type==='image'&&el.src).map(el=>new Promise(resolve=>{const img=new Image();img.onload=()=>{imageCache[el.id]=img;resolve()};img.onerror=resolve;img.src=el.src})));
+  await Promise.all(current().elements.filter(el=>(el.type==='image'||el.type==='frame')&&el.src).map(el=>new Promise(resolve=>{const img=new Image();img.onload=()=>{imageCache[el.id]=img;resolve()};img.onerror=resolve;img.src=el.src})));
   current().elements.forEach(el=>{ctx.save();ctx.globalAlpha=el.opacity/100;ctx.translate(el.x*sx+el.w*sx/2,el.y*sy+el.h*sy/2);ctx.rotate(el.rotation*Math.PI/180);
     if(el.type==='text'){ctx.fillStyle=el.color;ctx.font='500 '+(el.fontSize*sx)+'px Cormorant Garamond, serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(el.text,0,0)}
-    else if(el.type==='image'&&imageCache[el.id]){ctx.drawImage(imageCache[el.id],-el.w*sx/2,-el.h*sy/2,el.w*sx,el.h*sy)}
+    else if((el.type==='image'||el.type==='frame')&&imageCache[el.id]){if(el.type==='frame'){ctx.beginPath();if(el.frameShape==='circle')ctx.arc(0,0,Math.min(el.w*sx,el.h*sy)/2,0,Math.PI*2);else ctx.rect(-el.w*sx/2,-el.h*sy/2,el.w*sx,el.h*sy);ctx.clip();}ctx.drawImage(imageCache[el.id],-el.w*sx/2,-el.h*sy/2,el.w*sx,el.h*sy)}
     else{ctx.fillStyle=el.color;ctx.beginPath();if(el.type==='circle')ctx.arc(0,0,Math.min(el.w*sx,el.h*sy)/2,0,Math.PI*2);else ctx.rect(-el.w*sx/2,-el.h*sy/2,el.w*sx,el.h*sy);ctx.fill()}ctx.restore()});
   const a=document.createElement('a');a.download='marijana-canvas.png';a.href=c.toDataURL('image/png');a.click();
 }
