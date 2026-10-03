@@ -49,7 +49,15 @@ const TEMPLATE_KEY='digitalSoulMockupTemplates';
 const sceneNames={
   phone:'Telefon',laptop:'Laptop',planner:'Planner',poster:'Poster',
   business:'Business scena',fitness:'Fitness scena',hotel:'Hotel scena',
-  restaurant:'Restoran scena',yoga:'Yoga scena',beauty:'Beauty scena'
+  restaurant:'Restoran scena',yoga:'Yoga scena',beauty:'Beauty scena',office:'Kancelarija',desk:'Radni sto',product:'Premium proizvod',packaging:'Ambalaža',social:'Social media ekran'
+};
+
+const lifestylePresets={
+  office:{bg:'#D9DDD7',template:'business'},
+  desk:{bg:'#E4D8C8',template:'classic'},
+  product:{bg:'#E8E0D2',template:'luxury'},
+  packaging:{bg:'#D8C9B0',template:'luxury'},
+  social:{bg:'#E1E7E3',template:'minimal'}
 };
 
 const templatePresets={
@@ -104,6 +112,12 @@ renderSavedTemplates();
 }
 
 function setScene(value){
+  if(lifestylePresets[value] && templateSelect){
+    const p=lifestylePresets[value];
+    bgColor.value=p.bg;
+    mockupStage.style.background=p.bg;
+    templateSelect.value=p.template;
+  }
   mockupObject.className=`mockup-object ${value}-object`;
   mockupStage.className=`mockup-stage scene-${value}`;
   sceneTitle.textContent=sceneNames[value]||'Mockup';
@@ -269,6 +283,11 @@ function downloadMockup(){
     planner:{x:width*.33,y:height*.15,w:width*.34,h:height*.58,r:5},
     poster:{x:width*.33,y:height*.12,w:width*.34,h:height*.65,r:5},
     business:{x:width*.28,y:height*.28,w:width*.44,h:height*.42,r:6},
+    office:{x:width*.27,y:height*.30,w:width*.46,h:height*.40,r:10},
+    desk:{x:width*.25,y:height*.30,w:width*.50,h:height*.40,r:7},
+    product:{x:width*.34,y:height*.22,w:width*.32,h:height*.48,r:20},
+    packaging:{x:width*.34,y:height*.17,w:width*.32,h:height*.62,r:5},
+    social:{x:width*.38,y:height*.13,w:width*.24,h:height*.62,r:16},
     fitness:{x:width*.28,y:height*.28,w:width*.44,h:height*.42,r:6},
     hotel:{x:width*.28,y:height*.28,w:width*.44,h:height*.42,r:6},
     restaurant:{x:width*.28,y:height*.28,w:width*.44,h:height*.42,r:6},
