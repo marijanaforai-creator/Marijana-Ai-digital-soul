@@ -68,7 +68,7 @@ function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':
 function addElement(type,src){
   snapshot();
   const n=current().elements.length;
-  const el={id:nextId++,name:type==='text'?'Tekst':type==='image'?'Slika':type==='mockup'?'Mockup':'Oblik',type,x:80+n*15,y:80+n*15,w:type==='text'?300:type==='image'?260:type==='mockup'?280:220,h:type==='text'?90:type==='image'?260:type==='mockup'?360:160,rotation:0,opacity:100,color:type==='circle'?'#C8A96B':'#8EA386',text:type==='text'?'Novi tekst':'',fontSize:48,src:src||''};
+  const el={id:nextId++,name:type==='text'?'Tekst':type==='image'?'Slika':type==='mockup'?'Mockup':'Oblik',type,x:80+n*15,y:80+n*15,w:type==='text'?300:type==='image'?260:type==='mockup'?280:220,h:type==='text'?90:type==='image'?260:type==='mockup'?360:160,rotation:0,opacity:100,color:type==='circle'?'#C8A96B':'#B9A3E3',text:type==='text'?'Novi tekst':'',fontSize:48,src:src||''};
   current().elements.push(el);selectedId=el.id;render();
 }
 function moveLayer(id,delta){snapshot();const arr=current().elements,i=arr.findIndex(e=>e.id===id),j=i+delta;if(j<0||j>=arr.length)return;[arr[i],arr[j]]=[arr[j],arr[i]];render()}
