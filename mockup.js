@@ -77,13 +77,21 @@ const libraryTemplates=[
  {id:'paper-stack',name:'Složeni papiri',scene:'paper-stack',category:'3d',bg:'#E6E6E6',shape:'wide'},
  {id:'magazine-spread',name:'Magazine spread',scene:'magazine-spread',category:'3d',bg:'#D8D2C8',shape:'wide'},
  {id:'open-magazine',name:'Otvoreni magazin',scene:'open-magazine',category:'3d',bg:'#D8D2C8',shape:'wide'},
- {id:'desktop-scene',name:'Desktop scena',scene:'desktop-scene',category:'3d',bg:'#F1EEE9',shape:'wide'}
+ {id:'desktop-scene',name:'Desktop scena',scene:'desktop-scene',category:'3d',bg:'#F1EEE9',shape:'wide'},
+ {id:'sheet-single',name:'List — jedna stranica',scene:'sheet-single',category:'sheets',bg:'#F3F0EA',shape:'wide'},
+ {id:'sheet-perspective',name:'List — perspektiva',scene:'sheet-perspective',category:'sheets',bg:'#F3F0EA',shape:'wide'},
+ {id:'sheet-scattered',name:'Rasuti listovi',scene:'sheet-scattered',category:'sheets',bg:'#ECECEC',shape:'wide'},
+ {id:'sheet-stack',name:'Složeni listovi',scene:'sheet-stack',category:'sheets',bg:'#E6E6E6',shape:'wide'},
+ {id:'web-pages',name:'Web stranice — galerija',scene:'web-pages',category:'web',bg:'#F1F1F1',shape:'wide'},
+ {id:'web-foldout',name:'Web stranice — harmonika',scene:'web-foldout',category:'web',bg:'#F4F1EC',shape:'wide'},
+ {id:'document-stack',name:'Dokument — više strana',scene:'document-stack',category:'sheets',bg:'#E9E9E9',shape:'wide'},
+ {id:'ebook-spread',name:'Ebook — otvorene strane',scene:'ebook-spread',category:'sheets',bg:'#DDD5C9',shape:'wide'}
 ];
 
 const sceneNames={
   phone:'Telefon',laptop:'Laptop',planner:'Planner',poster:'Poster',
   business:'Business scena',fitness:'Fitness scena',hotel:'Hotel scena',
-  restaurant:'Restoran scena',yoga:'Yoga scena',beauty:'Beauty scena',office:'Kancelarija',desk:'Radni sto',product:'Premium proizvod',packaging:'Ambalaža',social:'Social media ekran', 'laptop-angle':'Laptop — ugao', 'multi-device':'Multi-device scena', 'isometric-cards':'Izometrijske kartice', 'floating-cards':'Lebdeće kartice', 'paper-stack':'Složeni papiri', 'magazine-spread':'Magazine spread', 'open-magazine':'Otvoreni magazin', 'desktop-scene':'Desktop scena'
+  restaurant:'Restoran scena',yoga:'Yoga scena',beauty:'Beauty scena',office:'Kancelarija',desk:'Radni sto',product:'Premium proizvod',packaging:'Ambalaža',social:'Social media ekran', 'laptop-angle':'Laptop — ugao', 'multi-device':'Multi-device scena', 'isometric-cards':'Izometrijske kartice', 'floating-cards':'Lebdeće kartice', 'paper-stack':'Složeni papiri', 'magazine-spread':'Magazine spread', 'open-magazine':'Otvoreni magazin', 'desktop-scene':'Desktop scena', 'sheet-single':'List — jedna stranica', 'sheet-perspective':'List — perspektiva', 'sheet-scattered':'Rasuti listovi', 'sheet-stack':'Složeni listovi', 'web-pages':'Web stranice — galerija', 'web-foldout':'Web stranice — harmonika', 'document-stack':'Dokument — više strana', 'ebook-spread':'Ebook — otvorene strane'
 };
 
 const lifestylePresets={
