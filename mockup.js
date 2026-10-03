@@ -9,6 +9,12 @@ const customHeight=document.getElementById('customHeight');
 const useCustomSize=document.getElementById('useCustomSize');
 const formatSelect=document.getElementById('formatSelect');
 const fitSelect=document.getElementById('fitSelect');
+const perspectiveRange=document.getElementById('perspectiveRange');
+const tiltXRange=document.getElementById('tiltXRange');
+const tiltYRange=document.getElementById('tiltYRange');
+const perspectiveValue=document.getElementById('perspectiveValue');
+const tiltXValue=document.getElementById('tiltXValue');
+const tiltYValue=document.getElementById('tiltYValue');
 const scaleRange=document.getElementById('scaleRange');
 const rotateRange=document.getElementById('rotateRange');
 const positionX=document.getElementById('positionX');
@@ -32,6 +38,9 @@ let objectScale=100;
 let objectRotation=0;
 let offsetX=0;
 let offsetY=0;
+let perspective=0;
+let tiltX=0;
+let tiltY=0;
 
 const sceneNames={
   phone:'Telefon',laptop:'Laptop',planner:'Planner',poster:'Poster',
@@ -61,6 +70,9 @@ function updateTransform(){
   rotateValue.textContent=`${objectRotation}°`;
   positionXValue.textContent=offsetX;
   positionYValue.textContent=offsetY;
+  perspectiveValue.textContent=`${perspective}°`;
+  tiltXValue.textContent=`${tiltX}°`;
+  tiltYValue.textContent=`${tiltY}°`;
 }
 
 function renderImageStrip(){
@@ -262,6 +274,9 @@ scaleRange.addEventListener('input',e=>{objectScale=Number(e.target.value);updat
 rotateRange.addEventListener('input',e=>{objectRotation=Number(e.target.value);updateTransform();});
 positionX.addEventListener('input',e=>{offsetX=Number(e.target.value);updateTransform();});
 positionY.addEventListener('input',e=>{offsetY=Number(e.target.value);updateTransform();});
+perspectiveRange.addEventListener('input',e=>{perspective=Number(e.target.value);updateTransform();});
+tiltXRange.addEventListener('input',e=>{tiltX=Number(e.target.value);updateTransform();});
+tiltYRange.addEventListener('input',e=>{tiltY=Number(e.target.value);updateTransform();});
 bgColor.addEventListener('input',e=>{mockupStage.style.background=e.target.value;});
 resetBtn.addEventListener('click',resetAll);
 downloadBtn.addEventListener('click',downloadMockup);
