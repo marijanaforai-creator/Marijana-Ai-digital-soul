@@ -31,6 +31,9 @@ const positionYValue=document.getElementById('positionYValue');
 const statusText=document.getElementById('statusText');
 const resetBtn=document.getElementById('resetBtn');
 const downloadBtn=document.getElementById('downloadBtn');
+const saveTemplateBtn=document.getElementById('saveTemplateBtn');
+const myTemplatesBtn=document.getElementById('myTemplatesBtn');
+const savedTemplates=document.getElementById('savedTemplates');
 
 let images=[];
 let activeImageIndex=0;
@@ -41,6 +44,7 @@ let offsetY=0;
 let perspective=0;
 let tiltX=0;
 let tiltY=0;
+const TEMPLATE_KEY='digitalSoulMockupTemplates';
 
 const sceneNames={
   phone:'Telefon',laptop:'Laptop',planner:'Planner',poster:'Poster',
@@ -95,6 +99,7 @@ function selectImage(index){
   previewImage.src=images[index].data;
   previewImage.style.display='block';
   renderImageStrip();
+renderSavedTemplates();
   statusText.textContent=`Aktivna je slika ${index+1} od ${images.length}.`;
 }
 
@@ -113,6 +118,60 @@ function applyTemplate(value){
   sceneSelect.value=preset.scene;
   setScene(preset.scene);
   statusText.textContent=`Primenen je šablon: ${templateSelect.options[templateSelect.selectedIndex].text}.`;
+}
+
+function getTemplateState(name){
+  return {
+    name,
+    scene:sceneSelect.value, template:templateSelect.value, format:formatSelect.value,
+    fit:fitSelect.value, bg:bgColor.value, scale:objectScale, rotation:objectRotation,
+    x:offsetX, y:offsetY, perspective, tiltX, tiltY,
+    width:Number(customWidth.value)||1200, height:Number(customHeight.value)||1200,
+    custom:useCustomSize.checked
+  };
+}
+
+function applyTemplateState(t){
+  sceneSelect.value=t.scene||'phone';
+  templateSelect.value=t.template||'classic';
+  formatSelect.value=t.format||'square';
+  fitSelect.value=t.fit||'cover';
+  bgColor.value=t.bg||'#E8DED0';
+  scaleRange.value=t.scale||100;
+  rotateRange.value=t.rotation||0;
+  positionX.value=t.x||0; positionY.value=t.y||0;
+  perspectiveRange.value=t.perspective||0;
+  tiltXRange.value=t.tiltX||0; tiltYRange.value=t.tiltY||0;
+  customWidth.value=t.width||1200; customHeight.value=t.height||1200;
+  useCustomSize.checked=!!t.custom;
+  objectScale=Number(scaleRange.value); objectRotation=Number(rotateRange.value);
+  offsetX=Number(positionX.value); offsetY=Number(positionY.value);
+  perspective=Number(perspectiveRange.value); tiltX=Number(tiltXRange.value); tiltY=Number(tiltYRange.value);
+  bgColor.dispatchEvent(new Event('input')); setFit(); setScene(sceneSelect.value); updateTransform();
+}
+
+function renderSavedTemplates(){
+  const list=JSON.parse(localStorage.getItem(TEMPLATE_KEY)||'[]');
+  savedTemplates.hidden=list.length===0;
+  savedTemplates.innerHTML=list.length?'<strong>Moji sačuvani šabloni</strong>':'';
+  list.forEach((t,i)=>{
+    const row=document.createElement('div');
+    row.className='saved-template';
+    row.innerHTML=`<span>${t.name}</span><span><button type="button" data-load="${i}">Učitaj</button> <button type="button" data-delete="${i}">Obriši</button></span>`;
+    row.querySelector('[data-load]').onclick=()=>{applyTemplateState(t);statusText.textContent=`Učitano: ${t.name}.`;};
+    row.querySelector('[data-delete]').onclick=()=>{list.splice(i,1);localStorage.setItem(TEMPLATE_KEY,JSON.stringify(list));renderSavedTemplates();};
+    savedTemplates.appendChild(row);
+  });
+}
+
+function saveTemplate(){
+  const name=window.prompt('Naziv šablona:',`Moj ${sceneNames[sceneSelect.value]||'mockup'}`);
+  if(!name)return;
+  const list=JSON.parse(localStorage.getItem(TEMPLATE_KEY)||'[]');
+  list.unshift(getTemplateState(name.trim()));
+  localStorage.setItem(TEMPLATE_KEY,JSON.stringify(list.slice(0,50)));
+  renderSavedTemplates();
+  statusText.textContent=`Šablon „${name.trim()}“ je sačuvan na ovom uređaju.`;
 }
 
 function setFit(){
@@ -279,6 +338,8 @@ tiltXRange.addEventListener('input',e=>{tiltX=Number(e.target.value);updateTrans
 tiltYRange.addEventListener('input',e=>{tiltY=Number(e.target.value);updateTransform();});
 bgColor.addEventListener('input',e=>{mockupStage.style.background=e.target.value;});
 resetBtn.addEventListener('click',resetAll);
+saveTemplateBtn.addEventListener('click',saveTemplate);
+myTemplatesBtn.addEventListener('click',()=>{savedTemplates.hidden=!savedTemplates.hidden;renderSavedTemplates();});
 downloadBtn.addEventListener('click',downloadMockup);
 
 mockupStage.style.background=bgColor.value;
