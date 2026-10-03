@@ -188,10 +188,11 @@ async function exportCanvas(){
 document.getElementById('downloadCanvas').onclick=exportCanvas;
 document.getElementById('sendToMockup').onclick=async()=>{
   const dataUrl=await renderCanvasToDataURL();
+  const scene=document.getElementById('quickMockupScene')?.value||'laptop';
   try{
     sessionStorage.setItem('marijanaMockupSource',dataUrl);
-    sessionStorage.setItem('marijanaMockupSourceName','Canvas dizajn');
-    window.location.href='mockup.html?from=canvas';
+    sessionStorage.setItem('marijanaMockupSourceName',current().name||'Canvas dizajn');
+    window.location.href=`mockup.html?from=canvas&scene=${encodeURIComponent(scene)}&layout=blank-white`;
   }catch(err){
     alert('Dizajn je prevelik za direktan prenos. Prvo izvezi PNG pa ga ubaci u 3D Mockup.');
   }
