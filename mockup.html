@@ -12,7 +12,8 @@
 <header class="site-header">
   <div class="container nav">
     <a class="logo" href="index.html">MARIJANA<span>AI DIGITAL SOUL</span></a>
-    <nav class="nav-links">
+    <button id="mobileMenuToggle" class="mobile-menu-toggle" type="button" aria-label="Otvori meni" aria-expanded="false">☰</button>
+    <nav class="nav-links" id="mobileNav">
       <a href="index.html">Početna</a>
       <a href="canvas.html">Canvas Studio</a><a href="mockup.html" aria-current="page">Advanced 3D Mockup</a>
       <a href="index.html#ai">AI alati</a>
@@ -224,5 +225,19 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="mockup.js"></script>
+<script>
+const mobileMenuToggle=document.getElementById('mobileMenuToggle');
+const mobileNav=document.getElementById('mobileNav');
+mobileMenuToggle?.addEventListener('click',()=>{
+  const open=mobileNav.classList.toggle('mobile-open');
+  mobileMenuToggle.setAttribute('aria-expanded',String(open));
+  mobileMenuToggle.textContent=open?'✕':'☰';
+});
+mobileNav?.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{
+  mobileNav.classList.remove('mobile-open');
+  mobileMenuToggle.textContent='☰';
+  mobileMenuToggle.setAttribute('aria-expanded','false');
+}));
+</script>
 </body>
 </html>
