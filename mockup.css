@@ -62,3 +62,13 @@
 .size-grid input{width:100%;box-sizing:border-box;padding:10px;border:1px solid rgba(37,37,34,.18);font:inherit}
 .check-row{display:flex!important;align-items:center;justify-content:flex-start!important;gap:8px;text-transform:none!important;letter-spacing:0!important;margin-top:12px;font-weight:600!important}
 .check-row input{accent-color:var(--deep-sage)}
+
+
+.canvas-area{perspective:1400px}
+.mockup-object{transform-style:preserve-3d}
+.scene-business .decor-one,.scene-business .decor-two{opacity:.22}
+.scene-fitness .decor-one,.scene-fitness .decor-two{opacity:.3}
+.scene-hotel .decor-one,.scene-hotel .decor-two{opacity:.25}
+.scene-restaurant .decor-one,.scene-restaurant .decor-two{opacity:.25}
+.scene-yoga .decor-one,.scene-yoga .decor-two{opacity:.2}
+.scene-beauty .decor-one,.scene-beauty .decor-two{opacity:.28}
