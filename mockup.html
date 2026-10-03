@@ -199,6 +199,18 @@
         <div class="panel-block">
           <label for="bgColor">Boja pozadine</label>
           <input id="bgColor" class="color-input" type="color" value="#E8DED0">
+          <div class="prompt-color-control">
+            <label for="colorPrompt">Boja iz prompta</label>
+            <div class="prompt-color-row">
+              <input id="colorPrompt" type="text" placeholder="npr. „pozadina champagne gold“ ili „sage green“">
+              <button id="applyColorPrompt" class="btn primary" type="button">Primeni</button>
+            </div>
+            <small id="colorPromptStatus">Prepoznaje nazive boja, HEX kodove i RGB vrednosti.</small>
+          </div>
+          <div class="palette-control">
+            <label>Paleta boja</label>
+            <div id="colorPalette" class="color-palette" aria-label="Paleta boja"></div>
+          </div>
         </div>
 
         <div class="panel-actions">
