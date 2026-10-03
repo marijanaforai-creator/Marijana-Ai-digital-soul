@@ -97,6 +97,61 @@ const formatSizes={
   pin:[1000,1500]
 };
 
+const batchSceneList=[
+ ['phone','Telefon'],['laptop','Laptop'],['planner','Planner'],['poster','Poster'],
+ ['business','Business scena'],['fitness','Fitness scena'],['hotel','Hotel scena'],
+ ['restaurant','Restoran scena'],['yoga','Yoga scena'],['beauty','Beauty scena'],
+ ['office','Kancelarija'],['desk','Radni sto'],['product','Premium proizvod'],
+ ['packaging','Ambalaža'],['social','Social media ekran']
+];
+const batchFormatList=[
+ ['square','Kvadrat 1200×1200'],['portrait','Portret 1080×1350'],
+ ['landscape','Pejzaž 1600×900'],['story','Story / Reel 1080×1920'],
+ ['pinterest','Pinterest 1000×1500']
+];
+function initBatchEngine(){
+  const scenes=document.getElementById('batchScenes'), formats=document.getElementById('batchFormats');
+  if(!scenes||!formats)return;
+  scenes.innerHTML=batchSceneList.map(([id,label])=>`<label class="batch-option"><input type="checkbox" value="${id}" data-batch-scene> ${label}</label>`).join('');
+  formats.innerHTML=batchFormatList.map(([id,label])=>`<label class="batch-option"><input type="checkbox" value="${id}" data-batch-format> ${label}</label>`).join('');
+  document.getElementById('selectAllBatch')?.addEventListener('click',()=>{
+    document.querySelectorAll('[data-batch-scene],[data-batch-format]').forEach(x=>x.checked=true); updateBatchStatus();
+  });
+  document.getElementById('clearBatch')?.addEventListener('click',()=>{
+    document.querySelectorAll('[data-batch-scene],[data-batch-format]').forEach(x=>x.checked=false); updateBatchStatus();
+  });
+  document.querySelectorAll('[data-batch-scene],[data-batch-format]').forEach(x=>x.addEventListener('change',updateBatchStatus));
+  document.getElementById('generateBatch')?.addEventListener('click',generateBatch);
+  updateBatchStatus();
+}
+function getBatchSelections(){
+  return {
+    scenes:[...document.querySelectorAll('[data-batch-scene]:checked')].map(x=>x.value),
+    formats:[...document.querySelectorAll('[data-batch-format]:checked')].map(x=>x.value)
+  };
+}
+function updateBatchStatus(){
+  const s=getBatchSelections(), el=document.getElementById('batchStatus');
+  if(!el)return;
+  const total=s.scenes.length*s.formats.length;
+  el.textContent=total? `Biće pripremljeno ${total} mockup kombinacija.`:'Izaberi najmanje jednu scenu i jedan format.';
+  el.classList.toggle('ready',!!total);
+}
+function generateBatch(){
+  const s=getBatchSelections(), results=document.getElementById('batchResults'), status=document.getElementById('batchStatus');
+  if(!s.scenes.length||!s.formats.length){updateBatchStatus();return;}
+  results.innerHTML='';
+  const sceneLabel=id=>(batchSceneList.find(x=>x[0]===id)||[id,id])[1];
+  const formatLabel=id=>(batchFormatList.find(x=>x[0]===id)||[id,id])[1];
+  s.scenes.forEach(scene=>s.formats.forEach(format=>{
+    const wide=['landscape','pinterest'].includes(format);
+    const card=document.createElement('div'); card.className='batch-result';
+    card.innerHTML=`<div class="batch-result-preview" style="background:${lifestylePresets[scene]?.bg||'#eee'}"><div class="mini-batch-object ${wide?'wide':''}"></div></div>
+      <strong>${sceneLabel(scene)}</strong><small>${formatLabel(format)}</small>`;
+    results.appendChild(card);
+  }));
+  status.textContent=`Batch je pripremljen: ${s.scenes.length*s.formats.length} kombinacija.`;
+}
 function getFavorites(){
   return JSON.parse(localStorage.getItem(FAVORITES_KEY)||'[]');
 }
@@ -127,6 +182,7 @@ function renderTemplateLibrary(){
       if(!active)next.push(t.id);
       localStorage.setItem(FAVORITES_KEY,JSON.stringify(next));
       renderTemplateLibrary();
+initBatchEngine();
     };
     card.querySelector('.template-use').onclick=()=>{
       sceneSelect.value=t.scene;
