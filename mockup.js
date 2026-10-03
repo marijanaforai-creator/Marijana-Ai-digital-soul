@@ -311,8 +311,7 @@ function selectImage(index){
   previewImage.src=images[index].data;
   previewImage.style.display='block';
   renderImageStrip();
-loadTransferredCanvasDesign();
-renderSavedTemplates();
+  renderSavedTemplates();
 renderTemplateLibrary();
   statusText.textContent=`Aktivna je slika ${index+1} od ${images.length}.`;
 }
@@ -515,7 +514,7 @@ function downloadMockup(){
   img.onload=()=>{
     ctx.save();
     ctx.globalAlpha=.15;
-    ctx.fillStyle='#173C32';
+    ctx.fillStyle='#3B235F';
     ctx.beginPath();ctx.arc(width*.1,height*.1,Math.min(width,height)*.16,0,Math.PI*2);ctx.fill();
     ctx.fillStyle='#C8A96B';
     ctx.beginPath();ctx.arc(width*.92,height*.9,Math.min(width,height)*.19,0,Math.PI*2);ctx.fill();
@@ -542,7 +541,7 @@ function downloadMockup(){
     ctx.restore();
     ctx.restore();
 
-    ctx.fillStyle='rgba(23,60,50,.65)';
+    ctx.fillStyle='rgba(59,35,95,.65)';
     ctx.font='700 14px Montserrat, sans-serif';
     ctx.textAlign='center';
     ctx.fillText('DIGITAL SOUL STUDIO',width/2,height*.93);
@@ -590,3 +589,7 @@ useCustomSize.addEventListener('change',()=>{statusText.textContent=useCustomSiz
 setFit();
 updateTransform();
 renderImageStrip();
+
+
+// Ako je dizajn poslat direktno iz Canvas Studio, automatski ga preuzmi u Mockup.
+loadTransferredCanvasDesign();
