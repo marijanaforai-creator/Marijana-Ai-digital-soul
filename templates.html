@@ -44,7 +44,20 @@
 </div>
 <div id="audienceGuidance" class="audience-guidance" hidden></div>
 <button id="applyAudience" class="btn audience-apply" type="button">Primeni podešavanja</button>
-</div></section><section class="content-generator"><div class="container"><div class="kicker">CONTENT GENERATOR</div><h2>Generiši sadržaj iz podataka proizvoda</h2><p>Izaberi cilj i napravi osnovne tekstove za više kanala.</p><div class="style-controls"><label>Stil sadržaja<select id="contentStyle"><option value="professional">Profesionalno</option><option value="sales">Prodajno</option><option value="natural">Prirodno</option><option value="emotional">Emotivno</option><option value="short">Kratko</option><option value="seo">SEO</option></select></label><label class="style-check"><input id="keepStyle" type="checkbox"> Ne menjaj moj stil</label></div><button id="generateContent" class="btn content-generate-btn" type="button">Generiši sadržaj</button><div id="generatedContent" class="generated-content" hidden></div></div></section><section class="campaign-builder-2"><div class="container"><div class="kicker">CAMPAIGN BUILDER 2.0</div><h2>Kompletna kampanja iz jednog proizvoda</h2><p>Poveži cilj, publiku, ponudu, kanale i poziv na akciju u jednu kampanjsku strukturu.</p>
+</div></section><section class="content-generator"><div class="container"><div class="kicker">CONTENT GENERATOR</div><h2>Generiši sadržaj iz podataka proizvoda</h2><p>Izaberi cilj i napravi osnovne tekstove za više kanala.</p><div class="style-controls"><label>Stil sadržaja<select id="contentStyle"><option value="professional">Profesionalno</option><option value="sales">Prodajno</option><option value="natural">Prirodno</option><option value="emotional">Emotivno</option><option value="short">Kratko</option><option value="seo">SEO</option></select></label><label class="style-check"><input id="keepStyle" type="checkbox"> Ne menjaj moj stil</label></div><button id="generateContent" class="btn content-generate-btn" type="button">Generiši sadržaj</button><div id="generatedContent" class="generated-content" hidden></div></div></section><section class="offer-engine"><div class="container"><div class="kicker">SISTEM PONUDA I PROMOCIJA</div><h2>Kreiraj ponudu</h2><p>Pripremi cenu, promociju, rok i poziv na akciju, pa je pretvori u kampanjski paket.</p>
+<div class="offer-grid">
+<label>Vrsta ponude<select id="offerType"><option>Standardna ponuda</option><option>Popust</option><option>Bundle / paket</option><option>Poklon uz kupovinu</option><option>Ograničena ponuda</option><option>Sezonska ponuda</option><option>Nova ponuda</option></select></label>
+<label>Cena<input id="offerPrice" type="text" placeholder="npr. 1.500 RSD"></label>
+<label>Stara cena<input id="offerOldPrice" type="text" placeholder="npr. 2.000 RSD"></label>
+<label>Popust<input id="offerDiscount" type="text" placeholder="npr. 25%"></label>
+<label>Rok ponude<input id="offerDeadline" type="text" placeholder="npr. do 15. oktobra"></label>
+<label>Promo kod<input id="offerCode" type="text" placeholder="npr. JESEN25"></label>
+<label class="full">Glavna poruka ponude<textarea id="offerMessage" rows="3" placeholder="Šta je posebno u ovoj ponudi?"></textarea></label>
+</div>
+<div class="offer-preview" id="offerPreview" hidden></div>
+<button id="buildOffer" class="btn offer-build" type="button">Kreiraj ponudu</button>
+<div id="offerResult" class="offer-result" hidden></div>
+</div></section><section class="campaign-builder-2"><div class="container"><div class="kicker">CAMPAIGN BUILDER 2.0</div><h2>Kompletna kampanja iz jednog proizvoda</h2><p>Poveži cilj, publiku, ponudu, kanale i poziv na akciju u jednu kampanjsku strukturu.</p>
 <div class="campaign2-grid">
 <label>Cilj<select id="campaign2Goal"><option>Prodaja</option><option>Lead generation</option><option>Brend awareness</option><option>Novi proizvod</option><option>Akcija</option><option>Lokalna promocija</option><option>Edukacija</option></select></label>
 <label>Publika<select id="campaign2Audience"><option>Šira publika</option><option>Lokalni kupci</option><option>B2C kupci</option><option>B2B klijenti</option><option>Postojeći kupci</option></select></label>
