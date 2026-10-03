@@ -340,6 +340,64 @@
 }
 
 
+/* Pouzdana geometrija za uređaje — izbor Laptop mora odmah da promeni frame. */
+.mockup-object[data-scene="laptop"],
+.mockup-object.laptop-object{
+  width:min(700px,92%) !important;
+  min-height:410px;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:flex-start !important;
+}
+.mockup-object[data-scene="laptop"] .device-frame,
+.mockup-object.laptop-object .device-frame{
+  display:block !important;
+  width:85% !important;
+  box-sizing:border-box !important;
+  padding:12px 12px 20px !important;
+  background:#181918 !important;
+  border-radius:15px !important;
+  min-height:0 !important;
+}
+.mockup-object[data-scene="laptop"] .device-screen,
+.mockup-object.laptop-object .device-screen{
+  display:block !important;
+  width:100% !important;
+  height:365px !important;
+  min-height:365px !important;
+  background:#D7D7D7 !important;
+  border-radius:6px !important;
+  overflow:hidden !important;
+}
+.mockup-object[data-scene="laptop"]::after,
+.mockup-object.laptop-object::after{
+  content:'' !important;
+  display:block !important;
+  width:100% !important;
+  height:24px !important;
+  background:linear-gradient(180deg,#d4d4cf 0%,#aeadab 100%) !important;
+  border-radius:0 0 18px 18px !important;
+  margin:-1px 0 0 !important;
+  box-shadow:0 15px 25px rgba(0,0,0,.16) !important;
+}
+@media(max-width:900px){
+  .mockup-object[data-scene="laptop"],
+  .mockup-object.laptop-object{width:88% !important;min-height:270px}
+  .mockup-object[data-scene="laptop"] .device-screen,
+  .mockup-object.laptop-object .device-screen{height:clamp(220px,32vw,365px) !important;min-height:220px}
+}
+@media(max-width:600px){
+  .mockup-object[data-scene="laptop"],
+  .mockup-object.laptop-object{width:94% !important;min-height:250px}
+  .mockup-object[data-scene="laptop"] .device-frame,
+  .mockup-object.laptop-object .device-frame{width:85% !important}
+  .mockup-object[data-scene="laptop"] .device-screen,
+  .mockup-object.laptop-object .device-screen{height:220px !important;min-height:220px}
+  .mockup-object[data-scene="laptop"]::after,
+  .mockup-object.laptop-object::after{height:20px !important}
+}
+
 /* Smart Surface — slika se vizuelno usisava u frame i ostaje isečena unutar površine */
 .device-screen{
   clip-path:inset(0 round 6px);
