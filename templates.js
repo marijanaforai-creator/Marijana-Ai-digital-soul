@@ -13,7 +13,7 @@ const templates=[
 {id:'t12',name:'Packaging Studio',cat:'product',label:'Ambalaža',bg:'#d8c9b0',wide:false}
 ];
 let category='all',favorites=JSON.parse(localStorage.getItem('digitalSoulTemplateFavorites')||'[]'),saved=JSON.parse(localStorage.getItem('digitalSoulMockupTemplates')||'[]');
-const grid=document.getElementById('libraryGrid'),search=document.getElementById('librarySearch'),count=document.getElementById('libraryCount'),empty=document.getElementById('libraryEmpty'),sort=document.getElementById('librarySort');
+const grid=document.getElementById('libraryGrid'),details=document.getElementById('templateDetails'),search=document.getElementById('librarySearch'),count=document.getElementById('libraryCount'),empty=document.getElementById('libraryEmpty'),sort=document.getElementById('librarySort');
 function render(){
 let q=(search.value||'').toLowerCase().trim(), list;
 if(category==='mine'){
@@ -28,7 +28,17 @@ list.forEach(t=>{
  el.innerHTML='<div class="template-preview '+(t.wide?'wide':'')+'" style="background:'+t.bg+'"></div><div class="template-info"><strong>'+t.name+'</strong><small>'+t.label+'</small><div class="template-actions"><button class="btn use">Koristi šablon</button><button class="btn fav">'+(favorites.includes(t.id)?'♥':'♡')+'</button></div></div>';
  el.querySelector('.fav').onclick=()=>{favorites=favorites.includes(t.id)?favorites.filter(x=>x!==t.id):[...favorites,t.id];localStorage.setItem('digitalSoulTemplateFavorites',JSON.stringify(favorites));render()};
  el.querySelector('.use').onclick=()=>location.href='mockup.html'+(t.saved?'':'?template='+encodeURIComponent(t.id));
+el.querySelector('.template-info strong').onclick=()=>showDetails(t);
  grid.appendChild(el)
 })}
+function showDetails(t){
+ if(!details)return;
+ details.hidden=false;
+ details.innerHTML='<div class="template-details-preview '+(t.wide?'wide':'')+'" style="background:'+t.bg+'"></div><div class="template-details-info"><div class="kicker">TEMPLATE</div><h2>'+t.name+'</h2><p>Gotov šablon za '+t.label+'. Prilagodi boje, sadržaj, poziciju i format u Mockup Studio.</p><div class="template-tags"><span class="template-tag">'+t.label+'</span><span class="template-tag">'+t.cat+'</span><span class="template-tag">Prilagodljiv</span></div><div class="template-details-actions"><button id="detailUse" class="btn">Koristi ovaj šablon</button><button id="detailFav" class="btn">'+(favorites.includes(t.id)?'♥ U favoritima':'♡ Dodaj u favorite')+'</button><button id="detailClose" class="btn template-details-close">Zatvori</button></div></div>';
+ details.querySelector('#detailUse').onclick=()=>location.href='mockup.html'+(t.saved?'':'?template='+encodeURIComponent(t.id));
+ details.querySelector('#detailFav').onclick=()=>{favorites=favorites.includes(t.id)?favorites.filter(x=>x!==t.id):[...favorites,t.id];localStorage.setItem('digitalSoulTemplateFavorites',JSON.stringify(favorites));showDetails(t);render()};
+ details.querySelector('#detailClose').onclick=()=>{details.hidden=true};
+ details.scrollIntoView({behavior:'smooth',block:'start'});
+}
 document.querySelectorAll('.category').forEach(b=>b.onclick=()=>{category=b.dataset.category;document.querySelectorAll('.category').forEach(x=>x.classList.remove('active'));b.classList.add('active');render()});
 search.oninput=render;sort.onchange=render;document.getElementById('libraryFavorites').onclick=()=>{category=category==='mine'?'all':'mine';document.querySelectorAll('.category').forEach(x=>x.classList.toggle('active',x.dataset.category===category));render()};render();
