@@ -77,3 +77,21 @@
 .saved-templates{margin-top:15px;padding-top:15px;border-top:1px solid rgba(37,37,34,.1)}
 .saved-template{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid rgba(37,37,34,.07);font-size:11px}
 .saved-template button{border:0;background:transparent;cursor:pointer;font-weight:700;color:var(--deep-sage)}
+
+
+.office-object .device-frame{background:#d8d0c4;padding:16px;border-radius:18px;box-shadow:0 40px 80px rgba(0,0,0,.22)}
+.office-object .device-screen{width:540px;height:360px;border-radius:5px}
+.desk-object .device-frame{background:#f4efe6;padding:12px;border-radius:8px;box-shadow:0 35px 65px rgba(0,0,0,.24)}
+.desk-object .device-screen{width:560px;height:370px;border-radius:4px}
+.product-object .device-frame{background:#fff;padding:14px;border-radius:22px;box-shadow:0 40px 80px rgba(0,0,0,.24)}
+.product-object .device-screen{width:400px;height:400px;border-radius:18px}
+.packaging-object .device-frame{background:#d8c8ad;padding:8px;border-radius:5px;box-shadow:0 40px 70px rgba(0,0,0,.22)}
+.packaging-object .device-screen{width:360px;height:470px;border-radius:3px}
+.social-object .device-frame{background:#222;padding:12px;border-radius:18px;box-shadow:0 35px 70px rgba(0,0,0,.28)}
+.social-object .device-screen{width:300px;height:530px;border-radius:12px}
+@media(max-width:600px){
+.office-object .device-screen,.desk-object .device-screen{width:330px;height:225px}
+.product-object .device-screen{width:250px;height:250px}
+.packaging-object .device-screen{width:235px;height:310px}
+.social-object .device-screen{width:205px;height:365px}
+}
