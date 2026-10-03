@@ -80,3 +80,8 @@
   .panel-help{display:none}
   .page-actions button,.layer-actions button,.layer-visibility{padding:5px}
 }
+
+.mockup-generate-controls{display:flex;align-items:center;gap:8px}
+.mockup-generate-controls select{height:36px;padding:0 10px;border:1px solid rgba(37,37,34,.18);background:#fff;font:inherit}
+.mockup-generate-controls .tool-btn{white-space:nowrap}
+@media(max-width:760px){.mockup-generate-controls{flex-direction:column;align-items:stretch}.mockup-generate-controls select,.mockup-generate-controls .tool-btn{width:100%}}
