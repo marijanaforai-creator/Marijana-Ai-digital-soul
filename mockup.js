@@ -1,6 +1,11 @@
 const imageUpload=document.getElementById('imageUpload');
 const mockupUploadTrigger=document.getElementById('mockupUploadTrigger');
 const previewImage=document.getElementById('previewImage');
+const previewVideo=document.getElementById('previewVideo');
+const mockupPrompt=document.getElementById('mockupPrompt');
+const applyMockupPrompt=document.getElementById('applyMockupPrompt');
+const mockupPromptStatus=document.getElementById('mockupPromptStatus');
+const autoRotate3D=document.getElementById('autoRotate3D');
 const imageStrip=document.getElementById('imageStrip');
 const uploadCount=document.getElementById('uploadCount');
 const sceneSelect=document.getElementById('sceneSelect');
@@ -241,7 +246,7 @@ libraryTemplates.push(...generatedLibraryTemplates);
 
 
 const sceneNames={
-  phone:'Telefon',laptop:'Laptop',planner:'Planner',poster:'Poster',
+  phone:'Telefon',tablet:'Tablet',laptop:'Laptop',frame:'Obični Frame',planner:'Planner',poster:'Poster',
   business:'Business scena',fitness:'Fitness scena',hotel:'Hotel scena',
   restaurant:'Restoran scena',yoga:'Yoga scena',beauty:'Beauty scena',office:'Kancelarija',desk:'Radni sto',product:'Premium proizvod',packaging:'Ambalaža',social:'Social media ekran', 'laptop-angle':'Laptop — ugao', 'multi-device':'Multi-device scena', 'isometric-cards':'Izometrijske kartice', 'floating-cards':'Lebdeće kartice', 'paper-stack':'Složeni papiri', 'magazine-spread':'Magazine spread', 'open-magazine':'Otvoreni magazin', 'desktop-scene':'Desktop scena', 'sheet-single':'List — jedna stranica', 'sheet-perspective':'List — perspektiva', 'sheet-scattered':'Rasuti listovi', 'sheet-stack':'Složeni listovi', 'web-pages':'Web stranice — galerija', 'web-foldout':'Web stranice — harmonika', 'document-stack':'Dokument — više strana', 'ebook-spread':'Ebook — otvorene strane'
 };
@@ -464,7 +469,70 @@ function renderTemplateLibrary(resetVisible=true){
   }
 }
 
+const PROMPT_SCENE_ALIASES=[
+  ['multi-device','multi device','više uređaja','multi-device'],
+  ['laptop-angle','laptop pod uglom','laptop ugao','laptop angle'],
+  ['tablet','tablet','ipad'],
+  ['laptop','laptop','notebook','macbook'],
+  ['phone','telefon','phone','mobilni'],
+  ['frame','obični frame','obicni frame','ram','okvir','frame'],
+  ['planner','planner','planer'],
+  ['poster','poster'],
+  ['social','social media','instagram','story','reel'],
+  ['sheet-single','list','stranica','jedan list'],
+  ['web-pages','web stranice','web page','sajt']
+];
+function getPromptScene(text){
+  for(const [scene,...aliases] of PROMPT_SCENE_ALIASES){
+    if(aliases.some(a=>text.includes(a))) return scene;
+  }
+  return null;
+}
+function applyMockupPromptInstruction(value){
+  const text=String(value||'').trim().toLowerCase();
+  if(!text){
+    if(mockupPromptStatus)mockupPromptStatus.textContent='Napiši instrukciju, npr. „Tablet, video, 3D rotacija, sage green pozadina“.';
+    return false;
+  }
+  const scene=getPromptScene(text);
+  const wantsVideo=/\\b(video|snimak|animacija|mp4|webm)\\b/i.test(text);
+  const wants3d=/3d|rotacij|vrti|okret|perspektiv/i.test(text);
+  const wantsFlat=/\\b(bez 3d|statičan|statično|obicni frame|obični frame)\\b/i.test(text);
+  const color=normalizeColorPrompt(text);
+
+  if(scene){
+    sceneSelect.value=scene;
+    setScene(scene);
+  }
+  if(color) applyPromptColor(text);
+  if(wants3d && !wantsFlat){
+    autoRotate3D.checked=true;
+    mockupObject.classList.add('is-rotating-3d');
+  }else if(wantsFlat){
+    autoRotate3D.checked=false;
+    mockupObject.classList.remove('is-rotating-3d');
+  }
+  if(wantsVideo){
+    const hasVideo=images.some(x=>x.kind==='video');
+    if(hasVideo){
+      const idx=images.findIndex(x=>x.kind==='video');
+      selectImage(idx);
+    }else if(mockupPromptStatus){
+      mockupPromptStatus.textContent='Instrukcija traži video. Sada ubaci MP4 ili WEBM fajl, pa će biti prikazan u sceni.';
+    }
+  }
+  const parts=[];
+  if(scene)parts.push(sceneNames[scene]);
+  if(wantsVideo)parts.push('video');
+  if(wants3d&&!wantsFlat)parts.push('3D rotacija');
+  if(color)parts.push('pozadina '+color);
+  if(!parts.length)parts.push('instrukcija primenjena na postojeća podešavanja');
+  if(mockupPromptStatus)mockupPromptStatus.textContent='Primeno: '+parts.join(' · ')+'.';
+  return true;
+}
+
 function updateTransform(){
+  mockupObject.classList.toggle('is-rotating-3d',!!autoRotate3D?.checked);
   mockupObject.style.transform=`perspective(1200px) translate(${offsetX/2}%,${offsetY/2}%) rotateX(${tiltX}deg) rotateY(${perspective}deg) rotateZ(${tiltY}deg) scale(${objectScale/100}) rotate(${objectRotation}deg)`;
   scaleValue.textContent=`${objectScale}%`;
   rotateValue.textContent=`${objectRotation}°`;
@@ -482,7 +550,9 @@ function renderImageStrip(){
     button.type='button';
     button.className=`image-thumb${index===activeImageIndex?' active':''}`;
     button.setAttribute('aria-label',`Izaberi sliku ${index+1}`);
-    button.innerHTML=`<img src="${item.data}" alt=""><span class="thumb-index">${index+1}</span>`;
+    button.innerHTML=item.kind==='video'
+      ? `<span class="video-thumb">▶ VIDEO</span><span class="thumb-index">${index+1}</span>`
+      : `<img src="${item.data}" alt=""><span class="thumb-index">${index+1}</span>`;
     button.addEventListener('click',()=>selectImage(index));
     imageStrip.appendChild(button);
   });
@@ -490,25 +560,43 @@ function renderImageStrip(){
 }
 
 function selectImage(index){
-  if(!images[index])return;
+  const item=images[index];
+  if(!item)return;
   activeImageIndex=index;
-  previewImage.src=images[index].data;
-  mockupObject.style.setProperty('--scene-image', `url("${images[index].data}")`);
-  previewImage.style.display='block';
+  previewImage.classList.remove('mockup-suck-in');
+  previewImage.style.display='none';
+  if(previewVideo){previewVideo.pause();previewVideo.removeAttribute('src');previewVideo.style.display='none';}
+  if(item.kind==='video'){
+    if(previewVideo){
+      previewVideo.src=item.data;
+      previewVideo.style.display='block';
+      previewVideo.play().catch(()=>{});
+    }
+    mockupObject.style.setProperty('--scene-image','none');
+  }else{
+    previewImage.src=item.data;
+    previewImage.style.display='block';
+    mockupObject.style.setProperty('--scene-image', `url("${item.data}")`);
+  }
   imageZoom=100; imageOffsetX=0; imageOffsetY=0;
   updateImageTransform();
-  previewImage.classList.remove('mockup-suck-in');
-  void previewImage.offsetWidth;
-  previewImage.classList.add('mockup-suck-in');
+  // Obični Frame nema „usisavanje“ — sadržaj samo sedi unutar okvira.
+  if(sceneSelect.value!=='frame' && item.kind!=='video'){
+    void previewImage.offsetWidth;
+    previewImage.classList.add('mockup-suck-in');
+  }
   renderImageStrip();
   renderSavedTemplates();
-renderTemplateLibrary();
-  statusText.textContent=`Aktivna je slika ${index+1} od ${images.length}.`;
+  renderTemplateLibrary();
+  statusText.textContent=`Aktivan je ${item.kind==='video'?'video':'dizajn'} ${index+1} od ${images.length}.`;
 }
 
 function updateImageTransform(){
-  previewImage.style.transform=`translate(${imageOffsetX}px,${imageOffsetY}px) scale(${imageZoom/100})`;
+  const transform=`translate(${imageOffsetX}px,${imageOffsetY}px) scale(${imageZoom/100})`;
+  previewImage.style.transform=transform;
+  if(previewVideo)previewVideo.style.transform=transform;
   previewImage.style.cursor=images.length?'grab':'default';
+  if(previewVideo)previewVideo.style.cursor=images.length?'grab':'default';
 }
 function clampImagePosition(){
   const frame=document.querySelector('.device-screen');
@@ -662,22 +750,27 @@ function loadTransferredCanvasDesign(){
   statusText.textContent='Canvas dizajn je automatski prenet u 3D Mockup. Izaberi scenu i prilagodi perspektivu.';
 }
 function loadImages(files){
-  const selected=Array.from(files).filter(file=>file.type.startsWith('image/')).slice(0,4);
+  const selected=Array.from(files).filter(file=>file.type.startsWith('image/')||file.type.startsWith('video/')).slice(0,4);
   if(!selected.length){
-    statusText.textContent='Izaberi slike u formatu PNG, JPG ili WEBP.';
+    statusText.textContent='Izaberi PNG, JPG, WEBP, MP4 ili WEBM fajl.';
     return;
   }
-  const readers=selected.map(file=>new Promise(resolve=>{
-    const reader=new FileReader();
-    reader.onload=()=>resolve({data:reader.result,name:file.name});
-    reader.onerror=()=>resolve(null);
-    reader.readAsDataURL(file);
-  }));
+  const readers=selected.map(file=>{
+    if(file.type.startsWith('video/')){
+      return Promise.resolve({data:URL.createObjectURL(file),name:file.name,kind:'video',mime:file.type});
+    }
+    return new Promise(resolve=>{
+      const reader=new FileReader();
+      reader.onload=()=>resolve({data:reader.result,name:file.name,kind:'image',mime:file.type});
+      reader.onerror=()=>resolve(null);
+      reader.readAsDataURL(file);
+    });
+  });
   Promise.all(readers).then(result=>{
     images=result.filter(Boolean);
     activeImageIndex=0;
     selectImage(0);
-    statusText.textContent=`Učitano je ${images.length} ${images.length===1?'slika':'slike'}. Možeš izabrati aktivnu sliku ispod upload polja.`;
+    statusText.textContent=`Učitano je ${images.length} fajlova. Možeš izabrati aktivni sadržaj ispod upload polja.`;
   });
 }
 
@@ -688,8 +781,10 @@ function resetAll(){
   imageZoom=100; imageOffsetX=0; imageOffsetY=0;
   previewImage.removeAttribute('src');
   previewImage.style.display='none';
+  if(previewVideo){previewVideo.pause();previewVideo.removeAttribute('src');previewVideo.load();previewVideo.style.display='none';}
   renderImageStrip();
   sceneSelect.value='phone';
+  autoRotate3D.checked=false;
   templateSelect.value='blank-white';
   formatSelect.value='square';
   fitSelect.value='cover';
@@ -818,6 +913,9 @@ tiltXRange.addEventListener('input',e=>{tiltX=Number(e.target.value);updateTrans
 tiltYRange.addEventListener('input',e=>{tiltY=Number(e.target.value);updateTransform();});
 bgColor.addEventListener('input',e=>{mockupStage.style.background=e.target.value;});
 applyColorPrompt?.addEventListener('click',()=>applyPromptColor(colorPrompt?.value));
+applyMockupPrompt?.addEventListener('click',()=>applyMockupPromptInstruction(mockupPrompt?.value));
+mockupPrompt?.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();applyMockupPromptInstruction(mockupPrompt.value);}});
+autoRotate3D?.addEventListener('change',updateTransform);
 colorPrompt?.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();applyPromptColor(colorPrompt.value);}});
 renderColorPalette();
 resetBtn.addEventListener('click',resetAll);
@@ -876,7 +974,7 @@ document.querySelectorAll('.frame-resize-handle').forEach(handle=>handle.addEven
 mockupSurface?.addEventListener('drop',e=>{
   e.preventDefault();
   mockupSurface.classList.remove('drop-ready');
-  const files=[...e.dataTransfer.files].filter(f=>f.type.startsWith('image/')).slice(0,1);
+  const files=[...e.dataTransfer.files].filter(f=>f.type.startsWith('image/')||f.type.startsWith('video/')).slice(0,1);
   if(files.length)loadImages(files);
 });
 
