@@ -22,7 +22,26 @@ const industryPacks=[
  {id:'winter',name:'Zimnica i domaće prerađevine',desc:'Sezonska prodaja, poklon paketi i porudžbine',cat:'product'},
  {id:'farm',name:'Poljoprivredno gazdinstvo',desc:'Proizvodi sa gazdinstva, sezona, dostupnost i porudžbine',cat:'lifestyle'}
 ];
-let category='all',favorites=JSON.parse(localStorage.getItem('digitalSoulTemplateFavorites')||'[]'),saved=JSON.parse(localStorage.getItem('digitalSoulMockupTemplates')||'[]');
+
+const campaignPurposes=['Reklama','Prodaja','Akcija','Novi proizvod','Brend','Edukacija','Sezona','Lokalna promocija'];
+const campaignFormats=['Instagram objava','Story / Reel','Facebook objava','Pinterest pin','Promo poster','Banner'];
+const ci=document.getElementById('campaignIndustry'),cp=document.getElementById('campaignPurpose'),cf=document.getElementById('campaignFormats'),cr=document.getElementById('campaignResult');
+function initCampaignBuilder(){
+ if(!ci)return;
+ ci.innerHTML=industryPacks.map(p=>'<option value="'+p.id+'">'+p.name+'</option>').join('');
+ cp.innerHTML=campaignPurposes.map(p=>'<option>'+p+'</option>').join('');
+ cf.innerHTML=campaignFormats.map((p,i)=>'<button type="button" class="campaign-format '+(i<3?'active':'')+'">'+p+'</button>').join('');
+ cf.querySelectorAll('.campaign-format').forEach(b=>b.onclick=()=>b.classList.toggle('active'));
+ document.getElementById('buildCampaign').onclick=()=>{
+   const ind=industryPacks.find(p=>p.id===ci.value)||industryPacks[0];
+   const selected=[...cf.querySelectorAll('.campaign-format.active')].map(x=>x.textContent);
+   if(!selected.length){cr.hidden=false;cr.innerHTML='<strong>Izaberi bar jedan format.</strong>';return}
+   cr.hidden=false;
+   cr.innerHTML='<strong>'+ind.name+' · '+cp.value+'</strong><div>Pripremljen paket za '+selected.length+' formata:</div><ul>'+selected.map(x=>'<li>'+x+'</li>').join('')+'</ul><div style="margin-top:12px"><button id="openCampaignMockup" class="btn" type="button">Nastavi u Mockup Studio</button></div>';
+   document.getElementById('openCampaignMockup').onclick=()=>location.href='mockup.html';
+ };
+}
+\nlet category='all',favorites=JSON.parse(localStorage.getItem('digitalSoulTemplateFavorites')||'[]'),saved=JSON.parse(localStorage.getItem('digitalSoulMockupTemplates')||'[]');
 const grid=document.getElementById('libraryGrid'),details=document.getElementById('templateDetails'),search=document.getElementById('librarySearch'),count=document.getElementById('libraryCount'),empty=document.getElementById('libraryEmpty'),sort=document.getElementById('librarySort');
 function renderIndustryPacks(){
  const wrap=document.getElementById('industryPacks'); if(!wrap)return;
@@ -56,4 +75,4 @@ function showDetails(t){
  details.scrollIntoView({behavior:'smooth',block:'start'});
 }
 document.querySelectorAll('.category').forEach(b=>b.onclick=()=>{category=b.dataset.category;document.querySelectorAll('.category').forEach(x=>x.classList.remove('active'));b.classList.add('active');render()});
-search.oninput=render;sort.onchange=render;document.getElementById('libraryFavorites').onclick=()=>{category=category==='mine'?'all':'mine';document.querySelectorAll('.category').forEach(x=>x.classList.toggle('active',x.dataset.category===category));render()};render();
+search.oninput=render;sort.onchange=render;initCampaignBuilder();document.getElementById('libraryFavorites').onclick=()=>{category=category==='mine'?'all':'mine';document.querySelectorAll('.category').forEach(x=>x.classList.toggle('active',x.dataset.category===category));render()};render();
