@@ -72,3 +72,8 @@
 .scene-restaurant .decor-one,.scene-restaurant .decor-two{opacity:.25}
 .scene-yoga .decor-one,.scene-yoga .decor-two{opacity:.2}
 .scene-beauty .decor-one,.scene-beauty .decor-two{opacity:.28}
+
+
+.saved-templates{margin-top:15px;padding-top:15px;border-top:1px solid rgba(37,37,34,.1)}
+.saved-template{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid rgba(37,37,34,.07);font-size:11px}
+.saved-template button{border:0;background:transparent;cursor:pointer;font-weight:700;color:var(--deep-sage)}
