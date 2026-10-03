@@ -667,8 +667,32 @@ updateTransform();
 renderImageStrip();
 
 
+function applyIncomingMockupSettings(){
+  const params=new URLSearchParams(window.location.search);
+  const incomingScene=params.get('scene');
+  const incomingLayout=params.get('layout');
+  if(incomingLayout && templateSelect && templatePresets[incomingLayout]){
+    templateSelect.value=incomingLayout;
+    applyTemplate(incomingLayout);
+  }
+  if(incomingScene && sceneNames[incomingScene]){
+    sceneSelect.value=incomingScene;
+    setScene(incomingScene);
+  }
+  if(incomingLayout==='blank-white'){
+    templateSelect.value='blank-white';
+    setScene(sceneSelect.value);
+    mockupStage.style.background='#FFFFFF';
+    bgColor.value='#FFFFFF';
+  }
+  if(incomingScene){
+    statusText.textContent=`Gotov 3D mockup: ${sceneNames[incomingScene]||incomingScene}. Ubaci/izmeni sliku po potrebi.`;
+  }
+}
+
 // Ako je dizajn poslat direktno iz Canvas Studio, automatski ga preuzmi u Mockup.
 loadTransferredCanvasDesign();
+applyIncomingMockupSettings();
 
 
 /* Direktno prevlačenje slike na frame — slika se automatski „usisa“ u površinu. */
