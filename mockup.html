@@ -38,6 +38,14 @@
         <div><div class="kicker">TEMPLATE LIBRARY</div><h2>Izaberi početnu scenu</h2></div>
         <p><strong>200 gotovih šablona</strong> za listove, dokumente, web stranice, telefone, laptope i 3D kompozicije. Izaberi scenu i odmah ubaci svoj dizajn.</p>
       </div>
+      <div class="ai-scene-generator">
+        <div class="ai-scene-generator-kicker">AI SCENE GENERATOR</div>
+        <div class="ai-scene-generator-row">
+          <textarea id="heroMockupPrompt" rows="2" placeholder="Npr. „3 bela dokumenta, jedan preko drugog, gornji blago zarotiran, champagne gold pozadina, luxury stil“"></textarea>
+          <button id="heroGenerateScene" class="btn primary" type="button">✨ Generiši scenu</button>
+        </div>
+        <small id="heroPromptStatus">Opiši scenu svojim rečima — Studio bira odgovarajući mockup i podešavanja.</small>
+      </div>
       <div class="template-tools">
         <input id="templateSearch" type="search" placeholder="Pretraži šablone..." aria-label="Pretraži šablone">
         <select id="templateCategory" aria-label="Kategorija šablona">
@@ -111,8 +119,8 @@
           <div class="prompt-studio-kicker">PROMPT STUDIO</div>
           <label for="mockupPrompt">Napiši šta želiš</label>
           <textarea id="mockupPrompt" rows="4" placeholder="npr. „Tablet, video na ekranu, 3D rotacija, sage green pozadina“"></textarea>
-          <button id="applyMockupPrompt" class="btn primary prompt-apply" type="button">✨ Primeni instrukciju</button>
-          <small id="mockupPromptStatus">Prompt podešava uređaj/scenu, tip medija, 3D rotaciju i boju pozadine.</small>
+          <button id="applyMockupPrompt" class="btn primary prompt-apply" type="button">✨ Generiši scenu</button>
+          <small id="mockupPromptStatus">Prompt generiše scenu prema opisu: uređaj, dokumente, papire, stil, boju i 3D efekat.</small>
         </div>
 
         <div class="panel-block">
