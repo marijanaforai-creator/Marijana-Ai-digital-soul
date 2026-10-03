@@ -607,3 +607,43 @@
  .mockup-object[data-scene="open-magazine"] .device-frame{width:330px!important;height:220px}
  .mockup-object[data-scene="desktop-scene"] .device-frame{width:300px!important;height:195px}
 }
+
+/* LISTOVI, DOKUMENTI I WEB STRANICE */
+.mockup-object[data-scene="sheet-single"],.mockup-object[data-scene="sheet-perspective"],.mockup-object[data-scene="sheet-scattered"],.mockup-object[data-scene="sheet-stack"],.mockup-object[data-scene="web-pages"],.mockup-object[data-scene="web-foldout"],.mockup-object[data-scene="document-stack"],.mockup-object[data-scene="ebook-spread"]{width:min(820px,96%)!important;height:540px;position:relative;transform-style:preserve-3d}
+.mockup-object[data-scene="sheet-single"] .device-frame,.mockup-object[data-scene="sheet-perspective"] .device-frame{width:390px!important;height:500px;padding:0;background:#fff;border-radius:2px;box-shadow:22px 28px 45px rgba(0,0,0,.22)}
+.mockup-object[data-scene="sheet-single"] .device-screen,.mockup-object[data-scene="sheet-perspective"] .device-screen{width:100%;height:100%;border-radius:2px}
+.mockup-object[data-scene="sheet-single"] .device-screen img,.mockup-object[data-scene="sheet-perspective"] .device-screen img{display:block}
+.mockup-object[data-scene="sheet-perspective"] .device-frame{transform:rotateX(7deg) rotateY(-17deg) rotateZ(-4deg)}
+.mockup-object[data-scene="sheet-single"] .device-frame{transform:rotateZ(-2deg)}
+.mockup-object[data-scene="sheet-scattered"] .device-frame,.mockup-object[data-scene="sheet-stack"] .device-frame,.mockup-object[data-scene="document-stack"] .device-frame{width:340px!important;height:450px;padding:0;background:#fff;border-radius:2px;box-shadow:18px 25px 38px rgba(0,0,0,.18)}
+.mockup-object[data-scene="sheet-scattered"] .device-screen,.mockup-object[data-scene="sheet-stack"] .device-screen,.mockup-object[data-scene="document-stack"] .device-screen{width:100%;height:100%;border-radius:2px}
+.mockup-object[data-scene="sheet-scattered"] .device-screen img,.mockup-object[data-scene="sheet-stack"] .device-screen img,.mockup-object[data-scene="document-stack"] .device-screen img{display:block}
+.mockup-object[data-scene="sheet-scattered"]::before,.mockup-object[data-scene="sheet-scattered"]::after,.mockup-object[data-scene="sheet-stack"]::before,.mockup-object[data-scene="sheet-stack"]::after,.mockup-object[data-scene="document-stack"]::before,.mockup-object[data-scene="document-stack"]::after{content:'';position:absolute;width:340px;height:450px;background:#fff;box-shadow:12px 18px 28px rgba(0,0,0,.14);z-index:-1}
+.mockup-object[data-scene="sheet-scattered"]::before{left:4%;top:60px;transform:rotate(-12deg)}
+.mockup-object[data-scene="sheet-scattered"]::after{right:4%;top:70px;transform:rotate(11deg)}
+.mockup-object[data-scene="sheet-stack"]::before{transform:rotate(7deg) translate(-25px,18px)}
+.mockup-object[data-scene="sheet-stack"]::after{transform:rotate(-3deg) translate(25px,32px)}
+.mockup-object[data-scene="document-stack"]::before{transform:rotate(5deg) translate(-18px,18px)}
+.mockup-object[data-scene="document-stack"]::after{transform:rotate(-5deg) translate(18px,30px)}
+.mockup-object[data-scene="web-pages"] .device-frame{width:420px!important;height:470px;padding:8px;background:#151515;border-radius:10px;box-shadow:25px 30px 45px rgba(0,0,0,.25);transform:rotateY(-13deg) rotateX(4deg)}
+.mockup-object[data-scene="web-pages"] .device-screen{width:100%;height:100%;border-radius:4px}
+.mockup-object[data-scene="web-pages"] .device-screen img{display:block}
+.mockup-object[data-scene="web-pages"]::before,.mockup-object[data-scene="web-pages"]::after{content:'';position:absolute;width:280px;height:410px;background-image:var(--scene-image);background-size:cover;background-position:center;border:8px solid #fff;box-shadow:18px 25px 35px rgba(0,0,0,.18)}
+.mockup-object[data-scene="web-pages"]::before{left:2%;top:45px;transform:rotateY(16deg) rotateZ(-5deg) scale(.8)}
+.mockup-object[data-scene="web-pages"]::after{right:2%;top:55px;transform:rotateY(-18deg) rotateZ(5deg) scale(.78)}
+.mockup-object[data-scene="web-foldout"] .device-frame{width:650px!important;height:360px;padding:0;background:#fff;border-radius:2px;box-shadow:25px 30px 45px rgba(0,0,0,.2);transform:rotateX(8deg) rotateY(-7deg)}
+.mockup-object[data-scene="web-foldout"] .device-screen{width:100%;height:100%}
+.mockup-object[data-scene="web-foldout"] .device-screen img{display:block}
+.mockup-object[data-scene="web-foldout"] .device-screen::after{content:'';position:absolute;left:33.333%;top:0;bottom:0;width:2px;background:rgba(0,0,0,.12);box-shadow:216px 0 rgba(0,0,0,.12)}
+.mockup-object[data-scene="ebook-spread"] .device-frame{width:650px!important;height:420px;padding:0;background:#fff;border-radius:2px;box-shadow:25px 35px 50px rgba(0,0,0,.24);transform:rotateX(7deg) rotateY(-9deg)}
+.mockup-object[data-scene="ebook-spread"] .device-screen{width:100%;height:100%}
+.mockup-object[data-scene="ebook-spread"] .device-screen img{display:block}
+.mockup-object[data-scene="ebook-spread"] .device-screen::after{content:'';position:absolute;left:50%;top:0;bottom:0;width:4px;background:linear-gradient(90deg,rgba(0,0,0,.16),rgba(255,255,255,.7),rgba(0,0,0,.08))}
+@media(max-width:600px){
+ .mockup-object[data-scene="sheet-single"],.mockup-object[data-scene="sheet-perspective"],.mockup-object[data-scene="sheet-scattered"],.mockup-object[data-scene="sheet-stack"],.mockup-object[data-scene="web-pages"],.mockup-object[data-scene="web-foldout"],.mockup-object[data-scene="document-stack"],.mockup-object[data-scene="ebook-spread"]{width:100%!important;height:420px}
+ .mockup-object[data-scene="sheet-single"] .device-frame,.mockup-object[data-scene="sheet-perspective"] .device-frame{width:250px!important;height:325px}
+ .mockup-object[data-scene="sheet-scattered"] .device-frame,.mockup-object[data-scene="sheet-stack"] .device-frame,.mockup-object[data-scene="document-stack"] .device-frame,.mockup-object[data-scene="sheet-scattered"]::before,.mockup-object[data-scene="sheet-scattered"]::after,.mockup-object[data-scene="sheet-stack"]::before,.mockup-object[data-scene="sheet-stack"]::after,.mockup-object[data-scene="document-stack"]::before,.mockup-object[data-scene="document-stack"]::after{width:220px!important;height:290px}
+ .mockup-object[data-scene="web-pages"] .device-frame{width:270px!important;height:330px}
+ .mockup-object[data-scene="web-pages"]::before,.mockup-object[data-scene="web-pages"]::after{width:180px;height:270px}
+ .mockup-object[data-scene="web-foldout"] .device-frame,.mockup-object[data-scene="ebook-spread"] .device-frame{width:330px!important;height:220px}
+}
