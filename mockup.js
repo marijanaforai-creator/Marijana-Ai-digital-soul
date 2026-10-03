@@ -722,8 +722,9 @@ function selectImage(index){
   }
   imageZoom=100; imageOffsetX=0; imageOffsetY=0;
   updateImageTransform();
-  // Obični Frame nema „usisavanje“ — sadržaj samo sedi unutar okvira.
-  if(sceneSelect.value!=='frame' && item.kind!=='video'){
+  // Obični Frame se ponaša kao pravi okvir: slika se iseče unutar površine
+  // i kratkom animacijom vizuelno „usisa“ u Frame.
+  if(item.kind!=='video'){
     void previewImage.offsetWidth;
     previewImage.classList.add('mockup-suck-in');
   }
