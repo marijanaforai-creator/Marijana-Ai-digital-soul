@@ -98,6 +98,34 @@ document.getElementById('addPage').onclick=()=>{snapshot();pages.push({id:pages.
 document.getElementById('elRotation').addEventListener('input',e=>{const el=findSelected();if(!el)return;el.rotation=Number(e.target.value);document.getElementById('elRotationValue').value=el.rotation+'°';renderPage()});
 document.getElementById('elOpacity').addEventListener('input',e=>{const el=findSelected();if(!el)return;el.opacity=Number(e.target.value);document.getElementById('elOpacityValue').value=el.opacity+'%';renderPage()});
 document.addEventListener('keydown',e=>{if(e.key==='Delete'&&selectedId!=null&&document.activeElement.tagName!=='INPUT')document.getElementById('deleteEl').click();if(e.key==='Escape'){selectedId=null;render()}});
+async function renderCanvasToDataURL(){
+  const f=formats[document.getElementById('pageFormat').value]||formats.square;
+  const w=f[0],h=f[1],c=document.createElement('canvas');c.width=w;c.height=h;
+  const ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);
+  const baseW=Number(page.dataset.baseW||600),baseH=Number(page.dataset.baseH||600),sx=w/baseW,sy=h/baseH;
+  const imageCache={};
+  await Promise.all(current().elements.filter(el=>el.type==='image'&&el.src).map(el=>new Promise(resolve=>{
+    const img=new Image();img.onload=()=>{imageCache[el.id]=img;resolve()};img.onerror=resolve;img.src=el.src;
+  })));
+  current().elements.forEach(el=>{
+    ctx.save();ctx.globalAlpha=el.opacity/100;
+    ctx.translate(el.x*sx+el.w*sx/2,el.y*sy+el.h*sy/2);
+    ctx.rotate(el.rotation*Math.PI/180);
+    if(el.type==='text'){
+      ctx.fillStyle=el.color;ctx.font='500 '+(el.fontSize*sx)+'px Cormorant Garamond, serif';
+      ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(el.text,0,0);
+    }else if(el.type==='image'&&imageCache[el.id]){
+      ctx.drawImage(imageCache[el.id],-el.w*sx/2,-el.h*sy/2,el.w*sx,el.h*sy);
+    }else{
+      ctx.fillStyle=el.color;ctx.beginPath();
+      if(el.type==='circle')ctx.arc(0,0,Math.min(el.w*sx,el.h*sy)/2,0,Math.PI*2);
+      else ctx.rect(-el.w*sx/2,-el.h*sy/2,el.w*sx,el.h*sy);
+      ctx.fill();
+    }
+    ctx.restore();
+  });
+  return c.toDataURL('image/png');
+}
 async function exportCanvas(){
   const f=formats[document.getElementById('pageFormat').value]||formats.square,w=f[0],h=f[1],c=document.createElement('canvas');c.width=w;c.height=h;const ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);
   const baseW=Number(page.dataset.baseW||600),baseH=Number(page.dataset.baseH||600),sx=w/baseW,sy=h/baseH;
@@ -110,4 +138,14 @@ async function exportCanvas(){
   const a=document.createElement('a');a.download='marijana-canvas.png';a.href=c.toDataURL('image/png');a.click();
 }
 document.getElementById('downloadCanvas').onclick=exportCanvas;
+document.getElementById('sendToMockup').onclick=async()=>{
+  const dataUrl=await renderCanvasToDataURL();
+  try{
+    sessionStorage.setItem('marijanaMockupSource',dataUrl);
+    sessionStorage.setItem('marijanaMockupSourceName','Canvas dizajn');
+    window.location.href='mockup.html?from=canvas';
+  }catch(err){
+    alert('Dizajn je prevelik za direktan prenos. Prvo izvezi PNG pa ga ubaci u 3D Mockup.');
+  }
+};
 render();
