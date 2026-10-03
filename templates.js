@@ -1,16 +1,16 @@
 const templates=[
-{id:'t1',name:'Phone Clean',cat:'device',label:'Telefon',bg:'#e8ded0',wide:false},
-{id:'t2',name:'Laptop Business',cat:'business',label:'Business',bg:'#dde4ea',wide:true},
-{id:'t3',name:'Planner Luxury',cat:'product',label:'Planner',bg:'#171717',wide:false},
-{id:'t4',name:'Fitness Campaign',cat:'wellness',label:'Fitness',bg:'#dce7de',wide:true},
-{id:'t5',name:'Hotel Premium',cat:'business',label:'Hotel',bg:'#e5ded2',wide:true},
-{id:'t6',name:'Restaurant Menu',cat:'business',label:'Restoran',bg:'#e1d5c5',wide:true},
-{id:'t7',name:'Yoga Calm',cat:'wellness',label:'Yoga',bg:'#dce7de',wide:true},
-{id:'t8',name:'Beauty Editorial',cat:'product',label:'Beauty',bg:'#e8dde0',wide:true},
-{id:'t9',name:'Social Story',cat:'social',label:'Social Media',bg:'#e1e7e3',wide:false},
-{id:'t10',name:'Office Pro',cat:'lifestyle',label:'Kancelarija',bg:'#d9ddd7',wide:true},
-{id:'t11',name:'Creator Desk',cat:'lifestyle',label:'Radni sto',bg:'#e4d8c8',wide:true},
-{id:'t12',name:'Packaging Studio',cat:'product',label:'Ambalaža',bg:'#d8c9b0',wide:false}
+{id:'t1',name:'Phone Clean',cat:'device',label:'Telefon',type:'free',price:0,author:'Digital Soul',license:'Lična upotreba',bg:'#e8ded0',wide:false},
+{id:'t2',name:'Laptop Business',cat:'business',label:'Business',type:'premium',price:9,author:'Digital Soul',license:'Komercijalna upotreba',bg:'#dde4ea',wide:true},
+{id:'t3',name:'Planner Luxury',cat:'product',label:'Planner',type:'premium',price:12,author:'Digital Soul',license:'Komercijalna upotreba',bg:'#171717',wide:false},
+{id:'t4',name:'Fitness Campaign',cat:'wellness',label:'Fitness',type:'free',price:0,author:'Digital Soul',license:'Lična upotreba',bg:'#dce7de',wide:true},
+{id:'t5',name:'Hotel Premium',cat:'business',label:'Hotel',type:'premium',price:15,author:'Digital Soul',license:'Komercijalna upotreba',bg:'#e5ded2',wide:true},
+{id:'t6',name:'Restaurant Menu',cat:'business',label:'Restoran',type:'premium',price:12,author:'Digital Soul',license:'Komercijalna upotreba',bg:'#e1d5c5',wide:true},
+{id:'t7',name:'Yoga Calm',cat:'wellness',label:'Yoga',type:'free',price:0,author:'Digital Soul',license:'Lična upotreba',bg:'#dce7de',wide:true},
+{id:'t8',name:'Beauty Editorial',cat:'product',label:'Beauty',type:'premium',price:10,author:'Digital Soul',license:'Komercijalna upotreba',bg:'#e8dde0',wide:true},
+{id:'t9',name:'Social Story',cat:'social',label:'Social Media',type:'free',price:0,author:'Digital Soul',license:'Lična upotreba',bg:'#e1e7e3',wide:false},
+{id:'t10',name:'Office Pro',cat:'lifestyle',label:'Kancelarija',type:'premium',price:9,author:'Digital Soul',license:'Komercijalna upotreba',bg:'#d9ddd7',wide:true},
+{id:'t11',name:'Creator Desk',cat:'lifestyle',label:'Radni sto',type:'free',price:0,author:'Digital Soul',license:'Lična upotreba',bg:'#e4d8c8',wide:true},
+{id:'t12',name:'Packaging Studio',cat:'product',label:'Ambalaža',type:'premium',price:14,author:'Digital Soul',license:'Komercijalna upotreba',bg:'#d8c9b0',wide:false}
 ];
 let category='all',favorites=JSON.parse(localStorage.getItem('digitalSoulTemplateFavorites')||'[]'),saved=JSON.parse(localStorage.getItem('digitalSoulMockupTemplates')||'[]');
 const grid=document.getElementById('libraryGrid'),details=document.getElementById('templateDetails'),search=document.getElementById('librarySearch'),count=document.getElementById('libraryCount'),empty=document.getElementById('libraryEmpty'),sort=document.getElementById('librarySort');
