@@ -67,7 +67,31 @@
 </div>
 <button id="buildCampaign2" class="btn campaign2-build" type="button">Kreiraj kampanju</button>
 <div id="campaign2Result" class="campaign2-result" hidden></div>
-</div></section><section class="campaign-builder"><div class="container"><div class="kicker">CAMPAIGN BUILDER</div><h2>Kreiraj reklamni paket</h2><p>Izaberi delatnost, cilj kampanje i formate koje želiš da pripremiš.</p><div class="campaign-controls"><label>Delatnost<select id="campaignIndustry"></select></label><label>Cilj kampanje<select id="campaignPurpose"></select></label></div><div id="campaignFormats" class="campaign-formats"></div><button id="buildCampaign" class="btn campaign-build" type="button">Kreiraj paket</button><div id="campaignResult" class="campaign-result" hidden></div><div id="contentBrief" class="content-brief" hidden></div></div></section><section class="content-campaign-orchestrator"><div class="container">
+</div></section><section class="campaign-builder"><div class="container"><div class="kicker">CAMPAIGN BUILDER</div><h2>Kreiraj reklamni paket</h2><p>Izaberi delatnost, cilj kampanje i formate koje želiš da pripremiš.</p><div class="campaign-controls"><label>Delatnost<select id="campaignIndustry"></select></label><label>Cilj kampanje<select id="campaignPurpose"></select></label></div><div id="campaignFormats" class="campaign-formats"></div><button id="buildCampaign" class="btn campaign-build" type="button">Kreiraj paket</button><div id="campaignResult" class="campaign-result" hidden></div><div id="contentBrief" class="content-brief" hidden></div></div></section><section class="content-calendar"><div class="container">
+<div class="kicker">CONTENT CALENDAR</div>
+<h2>Content Calendar</h2>
+<p>Pretvori kampanjski plan u kalendar sa datumima, kanalima i statusima.</p>
+<div class="calendar-toolbar">
+<label>Pregled<select id="calendarView"><option value="week">Nedelja</option><option value="month">Mesec</option><option value="list">Lista</option></select></label>
+<label>Status<select id="calendarFilter"><option value="all">Svi statusi</option><option>Ideja</option><option>U izradi</option><option>Spremno</option><option>Zakazano</option><option>Objavljeno</option></select></label>
+<button id="calendarImportPlan" class="btn" type="button">Uvezi poslednji plan</button>
+<button id="calendarAdd" class="btn calendar-primary" type="button">+ Dodaj sadržaj</button>
+</div>
+<div id="calendarStats" class="calendar-stats"></div>
+<div id="calendarBoard" class="calendar-board"></div>
+<div id="calendarEditor" class="calendar-editor" hidden>
+<h3>Uredi sadržaj</h3>
+<div class="calendar-edit-grid">
+<label>Naslov<input id="calTitle" type="text"></label>
+<label>Datum<input id="calDate" type="date"></label>
+<label>Kanal<select id="calChannel"><option>Instagram</option><option>Facebook</option><option>Pinterest</option><option>TikTok</option><option>LinkedIn</option><option>Email</option><option>Web</option></select></label>
+<label>Status<select id="calStatus"><option>Ideja</option><option>U izradi</option><option>Spremno</option><option>Zakazano</option><option>Objavljeno</option></select></label>
+<label class="full">Beleška<textarea id="calNote" rows="3"></textarea></label>
+</div>
+<button id="calSave" class="btn calendar-primary" type="button">Sačuvaj</button>
+<button id="calCancel" class="btn" type="button">Otkaži</button>
+</div>
+</div></section><section class="content-campaign-orchestrator"><div class="container">
 <div class="kicker">CONTENT → CAMPAIGN ORCHESTRATOR</div>
 <h2>Planiraj celu kampanju</h2>
 <p>Od jednog proizvoda napravi strukturisan plan sadržaja po danima, kanalima i ciljevima.</p>
