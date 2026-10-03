@@ -34,7 +34,16 @@
       <span id="zoomValue">100%</span>
       <button id="zoomIn" class="tool-btn" type="button">+</button>
       <button id="downloadCanvas" class="tool-btn" type="button">Izvezi PNG</button>
-      <button id="sendToMockup" class="tool-btn primary" type="button">✨ Pošalji u 3D Mockup</button>
+      <div class="mockup-generate-controls">
+  <select id="quickMockupScene" aria-label="Izaberi uređaj za 3D mockup">
+    <option value="phone">Telefon</option>
+    <option value="laptop" selected>Laptop</option>
+    <option value="planner">Planner</option>
+    <option value="poster">Poster</option>
+    <option value="social">Social ekran</option>
+  </select>
+  <button id="sendToMockup" class="tool-btn primary" type="button">✨ Generiši gotov 3D Mockup</button>
+</div>
     </div>
   </div>
 
