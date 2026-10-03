@@ -83,6 +83,7 @@ const lifestylePresets={
 };
 
 const templatePresets={
+  'blank-white':{bg:'#FFFFFF',scene:'phone'},
   classic:{bg:'#E8DED0',scene:'phone'},
   luxury:{bg:'#151515',scene:'planner'},
   minimal:{bg:'#F3F1EB',scene:'poster'},
