@@ -34,6 +34,10 @@ const downloadBtn=document.getElementById('downloadBtn');
 const saveTemplateBtn=document.getElementById('saveTemplateBtn');
 const myTemplatesBtn=document.getElementById('myTemplatesBtn');
 const savedTemplates=document.getElementById('savedTemplates');
+const templateGrid=document.getElementById('templateGrid');
+const templateSearch=document.getElementById('templateSearch');
+const templateCategory=document.getElementById('templateCategory');
+const favoritesOnly=document.getElementById('favoritesOnly');
 
 let images=[];
 let activeImageIndex=0;
@@ -45,6 +49,23 @@ let perspective=0;
 let tiltX=0;
 let tiltY=0;
 const TEMPLATE_KEY='digitalSoulMockupTemplates';
+const FAVORITES_KEY='digitalSoulMockupFavorites';
+const libraryTemplates=[
+ {id:'phone-clean',name:'Phone Clean',scene:'phone',category:'device',bg:'#E8DED0',shape:'tall'},
+ {id:'laptop-business',name:'Laptop Business',scene:'laptop',category:'business',bg:'#DDE4EA',shape:'wide'},
+ {id:'planner-luxury',name:'Planner Luxury',scene:'planner',category:'product',bg:'#151515',shape:'tall'},
+ {id:'poster-minimal',name:'Poster Minimal',scene:'product',category:'product',bg:'#F3F1EB',shape:'tall'},
+ {id:'fitness-campaign',name:'Fitness Campaign',scene:'fitness',category:'wellness',bg:'#DCE7DE',shape:'wide'},
+ {id:'hotel-premium',name:'Hotel Premium',scene:'hotel',category:'business',bg:'#E5DED2',shape:'wide'},
+ {id:'restaurant-menu',name:'Restaurant Menu',scene:'restaurant',category:'business',bg:'#E1D5C5',shape:'wide'},
+ {id:'yoga-calm',name:'Yoga Calm',scene:'yoga',category:'wellness',bg:'#DCE7DE',shape:'wide'},
+ {id:'beauty-editorial',name:'Beauty Editorial',scene:'beauty',category:'product',bg:'#E8DDE0',shape:'wide'},
+ {id:'social-story',name:'Social Story',scene:'social',category:'social',bg:'#E1E7E3',shape:'tall'},
+ {id:'office-pro',name:'Office Pro',scene:'office',category:'business',bg:'#D9DDD7',shape:'wide'},
+ {id:'premium-product',name:'Premium Product',scene:'product',category:'product',bg:'#E8E0D2',shape:'tall'},
+ {id:'packaging-studio',name:'Packaging Studio',scene:'packaging',category:'product',bg:'#D8C9B0',shape:'tall'},
+ {id:'desk-creator',name:'Creator Desk',scene:'desk',category:'business',bg:'#E4D8C8',shape:'wide'}
+];
 
 const sceneNames={
   phone:'Telefon',laptop:'Laptop',planner:'Planner',poster:'Poster',
@@ -75,6 +96,49 @@ const formatSizes={
   story:[1080,1920],
   pin:[1000,1500]
 };
+
+function getFavorites(){
+  return JSON.parse(localStorage.getItem(FAVORITES_KEY)||'[]');
+}
+function renderTemplateLibrary(){
+  if(!templateGrid)return;
+  const query=(templateSearch?.value||'').trim().toLowerCase();
+  const category=templateCategory?.value||'all';
+  const onlyFavorites=favoritesOnly?.dataset.active==='true';
+  const favorites=getFavorites();
+  const list=libraryTemplates.filter(t=>{
+    const matchesQuery=!query||t.name.toLowerCase().includes(query)||t.scene.toLowerCase().includes(query);
+    const matchesCategory=category==='all'||t.category===category;
+    const matchesFavorite=!onlyFavorites||favorites.includes(t.id);
+    return matchesQuery&&matchesCategory&&matchesFavorite;
+  });
+  if(!list.length){templateGrid.innerHTML='<div class="template-empty">Nema šablona koji odgovaraju izboru.</div>';return;}
+  templateGrid.innerHTML='';
+  list.forEach(t=>{
+    const card=document.createElement('article');
+    card.className='template-card';
+    const active=favorites.includes(t.id);
+    card.innerHTML=`<div class="template-preview" style="background:${t.bg}"><div class="mini-object ${t.shape}"></div></div>
+      <div class="template-meta"><div><strong>${t.name}</strong><small>${sceneNames[t.scene]||t.scene}</small></div>
+      <button class="template-fav" type="button" aria-label="Favorit">${active?'♥':'♡'}</button></div>
+      <button class="btn primary template-use" type="button">Koristi šablon</button>`;
+    card.querySelector('.template-fav').onclick=()=>{
+      const next=getFavorites().filter(id=>id!==t.id);
+      if(!active)next.push(t.id);
+      localStorage.setItem(FAVORITES_KEY,JSON.stringify(next));
+      renderTemplateLibrary();
+    };
+    card.querySelector('.template-use').onclick=()=>{
+      sceneSelect.value=t.scene;
+      bgColor.value=t.bg;
+      mockupStage.style.background=t.bg;
+      setScene(t.scene);
+      window.scrollTo({top:document.querySelector('.mockup-workspace').offsetTop-20,behavior:'smooth'});
+      statusText.textContent=`Izabran je šablon „${t.name}“.`;
+    };
+    templateGrid.appendChild(card);
+  });
+}
 
 function updateTransform(){
   mockupObject.style.transform=`translate(${offsetX/2}%,${offsetY/2}%) scale(${objectScale/100}) rotate(${objectRotation}deg)`;
@@ -108,6 +172,7 @@ function selectImage(index){
   previewImage.style.display='block';
   renderImageStrip();
 renderSavedTemplates();
+renderTemplateLibrary();
   statusText.textContent=`Aktivna je slika ${index+1} od ${images.length}.`;
 }
 
@@ -358,6 +423,14 @@ tiltYRange.addEventListener('input',e=>{tiltY=Number(e.target.value);updateTrans
 bgColor.addEventListener('input',e=>{mockupStage.style.background=e.target.value;});
 resetBtn.addEventListener('click',resetAll);
 saveTemplateBtn.addEventListener('click',saveTemplate);
+templateSearch?.addEventListener('input',renderTemplateLibrary);
+templateCategory?.addEventListener('change',renderTemplateLibrary);
+favoritesOnly?.addEventListener('click',()=>{
+  const active=favoritesOnly.dataset.active==='true';
+  favoritesOnly.dataset.active=String(!active);
+  favoritesOnly.textContent=!active?'♥ Favoriti':'♡ Favoriti';
+  renderTemplateLibrary();
+});
 myTemplatesBtn.addEventListener('click',()=>{savedTemplates.hidden=!savedTemplates.hidden;renderSavedTemplates();});
 downloadBtn.addEventListener('click',downloadMockup);
 
