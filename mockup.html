@@ -47,6 +47,17 @@
         <div id="imageStrip" class="image-strip" aria-label="Izabrane slike"></div>
 
         <div class="panel-block">
+          <label for="templateSelect">Šablon / layout</label>
+          <select id="templateSelect">
+            <option value="classic">Classic</option>
+            <option value="luxury">Luxury</option>
+            <option value="minimal">Minimal</option>
+            <option value="wellness">Wellness</option>
+            <option value="business">Business</option>
+          </select>
+        </div>
+
+        <div class="panel-block">
           <label for="sceneSelect">Scena</label>
           <select id="sceneSelect">
             <option value="phone">Telefon</option>
@@ -60,6 +71,15 @@
             <option value="yoga">Yoga scena</option>
             <option value="beauty">Beauty scena</option>
           </select>
+        </div>
+
+        <div class="panel-block">
+          <label>Prilagođeno platno</label>
+          <div class="size-grid">
+            <input id="customWidth" type="number" min="300" max="4000" value="1200" aria-label="Širina u pikselima">
+            <input id="customHeight" type="number" min="300" max="4000" value="1200" aria-label="Visina u pikselima">
+          </div>
+          <label class="check-row"><input id="useCustomSize" type="checkbox"> Koristi prilagođenu veličinu</label>
         </div>
 
         <div class="panel-block">
