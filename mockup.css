@@ -46,16 +46,18 @@
 .phone-object .device-frame{width:260px}
 .phone-object .device-screen{height:520px;border-radius:24px}
 .phone-object .device-screen:after{content:'';position:absolute;top:8px;left:50%;width:55px;height:15px;background:#111;border-radius:20px;transform:translateX(-50%)}
-.laptop-object .device-frame{width:600px;padding:12px 12px 20px;border-radius:15px}
+.laptop-object{width:min(700px,92%);display:flex;flex-direction:column;align-items:center}
+.laptop-object .device-frame{width:85%;box-sizing:border-box;padding:12px 12px 20px;border-radius:15px}
 .laptop-object .device-screen{height:365px;border-radius:6px}
-.laptop-object:after{content:'';display:block;width:700px;height:18px;background:#b9b9b4;border-radius:0 0 18px 18px;margin:-1px 0 0 -50px;box-shadow:0 15px 25px rgba(0,0,0,.16)}
+.laptop-object:after{content:'';display:block;width:100%;height:24px;background:#b9b9b4;border-radius:0 0 18px 18px;margin:-1px 0 0;box-shadow:0 15px 25px rgba(0,0,0,.16)}
 .planner-object .device-frame,.poster-object .device-frame{background:#fff;padding:0;border-radius:4px}
 .planner-object .device-screen{width:380px;height:510px;border-radius:4px}
 .poster-object .device-screen{width:420px;height:550px}
 .business-object .device-screen,.fitness-object .device-screen,.hotel-object .device-screen,.restaurant-object .device-screen,.yoga-object .device-screen,.beauty-object .device-screen{width:520px;height:380px;border-radius:4px}
-.scene-label{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);z-index:3;font-size:10px;letter-spacing:.18em;font-weight:700;color:rgba(23,60,50,.7);white-space:nowrap}
+.scene-label{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);z-index:3;font-size:10px;letter-spacing:.18em;font-weight:700;color:rgba(59,35,95,.7);white-space:nowrap}
 @media(max-width:900px){.mockup-grid{grid-template-columns:1fr}.mockup-panel{position:static}.mockup-stage{min-height:560px}}
-@media(max-width:600px){.mockup-hero{padding:60px 0}.mockup-workspace{padding-top:30px}.panel-actions{grid-template-columns:1fr}.mockup-stage{min-height:470px}.phone-object .device-frame{width:205px}.phone-object .device-screen{height:410px}.laptop-object .device-frame{width:360px}.laptop-object .device-screen{height:220px}.laptop-object:after{width:420px;margin-left:-30px}.planner-object .device-screen{width:270px;height:365px}.poster-object .device-screen{width:285px;height:380px}.business-object .device-screen,.fitness-object .device-screen,.hotel-object .device-screen,.restaurant-object .device-screen,.yoga-object .device-screen,.beauty-object .device-screen{width:330px;height:245px}}
+@media(max-width:900px){.laptop-object{width:88%;}.laptop-object .device-screen{height:clamp(220px,32vw,365px)}}
+@media(max-width:600px){.mockup-hero{padding:60px 0}.mockup-workspace{padding-top:30px}.panel-actions{grid-template-columns:1fr}.mockup-stage{min-height:470px}.phone-object .device-frame{width:205px}.phone-object .device-screen{height:410px}.laptop-object{width:94%;}.laptop-object .device-frame{width:85%;}.laptop-object .device-screen{height:220px}.laptop-object:after{width:100%;height:20px;margin-left:0}.planner-object .device-screen{width:270px;height:365px}.poster-object .device-screen{width:285px;height:380px}.business-object .device-screen,.fitness-object .device-screen,.hotel-object .device-screen,.restaurant-object .device-screen,.yoga-object .device-screen,.beauty-object .device-screen{width:330px;height:245px}}
 
 
 .upload-count{font-size:10px;color:var(--deep-sage);font-weight:700}
@@ -135,7 +137,7 @@
 .batch-options{display:flex;flex-wrap:wrap;gap:9px}
 .batch-option{display:inline-flex;align-items:center;gap:7px;padding:9px 11px;border:1px solid rgba(37,37,34,.13);background:#fafaf8;cursor:pointer;font-size:12px}
 .batch-option:has(input:checked){border-color:var(--sage);background:rgba(185,163,227,.18)}
-.batch-option input{accent-color:#8ea386}
+.batch-option input{accent-color:var(--deep-sage)}
 .batch-actions{display:flex;flex-wrap:wrap;gap:9px;border-top:1px solid rgba(37,37,34,.08);padding-top:18px}
 .batch-status{margin-top:15px;font-size:12px;color:#666}
 .batch-status.ready{color:#50684d}
