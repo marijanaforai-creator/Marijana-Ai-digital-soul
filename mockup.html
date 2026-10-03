@@ -87,13 +87,13 @@
     <div class="container mockup-grid">
       <aside class="mockup-panel">
         <div class="panel-block">
-          <label class="upload-box" for="imageUpload">
-            <input id="imageUpload" type="file" accept="image/*" multiple>
+          <div class="upload-box">
+            <input id="imageUpload" class="sr-only-upload" type="file" accept="image/png,image/jpeg,image/webp,image/gif" multiple>
+            <button id="mockupUploadTrigger" class="btn primary upload-trigger" type="button">＋ Ubaci svoju sliku</button>
             <span id="uploadCount" class="upload-count">0 slika</span>
-            <span class="upload-icon">＋</span>
             <strong>Ubaci svoju sliku</strong>
             <small>PNG, JPG ili WEBP · do 4 slike</small>
-          </label>
+          </div>
         </div>
 
         <div id="imageStrip" class="image-strip" aria-label="Izabrane slike"></div>

@@ -1,6 +1,7 @@
 const formats={square:[1200,1200],portrait:[1080,1350],story:[1080,1920],pin:[1000,1500],landscape:[1600,900]};
 const page=document.getElementById('canvasPage'), elementsEl=document.getElementById('canvasElements'), viewport=document.getElementById('canvasViewport');
 const layersList=document.getElementById('layersList'), pagesList=document.getElementById('pagesList');
+const elName=document.getElementById('elName'),elX=document.getElementById('elX'),elY=document.getElementById('elY'),elW=document.getElementById('elW'),elH=document.getElementById('elH'),elRotation=document.getElementById('elRotation'),elRotationValue=document.getElementById('elRotationValue'),elOpacity=document.getElementById('elOpacity'),elOpacityValue=document.getElementById('elOpacityValue'),elColor=document.getElementById('elColor'),elText=document.getElementById('elText'),elFontSize=document.getElementById('elFontSize');
 let pages=[{id:1,name:'Stranica 1',elements:[]}],activePage=0,selectedId=null,zoom=1,nextId=1;
 let history=[],future=[];
 
@@ -78,7 +79,7 @@ function startDrag(e){
   const up=()=>{snapshot();document.removeEventListener('pointermove',move);document.removeEventListener('pointerup',up);};
   document.addEventListener('pointermove',move);document.addEventListener('pointerup',up);
 }
-document.querySelectorAll('[data-add]').forEach(b=>b.addEventListener('click',()=>addElement(b.dataset.add)));
+document.querySelectorAll('[data-add]').forEach(b=>b.addEventListener('click',()=>{ if(b.dataset.add==='image'){canvasUpload?.click();return;} addElement(b.dataset.add); }));
 const canvasUpload=document.getElementById('canvasUpload');
 document.getElementById('uploadTrigger').addEventListener('click',()=>canvasUpload.click());
 canvasUpload.addEventListener('change',e=>{const file=e.target.files&&e.target.files[0];if(!file)return;if(!file.type.startsWith('image/')){alert('Molimo izaberi sliku.');return;}const r=new FileReader();r.onload=()=>addElement('image',r.result);r.onerror=()=>alert('Slika nije mogla da se učita.');r.readAsDataURL(file);e.target.value='';});
