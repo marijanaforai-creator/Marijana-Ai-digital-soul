@@ -87,12 +87,14 @@ const lifestylePresets={
 };
 
 const templatePresets={
-  'blank-white':{bg:'#FFFFFF',scene:null},
-  classic:{bg:'#E8DED0',scene:'phone'},
-  luxury:{bg:'#151515',scene:'planner'},
-  minimal:{bg:'#F3F1EB',scene:'poster'},
-  wellness:{bg:'#DCE7DE',scene:'yoga'},
-  business:{bg:'#DDE4EA',scene:'laptop'}
+  // Layout određuje samo izgled/boju pozadine.
+  // Uređaj/scena se bira potpuno odvojeno.
+  'blank-white':{bg:'#FFFFFF'},
+  classic:{bg:'#E8DED0'},
+  luxury:{bg:'#151515'},
+  minimal:{bg:'#F3F1EB'},
+  wellness:{bg:'#DCE7DE'},
+  business:{bg:'#DDE4EA'}
 };
 
 const formatSizes={
@@ -167,11 +169,7 @@ function renderBatchCanvas(scene,format){
   const w=iw*ratio,h=ih*ratio;
   const x=(size.w-w)/2,y=(size.h-h)/2;
   if(img)ctx.drawImage(img,x,y,w,h);
-  ctx.fillStyle='rgba(0,0,0,.08)';
-  ctx.fillRect(0,size.h-42,size.w,42);
-  ctx.fillStyle='#333';
-  ctx.font=`600 ${Math.max(18,size.w/55)}px Arial`;
-  ctx.fillText(sceneNames[scene]||scene,24,size.h-16);
+  // Čist mockup bez natpisa preko donje ivice.
   return canvas;
 }
 function createBatchFile(scene,format){
@@ -385,17 +383,13 @@ function resizeImageFromHandle(e){
   window.addEventListener('pointerup',up);
 }
 function setScene(value){
-  if(lifestylePresets[value] && templateSelect){
-    const p=lifestylePresets[value];
-    bgColor.value=p.bg;
-    mockupStage.style.background=p.bg;
-    templateSelect.value=p.template;
-  }
+  // Uređaj/scena je nezavisna od layouta. Promena uređaja
+  // ne sme automatski da menja pozadinu ili layout.
   mockupObject.className=`mockup-object ${value}-object`;
   mockupStage.className=`mockup-stage scene-${value}`;
   mockupStage.classList.toggle('blank-white-layout', templateSelect?.value==='blank-white');
   sceneTitle.textContent=sceneNames[value]||'Mockup';
-  sceneLabel.textContent=(sceneNames[value]||'DIGITAL SOUL STUDIO').toUpperCase();
+  // Naziv scene se ne ispisuje preko mockupa.
   if(images.length)statusText.textContent=`Slika je postavljena u scenu: ${sceneNames[value]||value}.`;
 }
 
@@ -403,13 +397,8 @@ function applyTemplate(value){
   const preset=templatePresets[value]||templatePresets.classic;
   bgColor.value=preset.bg;
   mockupStage.style.background=preset.bg;
-  if(preset.scene){
-    sceneSelect.value=preset.scene;
-    setScene(preset.scene);
-  }else{
-    setScene(sceneSelect.value);
-  }
-  statusText.textContent=`Primenen je šablon: ${templateSelect.options[templateSelect.selectedIndex].text}.`;
+  setScene(sceneSelect.value);
+  statusText.textContent=`Primenen je layout: ${templateSelect.options[templateSelect.selectedIndex].text}.`;
 }
 
 function getTemplateState(name){
@@ -588,14 +577,7 @@ function downloadMockup(){
   const img=new Image();
 
   img.onload=()=>{
-    ctx.save();
-    ctx.globalAlpha=.15;
-    ctx.fillStyle='#3B235F';
-    ctx.beginPath();ctx.arc(width*.1,height*.1,Math.min(width,height)*.16,0,Math.PI*2);ctx.fill();
-    ctx.fillStyle='#C8A96B';
-    ctx.beginPath();ctx.arc(width*.92,height*.9,Math.min(width,height)*.19,0,Math.PI*2);ctx.fill();
-    ctx.restore();
-
+    // Bez dekorativnih layout elemenata — layout scenografiju dodajemo naknadno.
     ctx.save();
     ctx.translate(c.x+c.w/2+offsetX*c.w*.0035,c.y+c.h/2+offsetY*c.h*.0035);
     ctx.rotate(objectRotation*Math.PI/180);
@@ -617,11 +599,7 @@ function downloadMockup(){
     ctx.restore();
     ctx.restore();
 
-    ctx.fillStyle='rgba(59,35,95,.65)';
-    ctx.font='700 14px Montserrat, sans-serif';
-    ctx.textAlign='center';
-    ctx.fillText('DIGITAL SOUL STUDIO',width/2,height*.93);
-
+    // Bez dodatnog teksta na eksportovanom mockupu.
     const link=document.createElement('a');
     link.download=`digital-soul-mockup-${type}-${formatSelect.value}.png`;
     link.href=canvas.toDataURL('image/png');

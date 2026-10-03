@@ -484,3 +484,10 @@
     overflow:visible;
   }
 }
+
+
+/* Čist Mockup Studio: layout je samo pozadina; scenografija se dodaje kasnije. */
+.mockup-body .mockup-stage .scene-decoration,
+.mockup-body .mockup-stage .scene-label{
+  display:none!important;
+}
