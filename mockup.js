@@ -279,7 +279,7 @@ const formatSizes={
 };
 
 const batchSceneList=[
- ['phone','Telefon'],['laptop','Laptop'],['planner','Planner'],['poster','Poster'],
+ ['phone','Telefon'],['tablet','Tablet'],['laptop','Laptop'],['frame','Obični Frame'],['planner','Planner'],['poster','Poster'],
  ['business','Business scena'],['fitness','Fitness scena'],['hotel','Hotel scena'],
  ['restaurant','Restoran scena'],['yoga','Yoga scena'],['beauty','Beauty scena'],
  ['office','Kancelarija'],['desk','Radni sto'],['product','Premium proizvod'],
@@ -845,6 +845,8 @@ function downloadMockup(){
   const type=sceneSelect.value;
   const configs={
     phone:{x:width*.39,y:height*.12,w:width*.22,h:height*.58,r:30},
+    tablet:{x:width*.31,y:height*.16,w:width*.38,h:height*.55,r:18},
+    frame:{x:width*.30,y:height*.12,w:width*.40,h:height*.66,r:3},
     laptop:{x:width*.22,y:height*.25,w:width*.56,h:height*.42,r:14},
     planner:{x:width*.33,y:height*.15,w:width*.34,h:height*.58,r:5},
     poster:{x:width*.33,y:height*.12,w:width*.34,h:height*.65,r:5},
