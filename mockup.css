@@ -56,3 +56,9 @@
 .sub-control-label{margin-top:15px}
 .mockup-object img.fit-contain{object-fit:contain}
 .mockup-object img.fit-cover{object-fit:cover}
+
+
+.size-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.size-grid input{width:100%;box-sizing:border-box;padding:10px;border:1px solid rgba(37,37,34,.18);font:inherit}
+.check-row{display:flex!important;align-items:center;justify-content:flex-start!important;gap:8px;text-transform:none!important;letter-spacing:0!important;margin-top:12px;font-weight:600!important}
+.check-row input{accent-color:var(--deep-sage)}
