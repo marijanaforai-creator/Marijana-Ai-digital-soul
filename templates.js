@@ -12,8 +12,23 @@ const templates=[
 {id:'t11',name:'Creator Desk',cat:'lifestyle',label:'Radni sto',type:'free',price:0,author:'Digital Soul',license:'Lična upotreba',bg:'#e4d8c8',wide:true},
 {id:'t12',name:'Packaging Studio',cat:'product',label:'Ambalaža',type:'premium',price:14,author:'Digital Soul',license:'Komercijalna upotreba',bg:'#d8c9b0',wide:false}
 ];
+const industryPacks=[
+ {id:'food-store',name:'Prehrambena prodavnica',desc:'Akcije, proizvodi nedelje, nova ponuda, sezonske kampanje',cat:'business'},
+ {id:'local-producer',name:'Domaći proizvođač',desc:'Priča o proizvođaču, proizvod, porudžbine i lokalna promocija',cat:'product'},
+ {id:'bakery',name:'Pekara',desc:'Svež proizvod, dnevna ponuda, akcije i jutarnje kampanje',cat:'business'},
+ {id:'butcher',name:'Mesara',desc:'Ponuda, sveži proizvodi, vikend akcije i promocije',cat:'business'},
+ {id:'honey',name:'Med i pčelarstvo',desc:'Proizvod, poreklo, edukacija i prodajna promocija',cat:'product'},
+ {id:'dairy',name:'Sir i mlečni proizvodi',desc:'Novi proizvodi, degustacije, ponude i lokalna prodaja',cat:'product'},
+ {id:'winter',name:'Zimnica i domaće prerađevine',desc:'Sezonska prodaja, poklon paketi i porudžbine',cat:'product'},
+ {id:'farm',name:'Poljoprivredno gazdinstvo',desc:'Proizvodi sa gazdinstva, sezona, dostupnost i porudžbine',cat:'lifestyle'}
+];
 let category='all',favorites=JSON.parse(localStorage.getItem('digitalSoulTemplateFavorites')||'[]'),saved=JSON.parse(localStorage.getItem('digitalSoulMockupTemplates')||'[]');
 const grid=document.getElementById('libraryGrid'),details=document.getElementById('templateDetails'),search=document.getElementById('librarySearch'),count=document.getElementById('libraryCount'),empty=document.getElementById('libraryEmpty'),sort=document.getElementById('librarySort');
+function renderIndustryPacks(){
+ const wrap=document.getElementById('industryPacks'); if(!wrap)return;
+ wrap.innerHTML='';
+ industryPacks.forEach(p=>{const el=document.createElement('button');el.className='industry-pack';el.type='button';el.innerHTML='<strong>'+p.name+'</strong><small>'+p.desc+'</small>';el.onclick=()=>{category=p.cat;document.querySelectorAll('.category').forEach(x=>x.classList.toggle('active',x.dataset.category===category));search.value=p.name.split(' ')[0];render();renderIndustryPacks();document.getElementById('libraryGrid').scrollIntoView({behavior:'smooth',block:'start'})};wrap.appendChild(el)})
+}
 function render(){
 let q=(search.value||'').toLowerCase().trim(), list;
 if(category==='mine'){
