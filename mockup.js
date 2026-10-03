@@ -5,6 +5,9 @@ const previewVideo=document.getElementById('previewVideo');
 const mockupPrompt=document.getElementById('mockupPrompt');
 const applyMockupPrompt=document.getElementById('applyMockupPrompt');
 const mockupPromptStatus=document.getElementById('mockupPromptStatus');
+const heroMockupPrompt=document.getElementById('heroMockupPrompt');
+const heroGenerateScene=document.getElementById('heroGenerateScene');
+const heroPromptStatus=document.getElementById('heroPromptStatus');
 const autoRotate3D=document.getElementById('autoRotate3D');
 const imageStrip=document.getElementById('imageStrip');
 const uploadCount=document.getElementById('uploadCount');
@@ -612,7 +615,18 @@ function renderTemplateLibrary(resetVisible=true){
 }
 
 const PROMPT_SCENE_ALIASES=[
-  ['multi-device','multi device','više uređaja','multi-device'],
+  ['paper-stack','papira','papiri','listovi','listova','složeni papiri','slozeni papiri','papir stack','paper stack','stack papira'],
+  ['sheet-scattered','rasuti papiri','rasute papire','razbacani papiri','scattered papers'],
+  ['sheet-perspective','papir pod uglom','list pod uglom','perspektiva papira','perspektiva lista'],
+  ['document-stack','dokumenata','dokumenta','dokument','više dokumenata','vise dokumenata','document stack'],
+  ['ebook-spread','ebook','e-book','otvorena knjiga','otvoren ebook'],
+  ['magazine-spread','magazin','časopis','casopis','magazine'],
+  ['open-magazine','otvoren magazin','otvoren časopis','otvoren casopis'],
+  ['web-pages','web stranice','web stranica','sajt','website','web page'],
+  ['web-foldout','harmonika','web harmonika','foldout'],
+  ['isometric-cards','izometrij','izometrijske kartice','izometric cards'],
+  ['floating-cards','lebdeće kartice','lebdece kartice','floating cards'],
+  ['multi-device','više uređaja','vise uredjaja','multi device'],
   ['laptop-angle','laptop pod uglom','laptop ugao','laptop angle'],
   ['tablet','tablet','ipad'],
   ['laptop','laptop','notebook','macbook'],
@@ -621,8 +635,17 @@ const PROMPT_SCENE_ALIASES=[
   ['planner','planner','planer'],
   ['poster','poster'],
   ['social','social media','instagram','story','reel'],
-  ['sheet-single','list','stranica','jedan list'],
-  ['web-pages','web stranice','web page','sajt']
+  ['sheet-single','jedan list','jedan papir','single sheet'],
+  ['business','business scena','poslovna scena','biznis'],
+  ['fitness','fitness','fitnes','teretana'],
+  ['hotel','hotel'],
+  ['restaurant','restoran','restaurant'],
+  ['yoga','yoga','joga'],
+  ['beauty','beauty','lepota','salon'],
+  ['office','kancelarija','office'],
+  ['desk','radni sto','desk'],
+  ['product','proizvod','product'],
+  ['packaging','ambalaža','ambalaza','packaging']
 ];
 function getPromptScene(text){
   for(const [scene,...aliases] of PROMPT_SCENE_ALIASES){
@@ -633,46 +656,76 @@ function getPromptScene(text){
 function applyMockupPromptInstruction(value){
   const text=String(value||'').trim().toLowerCase();
   if(!text){
-    if(mockupPromptStatus)mockupPromptStatus.textContent='Napiši instrukciju, npr. „Tablet, video, 3D rotacija, sage green pozadina“.';
+    const msg='Napiši šta želiš, npr. „3 bela dokumenta, jedan preko drugog, champagne gold pozadina, luxury stil“.';
+    if(mockupPromptStatus)mockupPromptStatus.textContent=msg;
+    if(heroPromptStatus)heroPromptStatus.textContent=msg;
     return false;
   }
+
   const scene=getPromptScene(text);
   const wantsVideo=/\\b(video|snimak|animacija|mp4|webm)\\b/i.test(text);
-  const wants3d=/3d|rotacij|vrti|okret|perspektiv/i.test(text);
+  const wants3d=/3d|rotacij|vrti|okret|perspektiv|ugao|isometrij/i.test(text);
   const wantsFlat=/\\b(bez 3d|statičan|statično|obicni frame|obični frame)\\b/i.test(text);
   const color=normalizeColorPrompt(text);
+
+  // Stil / layout
+  let layout=null;
+  if(/luxury|luksuz|elegant|eleganc|premium|champagne/.test(text))layout='luxury';
+  else if(/minimal|minimalistič|minimalist/.test(text))layout='minimal';
+  else if(/wellness|spa|mirno|prirod/.test(text))layout='wellness';
+  else if(/business|poslov|corporate|biznis/.test(text))layout='business';
+  if(layout&&templateSelect){templateSelect.value=layout;applyTemplate(layout);}
 
   if(scene){
     sceneSelect.value=scene;
     setScene(scene);
+  }else if(/papir|papira|list|dokument/.test(text)){
+    sceneSelect.value='paper-stack';
+    setScene('paper-stack');
   }
+
   if(color) applyPromptColor(text);
-  if(wants3d && !wantsFlat){
+
+  // Broj komada — čuvamo kao podatak scene za buduće slojeve.
+  const countMatch=text.match(/\\b([2-9])\\s+(?:komada?|papira?|listova?|dokumenata?|kartica?)\\b/);
+  const count=countMatch?Number(countMatch[1]):null;
+  if(count) mockupObject.dataset.promptCount=String(count);
+
+  if(wants3d&&!wantsFlat){
     autoRotate3D.checked=true;
     mockupObject.classList.add('is-rotating-3d');
   }else if(wantsFlat){
     autoRotate3D.checked=false;
     mockupObject.classList.remove('is-rotating-3d');
   }
+
+  // Opis „jedan preko drugog / stack“ bira složenu scenu.
+  if(/jedan preko drugog|jedan preko drugog|naslagan|složen|slozeni|stack/.test(text) && !scene){
+    sceneSelect.value='paper-stack';
+    setScene('paper-stack');
+  }
+
   if(wantsVideo){
     const hasVideo=images.some(x=>x.kind==='video');
     if(hasVideo){
       const idx=images.findIndex(x=>x.kind==='video');
       selectImage(idx);
-    }else if(mockupPromptStatus){
-      mockupPromptStatus.textContent='Instrukcija traži video. Sada ubaci MP4 ili WEBM fajl, pa će biti prikazan u sceni.';
     }
   }
+
   const parts=[];
-  if(scene)parts.push(sceneNames[scene]);
+  if(scene||sceneSelect.value)parts.push(sceneNames[scene||sceneSelect.value]||'scena');
+  if(count)parts.push(count+' komada');
+  if(layout)parts.push('stil '+templateSelect.options[templateSelect.selectedIndex].text);
   if(wantsVideo)parts.push('video');
-  if(wants3d&&!wantsFlat)parts.push('3D rotacija');
+  if(wants3d&&!wantsFlat)parts.push('3D');
   if(color)parts.push('pozadina '+color);
-  if(!parts.length)parts.push('instrukcija primenjena na postojeća podešavanja');
-  if(mockupPromptStatus)mockupPromptStatus.textContent='Primeno: '+parts.join(' · ')+'.';
+
+  const result='Generisano: '+parts.join(' · ')+'.';
+  if(mockupPromptStatus)mockupPromptStatus.textContent=result;
+  if(heroPromptStatus)heroPromptStatus.textContent=result;
   return true;
 }
-
 function updateTransform(){
   mockupObject.classList.toggle('is-rotating-3d',!!autoRotate3D?.checked);
   mockupObject.style.transform=`perspective(1200px) translate(${offsetX/2}%,${offsetY/2}%) rotateX(${tiltX}deg) rotateY(${perspective}deg) rotateZ(${tiltY}deg) scale(${objectScale/100}) rotate(${objectRotation}deg)`;
@@ -1059,6 +1112,12 @@ tiltYRange.addEventListener('input',e=>{tiltY=Number(e.target.value);updateTrans
 bgColor.addEventListener('input',e=>{mockupStage.style.background=e.target.value;});
 applyColorPrompt?.addEventListener('click',()=>applyPromptColor(colorPrompt?.value));
 applyMockupPrompt?.addEventListener('click',()=>applyMockupPromptInstruction(mockupPrompt?.value));
+heroGenerateScene?.addEventListener('click',()=>{
+  const value=heroMockupPrompt?.value||'';
+  if(mockupPrompt)mockupPrompt.value=value;
+  applyMockupPromptInstruction(value);
+});
+heroMockupPrompt?.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();heroGenerateScene?.click();}});
 mockupPrompt?.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();applyMockupPromptInstruction(mockupPrompt.value);}});
 autoRotate3D?.addEventListener('change',updateTransform);
 colorPrompt?.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();applyPromptColor(colorPrompt.value);}});
