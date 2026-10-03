@@ -24,7 +24,15 @@ const industryPacks=[
 ];
 
 
-const purposeBriefs={
+
+const productInputFields=['productName','productPrice','productBenefit','productProof','productLocation','productCta','productDescription'];
+function initProductInput(){
+ const save=document.getElementById('saveProductInput');if(!save)return;
+ const key='digitalSoulProductInput';const data=JSON.parse(localStorage.getItem(key)||'{}');
+ productInputFields.forEach(id=>{const el=document.getElementById(id);if(el&&data[id])el.value=data[id]});
+ save.onclick=()=>{const out={};productInputFields.forEach(id=>{const el=document.getElementById(id);if(el)out[id]=el.value.trim()});localStorage.setItem(key,JSON.stringify(out));const ok=document.getElementById('productSaved');ok.hidden=false;setTimeout(()=>ok.hidden=true,2200)};
+}
+\nconst purposeBriefs={
  'Reklama':{hook:'Pažnja / problem / potreba',headline:'Jasna glavna poruka ponude',benefit:'Zašto je ponuda korisna kupcu',proof:'Dokaz, kvalitet ili razlog za poverenje',cta:'Pozovi kupca na sledeći korak'},
  'Prodaja':{hook:'Ponuda koja privlači pažnju',headline:'Šta se prodaje i zašto sada',benefit:'Ključna korist proizvoda',proof:'Cena, dostupnost ili konkretna vrednost',cta:'Poruči / kupi / javi se'},
  'Akcija':{hook:'Akcija / ograničena ponuda',headline:'Šta je sniženo ili posebno',benefit:'Ušteda ili dodatna vrednost',proof:'Period važenja ili dostupnost',cta:'Iskoristi ponudu'},
@@ -90,4 +98,4 @@ function showDetails(t){
  details.scrollIntoView({behavior:'smooth',block:'start'});
 }
 document.querySelectorAll('.category').forEach(b=>b.onclick=()=>{category=b.dataset.category;document.querySelectorAll('.category').forEach(x=>x.classList.remove('active'));b.classList.add('active');render()});
-search.oninput=render;sort.onchange=render;initCampaignBuilder();document.getElementById('libraryFavorites').onclick=()=>{category=category==='mine'?'all':'mine';document.querySelectorAll('.category').forEach(x=>x.classList.toggle('active',x.dataset.category===category));render()};render();
+search.oninput=render;sort.onchange=render;initCampaignBuilder();initProductInput();document.getElementById('libraryFavorites').onclick=()=>{category=category==='mine'?'all':'mine';document.querySelectorAll('.category').forEach(x=>x.classList.toggle('active',x.dataset.category===category));render()};render();
