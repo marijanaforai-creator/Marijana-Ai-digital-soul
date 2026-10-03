@@ -36,12 +36,15 @@
       <aside class="mockup-panel">
         <div class="panel-block">
           <label class="upload-box" for="imageUpload">
-            <input id="imageUpload" type="file" accept="image/*">
+            <input id="imageUpload" type="file" accept="image/*" multiple>
+            <span id="uploadCount" class="upload-count">0 slika</span>
             <span class="upload-icon">＋</span>
             <strong>Ubaci svoju sliku</strong>
-            <small>PNG, JPG ili WEBP</small>
+            <small>PNG, JPG ili WEBP · do 4 slike</small>
           </label>
         </div>
+
+        <div id="imageStrip" class="image-strip" aria-label="Izabrane slike"></div>
 
         <div class="panel-block">
           <label for="sceneSelect">Scena</label>
@@ -60,6 +63,17 @@
         </div>
 
         <div class="panel-block">
+          <label for="formatSelect">Format izvoza</label>
+          <select id="formatSelect">
+            <option value="square">Kvadrat · 1200 × 1200</option>
+            <option value="portrait">Portret · 1080 × 1350</option>
+            <option value="landscape">Pejzaž · 1600 × 900</option>
+            <option value="story">Story/Reel · 1080 × 1920</option>
+            <option value="pin">Pinterest · 1000 × 1500</option>
+          </select>
+        </div>
+
+        <div class="panel-block">
           <label for="scaleRange">Veličina slike <span id="scaleValue">100%</span></label>
           <input id="scaleRange" type="range" min="50" max="150" value="100">
         </div>
@@ -67,6 +81,21 @@
         <div class="panel-block">
           <label for="rotateRange">Rotacija <span id="rotateValue">0°</span></label>
           <input id="rotateRange" type="range" min="-15" max="15" value="0">
+        </div>
+
+        <div class="panel-block">
+          <label for="positionX">Horizontalno <span id="positionXValue">0</span></label>
+          <input id="positionX" type="range" min="-100" max="100" value="0">
+          <label for="positionY" class="sub-control-label">Vertikalno <span id="positionYValue">0</span></label>
+          <input id="positionY" type="range" min="-100" max="100" value="0">
+        </div>
+
+        <div class="panel-block">
+          <label for="fitSelect">Način prikaza</label>
+          <select id="fitSelect">
+            <option value="cover">Popuni scenu</option>
+            <option value="contain">Prikaži celu sliku</option>
+          </select>
         </div>
 
         <div class="panel-block">

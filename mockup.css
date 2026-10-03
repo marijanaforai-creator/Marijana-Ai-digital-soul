@@ -45,3 +45,14 @@
 .scene-label{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);z-index:3;font-size:10px;letter-spacing:.18em;font-weight:700;color:rgba(23,60,50,.7);white-space:nowrap}
 @media(max-width:900px){.mockup-grid{grid-template-columns:1fr}.mockup-panel{position:static}.mockup-stage{min-height:560px}}
 @media(max-width:600px){.mockup-hero{padding:60px 0}.mockup-workspace{padding-top:30px}.panel-actions{grid-template-columns:1fr}.mockup-stage{min-height:470px}.phone-object .device-frame{width:205px}.phone-object .device-screen{height:410px}.laptop-object .device-frame{width:360px}.laptop-object .device-screen{height:220px}.laptop-object:after{width:420px;margin-left:-30px}.planner-object .device-screen{width:270px;height:365px}.poster-object .device-screen{width:285px;height:380px}.business-object .device-screen,.fitness-object .device-screen,.hotel-object .device-screen,.restaurant-object .device-screen,.yoga-object .device-screen,.beauty-object .device-screen{width:330px;height:245px}}
+
+
+.upload-count{font-size:10px;color:var(--deep-sage);font-weight:700}
+.image-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:-6px 0 22px}
+.image-thumb{aspect-ratio:1;border:1px solid rgba(37,37,34,.12);background:var(--ivory);overflow:hidden;cursor:pointer;padding:0;position:relative}
+.image-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.image-thumb.active{outline:2px solid var(--gold);outline-offset:1px}
+.image-thumb .thumb-index{position:absolute;left:4px;bottom:4px;background:rgba(23,60,50,.82);color:#fff;font-size:9px;padding:2px 5px}
+.sub-control-label{margin-top:15px}
+.mockup-object img.fit-contain{object-fit:contain}
+.mockup-object img.fit-cover{object-fit:cover}
