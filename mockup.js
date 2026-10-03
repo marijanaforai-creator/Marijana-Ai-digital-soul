@@ -383,14 +383,23 @@ function resizeImageFromHandle(e){
   window.addEventListener('pointerup',up);
 }
 function setScene(value){
-  // Uređaj/scena je nezavisna od layouta. Promena uređaja
-  // ne sme automatski da menja pozadinu ili layout.
-  mockupObject.className=`mockup-object ${value}-object`;
-  mockupStage.className=`mockup-stage scene-${value}`;
+  // Uređaj/scena je potpuno odvojen od Layout-a.
+  // Koristimo i klasu i data atribut da izbor uređaja bude pouzdan
+  // čak i kada se stilovi menjaju ili proširuju.
+  const scene=sceneNames[value] ? value : 'phone';
+  mockupObject.className=`mockup-object ${scene}-object`;
+  mockupObject.dataset.scene=scene;
+  mockupStage.className=`mockup-stage scene-${scene}`;
+  mockupStage.dataset.scene=scene;
   mockupStage.classList.toggle('blank-white-layout', templateSelect?.value==='blank-white');
-  sceneTitle.textContent=sceneNames[value]||'Mockup';
-  // Naziv scene se ne ispisuje preko mockupa.
-  if(images.length)statusText.textContent=`Slika je postavljena u scenu: ${sceneNames[value]||value}.`;
+  sceneTitle.textContent=sceneNames[scene]||'Mockup';
+
+  // Nateraj browser da osveži geometriju uređaja odmah nakon promene.
+  mockupObject.style.display='none';
+  void mockupObject.offsetHeight;
+  mockupObject.style.display='';
+
+  if(images.length)statusText.textContent=`Slika je postavljena u scenu: ${sceneNames[scene]||scene}.`;
 }
 
 function applyTemplate(value){
