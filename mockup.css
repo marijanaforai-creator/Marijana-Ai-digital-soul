@@ -137,3 +137,7 @@
 .batch-result small{display:block;color:#777;margin-top:3px}
 @media(max-width:900px){.batch-results{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:600px){.batch-results{grid-template-columns:repeat(2,1fr)}}
+
+
+.batch-export-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:18px;padding-top:18px;border-top:1px solid rgba(37,37,34,.08)}
+.batch-export-actions .btn{min-width:170px}
