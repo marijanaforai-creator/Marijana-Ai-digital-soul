@@ -49,6 +49,10 @@ let offsetY=0;
 let perspective=0;
 let tiltX=0;
 let tiltY=0;
+let imageZoom=100;
+let imageOffsetX=0;
+let imageOffsetY=0;
+let imageDrag=null;
 const TEMPLATE_KEY='digitalSoulMockupTemplates';
 const FAVORITES_KEY='digitalSoulMockupFavorites';
 const libraryTemplates=[
@@ -311,6 +315,8 @@ function selectImage(index){
   activeImageIndex=index;
   previewImage.src=images[index].data;
   previewImage.style.display='block';
+  imageZoom=100; imageOffsetX=0; imageOffsetY=0;
+  updateImageTransform();
   previewImage.classList.remove('mockup-suck-in');
   void previewImage.offsetWidth;
   previewImage.classList.add('mockup-suck-in');
@@ -320,6 +326,64 @@ renderTemplateLibrary();
   statusText.textContent=`Aktivna je slika ${index+1} od ${images.length}.`;
 }
 
+function updateImageTransform(){
+  previewImage.style.transform=`translate(${imageOffsetX}px,${imageOffsetY}px) scale(${imageZoom/100})`;
+  previewImage.style.cursor=images.length?'grab':'default';
+}
+function clampImagePosition(){
+  const frame=document.querySelector('.device-screen');
+  if(!frame)return;
+  const maxX=Math.max(0,frame.clientWidth*(imageZoom/100-1)/2+frame.clientWidth*.25);
+  const maxY=Math.max(0,frame.clientHeight*(imageZoom/100-1)/2+frame.clientHeight*.25);
+  imageOffsetX=Math.max(-maxX,Math.min(maxX,imageOffsetX));
+  imageOffsetY=Math.max(-maxY,Math.min(maxY,imageOffsetY));
+}
+function initDirectImageControls(){
+  if(!previewImage)return;
+  previewImage.addEventListener('pointerdown',e=>{
+    if(!images.length)return;
+    e.preventDefault();
+    previewImage.setPointerCapture?.(e.pointerId);
+    imageDrag={pointerId:e.pointerId,startX:e.clientX,startY:e.clientY,baseX:imageOffsetX,baseY:imageOffsetY};
+    previewImage.style.cursor='grabbing';
+  });
+  previewImage.addEventListener('pointermove',e=>{
+    if(!imageDrag||imageDrag.pointerId!==e.pointerId)return;
+    imageOffsetX=imageDrag.baseX+(e.clientX-imageDrag.startX);
+    imageOffsetY=imageDrag.baseY+(e.clientY-imageDrag.startY);
+    clampImagePosition();
+    updateImageTransform();
+  });
+  const finishDrag=()=>{if(imageDrag){imageDrag=null;updateImageTransform();}};
+  previewImage.addEventListener('pointerup',finishDrag);
+  previewImage.addEventListener('pointercancel',finishDrag);
+  previewImage.addEventListener('wheel',e=>{
+    if(!images.length)return;
+    e.preventDefault();
+    imageZoom=Math.max(40,Math.min(220,imageZoom+(e.deltaY<0?5:-5)));
+    clampImagePosition();
+    updateImageTransform();
+  },{passive:false});
+  previewImage.title='Prevuci za pomeranje • Točkić miša za uvećanje/smanjenje';
+}
+function resizeImageFromHandle(e){
+  if(!images.length)return;
+  e.preventDefault();
+  e.stopPropagation();
+  const startY=e.clientY;
+  const startZoom=imageZoom;
+  const move=ev=>{
+    imageZoom=Math.max(40,Math.min(220,startZoom+(ev.clientY-startY)*0.35));
+    clampImagePosition();
+    updateImageTransform();
+  };
+  const up=()=>{
+    window.removeEventListener('pointermove',move);
+    window.removeEventListener('pointerup',up);
+  };
+  window.addEventListener('pointermove',move);
+  window.addEventListener('pointerup',up);
+}
 function setScene(value){
   if(lifestylePresets[value] && templateSelect){
     const p=lifestylePresets[value];
@@ -405,6 +469,7 @@ function saveTemplate(){
 function setFit(){
   previewImage.classList.remove('fit-cover','fit-contain');
   previewImage.classList.add(`fit-${fitSelect.value}`);
+  updateImageTransform();
 }
 
 function loadTransferredCanvasDesign(){
@@ -439,6 +504,7 @@ function resetAll(){
   imageUpload.value='';
   images=[];
   activeImageIndex=0;
+  imageZoom=100; imageOffsetX=0; imageOffsetY=0;
   previewImage.removeAttribute('src');
   previewImage.style.display='none';
   renderImageStrip();
@@ -609,9 +675,13 @@ loadTransferredCanvasDesign();
 const mockupSurface=document.querySelector('.device-screen');
 mockupSurface?.addEventListener('dragover',e=>{e.preventDefault();mockupSurface.classList.add('drop-ready');});
 mockupSurface?.addEventListener('dragleave',()=>mockupSurface.classList.remove('drop-ready'));
+document.querySelectorAll('.frame-resize-handle').forEach(handle=>handle.addEventListener('pointerdown',resizeImageFromHandle));
 mockupSurface?.addEventListener('drop',e=>{
   e.preventDefault();
   mockupSurface.classList.remove('drop-ready');
   const files=[...e.dataTransfer.files].filter(f=>f.type.startsWith('image/')).slice(0,1);
   if(files.length)loadImages(files);
 });
+
+initDirectImageControls();
+updateImageTransform();
