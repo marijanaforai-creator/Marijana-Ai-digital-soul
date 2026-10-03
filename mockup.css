@@ -753,3 +753,13 @@
 .gradient-card{min-height:82px}
 .palette-license-note{display:block;margin-top:9px;color:#756B7D;font-size:9px;line-height:1.4}
 @media(max-width:600px){.color-palette{grid-template-columns:1fr 1fr;max-height:360px}}
+
+/* AI SCENE GENERATOR */
+.ai-scene-generator{margin:0 0 18px;padding:16px 18px;border:1px solid rgba(200,169,107,.35);border-radius:16px;background:linear-gradient(135deg,rgba(118,84,168,.18),rgba(200,169,107,.10));box-shadow:0 12px 30px rgba(0,0,0,.12)}
+.ai-scene-generator-kicker{font-size:10px;font-weight:800;letter-spacing:.16em;color:#C8A96B;margin-bottom:9px}
+.ai-scene-generator-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:stretch}
+#heroMockupPrompt{width:100%;box-sizing:border-box;resize:vertical;min-height:68px;padding:12px 14px;border:1px solid rgba(200,169,107,.38);border-radius:11px;background:#fff;color:#28222F;font:inherit;line-height:1.45}
+#heroMockupPrompt:focus{outline:2px solid rgba(200,169,107,.25);border-color:#C8A96B}
+#heroGenerateScene{min-width:165px;white-space:nowrap}
+#heroPromptStatus{display:block;margin-top:8px;color:#d9cce7;font-size:11px;line-height:1.4}
+@media(max-width:700px){.ai-scene-generator-row{grid-template-columns:1fr}.ai-scene-generator .btn{width:100%}}
