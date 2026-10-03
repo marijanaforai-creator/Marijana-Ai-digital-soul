@@ -320,7 +320,7 @@ function selectImage(index){
   if(!images[index])return;
   activeImageIndex=index;
   previewImage.src=images[index].data;
-  mockupObject.style.setProperty('--scene-image', `url("\${images[index].data}")`);
+  mockupObject.style.setProperty('--scene-image', `url("${images[index].data}")`);
   previewImage.style.display='block';
   imageZoom=100; imageOffsetX=0; imageOffsetY=0;
   updateImageTransform();
@@ -402,7 +402,7 @@ function setScene(value){
   mockupStage.dataset.scene=scene;
   mockupStage.classList.toggle('blank-white-layout', templateSelect?.value==='blank-white');
   sceneTitle.textContent=sceneNames[scene]||'Mockup';
-  if(images[activeImageIndex]) mockupObject.style.setProperty('--scene-image', `url("\${images[activeImageIndex].data}")`);
+  if(images[activeImageIndex]) mockupObject.style.setProperty('--scene-image', `url("${images[activeImageIndex].data}")`);
 
   // Nateraj browser da osveži geometriju uređaja odmah nakon promene.
   mockupObject.style.display='none';
