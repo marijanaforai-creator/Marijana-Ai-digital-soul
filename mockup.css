@@ -694,3 +694,17 @@
   .frame-object .device-frame{width:250px!important;height:325px!important}
   .mockup-object.is-rotating-3d{animation-duration:6s}
 }
+
+/* Fix: 3D scene bez sadržaja ne prikazuje broken-image ikonu. */
+.mockup-object[data-scene="laptop-angle"] .device-screen img,
+.mockup-object[data-scene="multi-device"] .device-screen img,
+.mockup-object[data-scene="isometric-cards"] .device-screen img,
+.mockup-object[data-scene="floating-cards"] .device-screen img,
+.mockup-object[data-scene="paper-stack"] .device-screen img,
+.mockup-object[data-scene="magazine-spread"] .device-screen img,
+.mockup-object[data-scene="open-magazine"] .device-screen img,
+.mockup-object[data-scene="desktop-scene"] .device-screen img{
+  display:none!important;
+}
+.prompt-studio-block{order:-10;position:relative}
+.prompt-studio-block textarea:focus{outline:2px solid rgba(118,84,168,.22);border-color:#7654A8}
