@@ -121,7 +121,7 @@
   letter-spacing:.08em;
   pointer-events:none;
 }
-.canvas-element.frame-element .frame-placeholder:has(+ .frame-content){display:none}
+.canvas-element.frame-element .frame-content + .frame-placeholder{display:none}
 .canvas-element.frame-element.frame-suck-target{
   outline:2px solid #C8A96B;
   outline-offset:2px;
