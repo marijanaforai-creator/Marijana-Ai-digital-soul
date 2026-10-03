@@ -310,6 +310,9 @@ function selectImage(index){
   activeImageIndex=index;
   previewImage.src=images[index].data;
   previewImage.style.display='block';
+  previewImage.classList.remove('mockup-suck-in');
+  void previewImage.offsetWidth;
+  previewImage.classList.add('mockup-suck-in');
   renderImageStrip();
   renderSavedTemplates();
 renderTemplateLibrary();
@@ -593,3 +596,15 @@ renderImageStrip();
 
 // Ako je dizajn poslat direktno iz Canvas Studio, automatski ga preuzmi u Mockup.
 loadTransferredCanvasDesign();
+
+
+/* Direktno prevlačenje slike na frame — slika se automatski „usisa“ u površinu. */
+const mockupSurface=document.querySelector('.device-screen');
+mockupSurface?.addEventListener('dragover',e=>{e.preventDefault();mockupSurface.classList.add('drop-ready');});
+mockupSurface?.addEventListener('dragleave',()=>mockupSurface.classList.remove('drop-ready'));
+mockupSurface?.addEventListener('drop',e=>{
+  e.preventDefault();
+  mockupSurface.classList.remove('drop-ready');
+  const files=[...e.dataTransfer.files].filter(f=>f.type.startsWith('image/')).slice(0,1);
+  if(files.length)loadImages(files);
+});
