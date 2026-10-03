@@ -15,7 +15,7 @@
 .side-tool{min-height:54px;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:#464942;cursor:pointer;text-decoration:none;font-size:19px;border-radius:5px}
 .side-tool span{font-size:8px;text-transform:uppercase;letter-spacing:.05em}
 .side-tool:hover,.side-tool.active{background:#f0eee7;color:var(--emerald)}
-.upload-tool input{display:none}.tool-divider{height:1px;background:rgba(37,37,34,.1);margin:5px 0}
+.sr-only-input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}.upload-tool{border:0;font:inherit}.tool-divider{height:1px;background:rgba(37,37,34,.1);margin:5px 0}
 .workspace-shell{min-width:0;display:flex;flex-direction:column}
 .workspace-toolbar{height:58px;background:#faf9f6;border-bottom:1px solid rgba(37,37,34,.08);display:flex;align-items:center;justify-content:space-between;padding:0 18px}
 .format-picker{display:flex;align-items:center;gap:8px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em}
