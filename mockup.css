@@ -334,3 +334,26 @@
 .mockup-stage.blank-white-layout{background:#FFFFFF!important}
 .mockup-stage.blank-white-layout .scene-decoration,
 .mockup-stage.blank-white-layout .scene-label{display:none!important}
+
+
+/* Bela stranica / Frame — čista bela površina bez scenografije */
+.mockup-stage.blank-white-layout{
+  background:#FFFFFF!important;
+}
+.mockup-stage.blank-white-layout .scene-decoration,
+.mockup-stage.blank-white-layout .scene-label{
+  display:none!important;
+}
+.mockup-stage.blank-white-layout .mockup-object{
+  z-index:5;
+  opacity:1;
+  visibility:visible;
+}
+.mockup-stage.blank-white-layout .device-frame{
+  opacity:1;
+  visibility:visible;
+}
+.mockup-stage.blank-white-layout .device-screen{
+  opacity:1;
+  visibility:visible;
+}
