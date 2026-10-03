@@ -202,7 +202,105 @@ function downloadPromoPack(){
  const blob=new Blob([text],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
  a.href=url;a.download='digital-soul-promo-'+fmt.id+'.txt';a.click();URL.revokeObjectURL(url);
 }
-document.querySelectorAll('.category').forEach(x=>x.classList.toggle('active',x.dataset.category===category));search.value=p.name.split(' ')[0];render();renderIndustryPacks();document.getElementById('libraryGrid').scrollIntoView({behavior:'smooth',block:'start'})};wrap.appendChild(el)})
+
+const promoPackChannels=[
+ {id:'instagram',name:'Instagram objava',format:'Objava'},
+ {id:'story',name:'Story / Reel',format:'Story'},
+ {id:'facebook',name:'Facebook',format:'Objava'},
+ {id:'pinterest',name:'Pinterest',format:'Pin'},
+ {id:'tiktok',name:'TikTok',format:'Reel / TikTok'},
+ {id:'linkedin',name:'LinkedIn',format:'Objava'},
+ {id:'email',name:'Email',format:'Email'},
+ {id:'web',name:'Web',format:'Blog'}
+];
+let promoPackState={channels:promoPackChannels.map(x=>x.id),results:[]};
+function getPromoPackData(){
+ const product=JSON.parse(localStorage.getItem('digitalSoulProductInput')||'{}');
+ const offer=JSON.parse(localStorage.getItem('digitalSoulOffer')||'{}');
+ const audience=JSON.parse(localStorage.getItem('digitalSoulAudienceSettings')||'{}');
+ const campaign=JSON.parse(localStorage.getItem('digitalSoulLastCampaign')||'{}');
+ return {
+  name:product.productName||'Naziv proizvoda',
+  benefit:product.productBenefit||'Glavna korist proizvoda',
+  proof:product.productProof||'Kvalitet i razlog za poverenje',
+  location:product.productLocation||'',
+  cta:product.productCta||'Saznaj više',
+  description:product.productDescription||'',
+  price:offer.offerPrice||product.productPrice||'Cena',
+  oldPrice:offer.offerOldPrice||'',
+  discount:offer.offerDiscount||'',
+  deadline:offer.offerDeadline||'',
+  code:offer.offerCode||'',
+  offerMessage:offer.offerMessage||'',
+  audience:audience.audience||'general',
+  goal:campaign.goal||document.getElementById('packGoal')?.value||'Prodaja'
+ };
+}
+function initPromoPackOrchestrator(){
+ const wrap=document.getElementById('packChannels');if(!wrap)return;
+ const saved=JSON.parse(localStorage.getItem('digitalSoulPromoPackDraft')||'null');
+ const name=document.getElementById('packName');
+ if(saved){name.value=saved.name||'';promoPackState.channels=saved.channels||promoPackState.channels}
+ wrap.innerHTML=promoPackChannels.map(x=>'<button type="button" class="pack-channel '+(promoPackState.channels.includes(x.id)?'active':'')+'" data-id="'+x.id+'">'+x.name+'</button>').join('');
+ wrap.querySelectorAll('.pack-channel').forEach(b=>b.onclick=()=>{
+  const id=b.dataset.id;
+  promoPackState.channels=promoPackState.channels.includes(id)?promoPackState.channels.filter(x=>x!==id):[...promoPackState.channels,id];
+  b.classList.toggle('active',promoPackState.channels.includes(id));
+ });
+ document.getElementById('buildPack').onclick=buildPromoPack;
+ document.getElementById('refreshPack').onclick=()=>buildPromoPack(true);
+ document.getElementById('copyPack').onclick=copyPromoPack;
+ document.getElementById('savePack').onclick=savePromoPack;
+ document.getElementById('openPackMockup').onclick=()=>location.href='mockup.html';
+ renderSavedPromoPacks();
+}
+function makeChannelCopy(channel,d){
+ const base=d.offerMessage||d.benefit;
+ const headline=d.discount?d.name+' — '+d.discount+'':'Ponuda: '+d.name;
+ const price=d.oldPrice?d.oldPrice+' → '+d.price:d.price;
+ if(channel==='instagram')return {title:headline,body:base+' '+d.name+'. '+d.benefit+'.'+(d.proof?' '+d.proof+'.':'')+' '+d.cta+'.',meta:'Cena: '+price+(d.deadline?' · '+d.deadline:'')};
+ if(channel==='story')return {title:'STORY / REEL HOOK',body:headline+'\n\n'+d.benefit+'\n\nCena: '+price+'\n\n'+d.cta,meta:d.code?'Kod: '+d.code:''};
+ if(channel==='facebook')return {title:headline,body:base+'\n\n'+d.description+'\n\n'+d.proof+'\nCena: '+price+(d.deadline?'\nRok: '+d.deadline:'')+'\n\n'+d.cta,meta:d.location};
+ if(channel==='pinterest')return {title:d.name+' | '+(d.benefit||'Ponuda'),body:base+' '+d.proof+'. '+d.benefit+'. '+d.cta+'.',meta:'Ključne teme: '+d.name+', ponuda, proizvod, '+(d.location||'lokalna kupovina')};
+ if(channel==='tiktok')return {title:'Hook: '+headline,body:'0–3s: '+headline+'\n3–7s: '+d.benefit+'\n7–12s: '+base+'\n12–15s: '+d.cta,meta:'CTA: '+d.cta};
+ if(channel==='linkedin')return {title:headline,body:d.name+' donosi: '+d.benefit+'.\n\n'+d.proof+'.\n\n'+(d.offerMessage||'Ponuda je dostupna sada.')+'\n\n'+d.cta,meta:'Cilj: '+d.goal};
+ if(channel==='email')return {title:'Subject: '+headline,body:'Zdravo,\n\n'+base+'\n\n'+d.benefit+'. '+d.proof+'.\n\nCena: '+price+(d.deadline?'\nRok: '+d.deadline:'')+(d.code?'\nKod: '+d.code:'')+'\n\n'+d.cta,meta:'Email kampanja'};
+ return {title:headline,body:d.name+'\n\n'+base+'\n\nKorist: '+d.benefit+'\nKvalitet: '+d.proof+'\nCena: '+price+'\n\n'+d.cta,meta:'Web sadržaj'};
+}
+function buildPromoPack(regenerate=false){
+ const result=document.getElementById('packResult'),warnings=document.getElementById('packWarnings');
+ if(!promoPackState.channels.length){warnings.hidden=false;warnings.innerHTML='<strong>Izaberi najmanje jedan kanal.</strong>';return}
+ const d=getPromoPackData();
+ const missing=[];if(d.name==='Naziv proizvoda')missing.push('naziv proizvoda');if(d.price==='Cena')missing.push('cena');if(d.cta==='Saznaj više')missing.push('CTA');
+ warnings.hidden=!missing.length;warnings.innerHTML=missing.length?'<strong>Preporuka:</strong> dopuni: '+missing.join(', ')+'. Paket može biti generisan i bez ovih podataka.':'';
+ promoPackState.results=promoPackState.channels.map((id,i)=>({id,channel:promoPackChannels.find(x=>x.id===id).name,...makeChannelCopy(id,d),variant:regenerate?Date.now()+i:i}));
+ result.hidden=false;
+ result.innerHTML='<div class="pack-summary"><strong>'+d.name+'</strong><span>'+d.goal+'</span><span>'+promoPackState.results.length+' kanala</span></div><div class="pack-cards">'+promoPackState.results.map((x,i)=>'<article class="pack-card"><div class="pack-card-head"><strong>'+x.channel+'</strong><button type="button" class="btn pack-copy" data-index="'+i+'">Kopiraj</button></div><h4>'+x.title+'</h4><textarea readonly>'+x.body+'</textarea><small>'+x.meta+'</small></article>').join('')+'</div>';
+ result.querySelectorAll('.pack-copy').forEach(b=>b.onclick=()=>{const x=promoPackState.results[Number(b.dataset.index)];navigator.clipboard?.writeText(x.title+'\n\n'+x.body);b.textContent='Kopirano ✓';setTimeout(()=>b.textContent='Kopiraj',1500)});
+}
+function copyPromoPack(){
+ if(!promoPackState.results.length)buildPromoPack();
+ const text=promoPackState.results.map(x=>'## '+x.channel+'\n'+x.title+'\n\n'+x.body+'\n'+x.meta).join('\n\n');
+ navigator.clipboard?.writeText(text);
+}
+function savePromoPack(){
+ if(!promoPackState.results.length)buildPromoPack();
+ const name=document.getElementById('packName').value.trim()||'Promo paket '+new Date().toLocaleDateString('sr-RS');
+ const packs=JSON.parse(localStorage.getItem('digitalSoulPromoPacks')||'[]');
+ packs.unshift({id:Date.now(),name,goal:document.getElementById('packGoal').value,channels:promoPackState.channels,results:promoPackState.results,created:new Date().toISOString()});
+ localStorage.setItem('digitalSoulPromoPacks',JSON.stringify(packs.slice(0,20)));
+ localStorage.setItem('digitalSoulPromoPackDraft',JSON.stringify({name,channels:promoPackState.channels}));
+ renderSavedPromoPacks();
+}
+function renderSavedPromoPacks(){
+ const wrap=document.getElementById('savedPacks');if(!wrap)return;
+ const packs=JSON.parse(localStorage.getItem('digitalSoulPromoPacks')||'[]');
+ if(!packs.length){wrap.innerHTML='<div class="saved-pack-empty">Još nema sačuvanih promo paketa.</div>';return}
+ wrap.innerHTML=packs.map((p,i)=>'<article class="saved-pack"><strong>'+p.name+'</strong><small>'+p.channels.length+' kanala · '+new Date(p.created).toLocaleDateString('sr-RS')+'</small><div><button class="btn load-pack" data-index="'+i+'">Otvori</button><button class="btn delete-pack" data-index="'+i+'">Obriši</button></div></article>').join('');
+ wrap.querySelectorAll('.load-pack').forEach(b=>b.onclick=()=>{const p=packs[Number(b.dataset.index)];document.getElementById('packName').value=p.name;document.getElementById('packGoal').value=p.goal;promoPackState.channels=p.channels;promoPackState.results=p.results;initPromoPackOrchestrator();document.getElementById('packResult').hidden=false;document.getElementById('packResult').innerHTML='<div class="pack-summary"><strong>'+p.name+'</strong><span>'+p.goal+'</span><span>'+p.results.length+' kanala</span></div><div class="pack-cards">'+p.results.map(x=>'<article class="pack-card"><div class="pack-card-head"><strong>'+x.channel+'</strong></div><h4>'+x.title+'</h4><textarea readonly>'+x.body+'</textarea><small>'+x.meta+'</small></article>').join('')+'</div>'});
+ wrap.querySelectorAll('.delete-pack').forEach(b=>b.onclick=()=>{packs.splice(Number(b.dataset.index),1);localStorage.setItem('digitalSoulPromoPacks',JSON.stringify(packs));renderSavedPromoPacks()});
+}
+\ndocument.querySelectorAll('.category').forEach(x=>x.classList.toggle('active',x.dataset.category===category));search.value=p.name.split(' ')[0];render();renderIndustryPacks();document.getElementById('libraryGrid').scrollIntoView({behavior:'smooth',block:'start'})};wrap.appendChild(el)})
 }
 function render(){
 let q=(search.value||'').toLowerCase().trim(), list;
@@ -231,4 +329,4 @@ function showDetails(t){
  details.scrollIntoView({behavior:'smooth',block:'start'});
 }
 document.querySelectorAll('.category').forEach(b=>b.onclick=()=>{category=b.dataset.category;document.querySelectorAll('.category').forEach(x=>x.classList.remove('active'));b.classList.add('active');render()});
-search.oninput=render;sort.onchange=render;initCampaignBuilder();initProductInput();initCorrectionEngine();initRepurposeEngine();initAudienceEngine();initCampaignBuilder2();initOfferEngine();initVisualPromoEngine();document.getElementById('generateContent')?.addEventListener('click',generateContent);document.getElementById('libraryFavorites').onclick=()=>{category=category==='mine'?'all':'mine';document.querySelectorAll('.category').forEach(x=>x.classList.toggle('active',x.dataset.category===category));render()};render();
+search.oninput=render;sort.onchange=render;initCampaignBuilder();initProductInput();initCorrectionEngine();initRepurposeEngine();initAudienceEngine();initCampaignBuilder2();initOfferEngine();initVisualPromoEngine();initPromoPackOrchestrator();document.getElementById('generateContent')?.addEventListener('click',generateContent);document.getElementById('libraryFavorites').onclick=()=>{category=category==='mine'?'all':'mine';document.querySelectorAll('.category').forEach(x=>x.classList.toggle('active',x.dataset.category===category));render()};render();
