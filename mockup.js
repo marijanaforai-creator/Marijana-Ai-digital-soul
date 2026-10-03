@@ -3,6 +3,10 @@ const previewImage=document.getElementById('previewImage');
 const imageStrip=document.getElementById('imageStrip');
 const uploadCount=document.getElementById('uploadCount');
 const sceneSelect=document.getElementById('sceneSelect');
+const templateSelect=document.getElementById('templateSelect');
+const customWidth=document.getElementById('customWidth');
+const customHeight=document.getElementById('customHeight');
+const useCustomSize=document.getElementById('useCustomSize');
 const formatSelect=document.getElementById('formatSelect');
 const fitSelect=document.getElementById('fitSelect');
 const scaleRange=document.getElementById('scaleRange');
@@ -33,6 +37,14 @@ const sceneNames={
   phone:'Telefon',laptop:'Laptop',planner:'Planner',poster:'Poster',
   business:'Business scena',fitness:'Fitness scena',hotel:'Hotel scena',
   restaurant:'Restoran scena',yoga:'Yoga scena',beauty:'Beauty scena'
+};
+
+const templatePresets={
+  classic:{bg:'#E8DED0',scene:'phone'},
+  luxury:{bg:'#151515',scene:'planner'},
+  minimal:{bg:'#F3F1EB',scene:'poster'},
+  wellness:{bg:'#DCE7DE',scene:'yoga'},
+  business:{bg:'#DDE4EA',scene:'laptop'}
 };
 
 const formatSizes={
@@ -80,6 +92,15 @@ function setScene(value){
   sceneTitle.textContent=sceneNames[value]||'Mockup';
   sceneLabel.textContent=(sceneNames[value]||'DIGITAL SOUL STUDIO').toUpperCase();
   if(images.length)statusText.textContent=`Slika je postavljena u scenu: ${sceneNames[value]||value}.`;
+}
+
+function applyTemplate(value){
+  const preset=templatePresets[value]||templatePresets.classic;
+  bgColor.value=preset.bg;
+  mockupStage.style.background=preset.bg;
+  sceneSelect.value=preset.scene;
+  setScene(preset.scene);
+  statusText.textContent=`Primenen je šablon: ${templateSelect.options[templateSelect.selectedIndex].text}.`;
 }
 
 function setFit(){
@@ -160,7 +181,9 @@ function downloadMockup(){
     return;
   }
 
-  const [width,height]=formatSizes[formatSelect.value]||formatSizes.square;
+  const [presetWidth,presetHeight]=formatSizes[formatSelect.value]||formatSizes.square;
+  const width=useCustomSize.checked?Math.max(300,Math.min(4000,Number(customWidth.value)||1200)):presetWidth;
+  const height=useCustomSize.checked?Math.max(300,Math.min(4000,Number(customHeight.value)||1200)):presetHeight;
   const canvas=document.createElement('canvas');
   canvas.width=width;
   canvas.height=height;
@@ -230,6 +253,7 @@ function downloadMockup(){
 
 imageUpload.addEventListener('change',e=>loadImages(e.target.files));
 sceneSelect.addEventListener('change',e=>setScene(e.target.value));
+templateSelect.addEventListener('change',e=>applyTemplate(e.target.value));
 formatSelect.addEventListener('change',()=>{
   statusText.textContent=`Izabran format: ${formatSelect.options[formatSelect.selectedIndex].text}.`;
 });
@@ -243,6 +267,7 @@ resetBtn.addEventListener('click',resetAll);
 downloadBtn.addEventListener('click',downloadMockup);
 
 mockupStage.style.background=bgColor.value;
+useCustomSize.addEventListener('change',()=>{statusText.textContent=useCustomSize.checked?'Prilagođena veličina je uključena.':'Koristi se izabrani format.';});
 setFit();
 updateTransform();
 renderImageStrip();
