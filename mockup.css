@@ -92,6 +92,49 @@
 .planner-object .device-screen{width:380px;height:510px;border-radius:4px}
 .poster-object .device-screen{width:420px;height:550px}
 .business-object .device-screen,.fitness-object .device-screen,.hotel-object .device-screen,.restaurant-object .device-screen,.yoga-object .device-screen,.beauty-object .device-screen{width:520px;height:380px;border-radius:4px}
+/* Dodatne branding scene. */
+.business-card-object .device-frame,.label-object .device-frame,.sticker-object .device-frame,.envelope-object .device-frame{
+  background:linear-gradient(135deg,#fff,#e9e4da);padding:10px;box-shadow:0 25px 50px rgba(0,0,0,.20);
+}
+.business-card-object .device-frame{width:420px}.business-card-object .device-screen{width:100%;height:250px;border-radius:4px}
+.pen-object .device-frame{width:560px;background:linear-gradient(#faf9f5,#bdb9af);padding:7px;border-radius:15px;transform:rotate(-8deg)}
+.pen-object .device-screen{width:100%;height:65px;border-radius:30px}
+.notebook-object .device-frame{width:350px;background:#222;padding:13px;border-radius:8px;box-shadow:0 35px 65px rgba(0,0,0,.25)}
+.notebook-object .device-screen{width:100%;height:470px;border-radius:3px}
+.box-object .device-frame,.shipping-box-object .device-frame{background:linear-gradient(135deg,#d9c09b,#f2dfc0,#bfa27a);padding:14px;border-radius:8px;box-shadow:0 35px 65px rgba(0,0,0,.25)}
+.box-object .device-frame{width:400px}.box-object .device-screen{width:100%;height:280px;border-radius:3px}
+.shipping-box-object .device-frame{width:430px}.shipping-box-object .device-screen{width:100%;height:250px;border-radius:3px}
+.label-object .device-frame{width:340px}.label-object .device-screen{width:100%;height:220px;border-radius:3px}
+.sticker-object .device-frame{width:280px;border-radius:50%;padding:10px}.sticker-object .device-screen{width:100%;height:260px;border-radius:50%}
+.envelope-object .device-frame{width:440px}.envelope-object .device-screen{width:100%;height:285px;border-radius:3px}
+.folder-object .device-frame{width:380px;background:#e2dccf;padding:12px;border-radius:4px}.folder-object .device-screen{width:100%;height:470px;border-radius:2px}
+.clipboard-object .device-frame{width:360px;background:#b69b76;padding:14px;border-radius:6px}.clipboard-object .device-screen{width:100%;height:490px;border-radius:2px}
+.hoodie-object .device-frame,.apron-object .device-frame{background:linear-gradient(135deg,#ddd8ce,#fff,#c7c1b7);padding:20px;box-shadow:0 35px 65px rgba(0,0,0,.22)}
+.hoodie-object .device-frame{width:430px}.hoodie-object .device-screen{width:100%;height:420px}
+.apron-object .device-frame{width:390px}.apron-object .device-screen{width:100%;height:450px}
+.cap-object .device-frame{width:340px;background:linear-gradient(#eee,#bbb);padding:12px;border-radius:50% 50% 20% 20%;box-shadow:0 25px 50px rgba(0,0,0,.22)}.cap-object .device-screen{width:100%;height:170px;border-radius:50%}
+.wine-glass-object .device-frame{width:220px;background:linear-gradient(90deg,#ddd8d0,#fff,#cbc6bd);padding:8px;border-radius:70px 70px 18px 18px}.wine-glass-object .device-screen{width:100%;height:390px;border-radius:55px 55px 12px 12px}
+.can-object .device-frame{width:220px;background:linear-gradient(90deg,#bfc2bf,#fff,#b2b5b2);padding:10px;border-radius:28px}.can-object .device-screen{width:100%;height:390px;border-radius:20px}
+.perfume-object .device-frame,.soap-object .device-frame,.candle-object .device-frame{background:linear-gradient(#fff,#ddd8ce);padding:12px;box-shadow:0 30px 55px rgba(0,0,0,.22)}
+.perfume-object .device-frame{width:240px}.perfume-object .device-screen{width:100%;height:300px;border-radius:10px}
+.soap-object .device-frame{width:280px}.soap-object .device-screen{width:100%;height:230px;border-radius:25px}
+.candle-object .device-frame{width:260px}.candle-object .device-screen{width:100%;height:310px;border-radius:8px}
+.coffee-sleeve-object .device-frame{width:360px;background:#c7b49b;padding:14px;border-radius:5px;transform:rotate(-4deg)}.coffee-sleeve-object .device-screen{width:100%;height:240px;border-radius:3px}
+.menu-object .device-frame{width:360px;background:#eee9df;padding:12px}.menu-object .device-screen{width:100%;height:500px;border-radius:2px}
+.receipt-object .device-frame{width:240px;background:#fff;padding:8px;box-shadow:0 20px 40px rgba(0,0,0,.18)}.receipt-object .device-screen{width:100%;height:580px}
+.badge-object .device-frame{width:250px;background:#eee;padding:10px;border-radius:50%}.badge-object .device-screen{width:100%;height:230px;border-radius:50%}
+@media(max-width:600px){
+ .business-card-object .device-frame{width:300px}.business-card-object .device-screen{height:180px}
+ .pen-object .device-frame{width:390px}.notebook-object .device-frame{width:270px}.notebook-object .device-screen{height:360px}
+ .box-object .device-frame{width:300px}.box-object .device-screen{height:210px}.shipping-box-object .device-frame{width:320px}
+ .label-object .device-frame{width:260px}.sticker-object .device-frame{width:220px}.envelope-object .device-frame{width:320px}
+ .folder-object .device-frame{width:290px}.folder-object .device-screen{height:360px}.clipboard-object .device-frame{width:280px}.clipboard-object .device-screen{height:380px}
+ .hoodie-object .device-frame{width:330px}.hoodie-object .device-screen{height:320px}.apron-object .device-frame{width:300px}.apron-object .device-screen{height:340px}
+ .cap-object .device-frame{width:260px}.wine-glass-object .device-frame{width:175px}.wine-glass-object .device-screen{height:300px}.can-object .device-frame{width:175px}.can-object .device-screen{height:300px}
+ .perfume-object .device-frame{width:190px}.perfume-object .device-screen{height:240px}.soap-object .device-frame{width:220px}.candle-object .device-frame{width:210px}.candle-object .device-screen{height:250px}
+ .coffee-sleeve-object .device-frame{width:280px}.menu-object .device-frame{width:280px}.menu-object .device-screen{height:390px}.receipt-object .device-frame{width:185px}.receipt-object .device-screen{height:450px}.badge-object .device-frame{width:190px}.badge-object .device-screen{height:175px}
+}
+
 /* Branding / proizvod mockup scene — čaše, šolje, kese i ambalaža. */
 .coffee-cup-object .device-frame,
 .travel-mug-object .device-frame,
