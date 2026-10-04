@@ -9,12 +9,29 @@ const aiQuickActions=document.querySelectorAll('[data-ai-action]');
 const aiQuickPrompts={
   scene:'Napravi novu, drugačiju premium mockup scenu za moj dizajn. Zadrži moj dizajn kao glavni sadržaj i promeni samo kompoziciju/scenu.',
   background:'Promeni samo pozadinu i atmosferu scene. Zadrži moj dizajn, njegov sadržaj, proporcije i glavni objekat. Napravi elegantnu premium pozadinu.',
-  device:'Promeni uređaj ili nosač mog dizajna u drugi realističan uređaj. Zadrži moj dizajn i njegov sadržaj što je moguće vernije.'
+  device:'Promeni uređaj ili nosač mog dizajna u drugi realističan uređaj. Zadrži moj dizajn i njegov sadržaj što je moguće vernije.',
+  variants:'Napravi 4 različite premium mockup varijante za moj dizajn. Svaka varijanta treba da ima drugačiju scenu, ugao kamere, kompoziciju ili okruženje, ali moj dizajn mora ostati glavni sadržaj i biti što vernije sačuvan.'
 };
 aiQuickActions.forEach(button=>button.addEventListener('click',async()=>{
   const action=button.dataset.aiAction;
   const prompt=aiQuickPrompts[action];
   if(!prompt)return;
+  if(action==='variants'){
+    const variants=[
+      prompt+' Varijanta 1: elegantan studio sto, blagi ugao odozgo.',
+      prompt+' Varijanta 2: moderan radni prostor, tričetvrtinski ugao sa strane.',
+      prompt+' Varijanta 3: premium minimalistička scena, drugačiji raspored i dublja perspektiva.',
+      prompt+' Varijanta 4: lifestyle scena sa prirodnim svetlom i drugačijim položajem uređaja.'
+    ];
+    for(const variant of variants){
+      if(mockupPrompt)mockupPrompt.value=variant;
+      if(heroMockupPrompt)heroMockupPrompt.value=variant;
+      await applyMockupPromptInstruction(variant);
+    }
+    if(mockupPrompt)mockupPrompt.value='4 varijante su generisane. Izaberi onu koja ti se najviše dopada.';
+    if(heroMockupPrompt)heroMockupPrompt.value='4 varijante su generisane. Izaberi onu koja ti se najviše dopada.';
+    return;
+  }
   if(mockupPrompt)mockupPrompt.value=prompt;
   if(heroMockupPrompt)heroMockupPrompt.value=prompt;
   await applyMockupPromptInstruction(prompt);
