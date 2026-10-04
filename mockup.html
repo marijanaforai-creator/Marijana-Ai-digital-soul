@@ -198,7 +198,19 @@
 
         <div id="imageStrip" class="image-strip" aria-label="Izabrane slike"></div>
 
-        <div class="panel-block prompt-studio-block">
+        <div class="panel-block pixabay-block">
+  <div class="prompt-studio-kicker">PIXABAY BIBLIOTEKA</div>
+  <label for="pixabaySearch">Pronađi fotografiju za scenu</label>
+  <div class="pixabay-search-row">
+    <input id="pixabaySearch" type="search" placeholder="Npr. laptop, office, desk, hotel..." />
+    <button id="pixabaySearchBtn" class="btn" type="button">Pretraži</button>
+  </div>
+  <div id="pixabayStatus" class="pixabay-status">Pretraži Pixabay fotografije.</div>
+  <div id="pixabayResults" class="pixabay-results"></div>
+  <small class="pixabay-credit">Fotografije: Pixabay</small>
+</div>
+
+<div class="panel-block prompt-studio-block">
           <div class="prompt-studio-kicker">PROMPT STUDIO</div>
           <label for="mockupPrompt">Opiši šta želiš da vidiš</label>
           <textarea id="mockupPrompt" rows="4" placeholder="Npr. „Laptop na radnom stolu, moj dizajn na ekranu, blagi 3D ugao, sage green pozadina.“"></textarea>
