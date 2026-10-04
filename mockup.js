@@ -585,11 +585,30 @@ function renderTemplateLibrary(resetVisible=true){
     const active=favorites.includes(t.id);
     const categoryNames={device:'Uređaji',business:'Business',wellness:'Wellness',product:'Proizvodi',social:'Društvene mreže','3d':'3D kompozicije',sheets:'Dokumenti',web:'Web'};
     const categoryLabel=categoryNames[t.category]||'Studio';
-    card.innerHTML=`<div class="template-preview" style="--preview-bg:${t.bg}">
+    const previewGroups={
+      phone:['phone','social'],
+      tablet:['tablet'],
+      laptop:['laptop','laptop-angle'],
+      document:['frame','planner','poster','sheet-single','sheet-perspective','sheet-scattered','sheet-stack','document-stack','ebook-spread'],
+      web:['web-pages','web-foldout'],
+      cards:['isometric-cards','floating-cards'],
+      stack:['paper-stack','magazine-spread','open-magazine','desktop-scene','multi-device'],
+      scene:['business','fitness','hotel','restaurant','yoga','beauty','office','desk','product','packaging']
+    };
+    const previewType=Object.entries(previewGroups).find(([,ids])=>ids.includes(t.scene))?.[0]||'scene';
+    card.innerHTML=`<div class="template-preview preview-${previewType}" style="--preview-bg:${t.bg}">
         <div class="template-preview-glow"></div>
-        <div class="mini-object ${t.shape}">
-          <span class="mini-object-sheet"></span>
-          <span class="mini-object-screen"></span>
+        <div class="preview-art" aria-hidden="true">
+          <span class="preview-sheet sheet-one"></span>
+          <span class="preview-sheet sheet-two"></span>
+          <span class="preview-screen"></span>
+          <span class="preview-device"></span>
+          <span class="preview-card card-one"></span>
+          <span class="preview-card card-two"></span>
+          <span class="preview-card card-three"></span>
+          <span class="preview-web-line line-one"></span>
+          <span class="preview-web-line line-two"></span>
+          <span class="preview-web-line line-three"></span>
         </div>
         <span class="template-category-badge">${categoryLabel}</span>
       </div>
