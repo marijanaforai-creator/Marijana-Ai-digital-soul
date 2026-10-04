@@ -295,7 +295,21 @@
               <option value="monochrome">Monohromatske</option>
             </select>
             <div id="colorPalette" class="color-palette" aria-label="Biblioteka paleta boja"></div>
-            <small id="paletteLicenseNote" class="palette-license-note">Ugrađene palete su naše kombinacije i namenjene su za korišćenje u Studio projektima.</small>
+            <div class="hex-document-tools">
+              <button id="hexListToggle" class="btn" type="button" aria-expanded="false">▤ HEX spisak</button>
+              <button id="downloadHexList" class="btn" type="button">Sačuvaj spisak</button>
+            </div>
+            <div id="hexListDocument" class="hex-list-document" hidden>
+              <div class="hex-document-head">
+                <div>
+                  <strong>Spisak paleta i HEX kodova</strong>
+                  <small>Sačuvano u Studio biblioteci za buduću organizaciju i premium pakete.</small>
+                </div>
+                <span>INTERNI SPISAK</span>
+              </div>
+              <div id="hexListRows" class="hex-list-rows"></div>
+            </div>
+            <small id="paletteLicenseNote" class="palette-license-note">Osnovne palete su otključane. Ostale su pripremljene kao premium sadržaj i biće zaključane dok ne odredimo pakete i cenu.</small>
           </div>
         </div>
 
