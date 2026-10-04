@@ -1348,3 +1348,6 @@ mockupSurface?.addEventListener('drop',e=>{
 
 initDirectImageControls();
 updateImageTransform();
+
+// Pokreni listu scena i formata za izradu više mockupova.
+initBatchEngine();
