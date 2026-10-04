@@ -1041,7 +1041,7 @@ function applyMockupPromptInstructionLocal(value){
 async function applyMockupPromptInstruction(value){
   const text=String(value||'').trim();
   if(!text){
-    const msg='Napiši šta želiš, npr. „3 bela dokumenta, jedan preko drugog, champagne gold pozadina, luxury stil“.';
+    const msg='Napiši šta želiš, npr. „Laptop na elegantnom stolu, moj dizajn na ekranu, 3D ugao, sage green pozadina“.';
     if(mockupPromptStatus)mockupPromptStatus.textContent=msg;
     if(heroPromptStatus)heroPromptStatus.textContent=msg;
     return false;
@@ -1050,36 +1050,70 @@ async function applyMockupPromptInstruction(value){
     if(mockupPromptStatus)mockupPromptStatus.textContent=msg;
     if(heroPromptStatus)heroPromptStatus.textContent=msg;
   };
-  setStatus('AI razume opis scene…');
+  const button=applyMockupPrompt||heroGenerateScene;
+  if(button){button.disabled=true;button.classList.add('is-loading');}
+  setStatus('Generišem stvarnu AI scenu…');
   try{
-    const response=await fetch('/api/generate-scene',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:text})});
+    const active=images[activeImageIndex];
+    const body={prompt:text};
+    if(active?.kind==='image'&&typeof active.data==='string')body.imageData=active.data;
+
+    const response=await fetch('/api/generate-scene',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(body)
+    });
     const data=await response.json().catch(()=>({}));
-    if(!response.ok||!data.scenePlan)throw new Error(data.error||'AI scena nije vraćena.');
-    const plan=data.scenePlan;
-    if(plan.scene&&sceneNames[plan.scene]){sceneSelect.value=plan.scene;setScene(plan.scene);}
-    if(plan.layout&&templatePresets[plan.layout]){templateSelect.value=plan.layout;applyTemplate(plan.layout);}
-    if(plan.backgroundColor){const color=normalizeColorPrompt(plan.backgroundColor)||plan.backgroundColor;if(/^#[0-9a-f]{6}$/i.test(color)){bgColor.value=color;mockupStage.style.background=color;}}
-    if(Number.isFinite(plan.rotation)){objectRotation=Math.max(-180,Math.min(180,Number(plan.rotation)));rotateRange.value=objectRotation;}
-    if(Number.isFinite(plan.scale)){objectScale=Math.max(40,Math.min(180,Number(plan.scale)));scaleRange.value=objectScale;}
-    if(Number.isFinite(plan.positionX)){offsetX=Math.max(-100,Math.min(100,Number(plan.positionX)));positionX.value=offsetX;}
-    if(Number.isFinite(plan.positionY)){offsetY=Math.max(-100,Math.min(100,Number(plan.positionY)));positionY.value=offsetY;}
-    if(Number.isFinite(plan.perspective)){perspective=Math.max(-60,Math.min(60,Number(plan.perspective)));perspectiveRange.value=perspective;}
-    if(Number.isFinite(plan.tiltX)){tiltX=Math.max(-45,Math.min(45,Number(plan.tiltX)));tiltXRange.value=tiltX;}
-    if(Number.isFinite(plan.tiltY)){tiltY=Math.max(-45,Math.min(45,Number(plan.tiltY)));tiltYRange.value=tiltY;}
-    if(typeof plan.fit==='string'&&['cover','contain'].includes(plan.fit)){fitSelect.value=plan.fit;setFit();}
-    if(typeof plan.autoRotate3D==='boolean')autoRotate3D.checked=plan.autoRotate3D;
+    if(!response.ok||!data.imageData)throw new Error(data.error||'AI scena nije vraćena.');
+
+    // Prvo primeni lokalno prepoznavanje scene, stila i boje.
+    applyMockupPromptInstructionLocal(text);
+
+    // AI rezultat postaje novi aktivni vizuelni materijal u Mockup Studio-u.
+    const generatedData=data.imageData.startsWith('data:')
+      ? data.imageData
+      : 'data:image/png;base64,'+data.imageData;
+    images.push({
+      data:generatedData,
+      name:'AI scena - '+new Date().toISOString().slice(0,19).replace(/[T:]/g,'-')+'.png',
+      kind:'image',
+      mime:'image/png',
+      generated:true
+    });
+    // Drži listu pod kontrolom: originalna 4 + AI rezultat.
+    if(images.length>5)images.splice(0,images.length-5);
+    activeImageIndex=images.length-1;
+    selectImage(activeImageIndex);
+
+    // AI rezultat je već kompletna scena; Frame ga prikazuje bez ponovnog
+    // ubacivanja u laptop/tablet geometriju.
+    if(sceneSelect){
+      sceneSelect.value='frame';
+      setScene('frame');
+    }
+    if(fitSelect){
+      fitSelect.value='contain';
+      setFit();
+    }
+    objectScale=100;objectRotation=0;offsetX=0;offsetY=0;
+    if(scaleRange)scaleRange.value=100;
+    if(rotateRange)rotateRange.value=0;
+    if(positionX)positionX.value=0;
+    if(positionY)positionY.value=0;
     updateTransform();
-    if(Number.isInteger(plan.count))mockupObject.dataset.promptCount=String(Math.max(1,Math.min(9,plan.count)));
-    if(plan.video&&images.some(x=>x.kind==='video')){const idx=images.findIndex(x=>x.kind==='video');selectImage(idx);}
-    const parts=[];if(plan.scene)parts.push(sceneNames[plan.scene]||plan.scene);if(plan.count>1)parts.push(plan.count+' komada');if(plan.layout)parts.push('stil '+(templateSelect.options[templateSelect.selectedIndex]?.text||plan.layout));if(plan.autoRotate3D)parts.push('3D');if(plan.backgroundColor)parts.push('pozadina '+plan.backgroundColor);if(plan.summary)parts.push(plan.summary);
-    setStatus('AI scena: '+parts.join(' · '));
+
+    const label=data.revisedPrompt?'AI scena je generisana iz tvog opisa i referentne slike.':'AI scena je generisana.';
+    setStatus(label+' Možeš je dalje uređivati ili preuzeti.');
+    statusText.textContent='AI scena je spremna.';
     return true;
   }catch(error){
-    console.warn('AI Scene Generator fallback:',error);
+    console.warn('AI Scene Generator:',error);
     const fallback=applyMockupPromptInstructionLocal(text);
-    if(fallback)setStatus((heroPromptStatus?.textContent||'')+' · AI fallback.');
-    else setStatus('AI generator trenutno nije dostupan. Pokušaj ponovo.');
+    if(fallback)setStatus('AI generisanje trenutno nije uspelo. Primenjena je lokalna scena — proveri API ključ i Vercel deploy.');
+    else setStatus(error?.message||'AI generator trenutno nije dostupan.');
     return fallback;
+  }finally{
+    if(button){button.disabled=false;button.classList.remove('is-loading');}
   }
 }
 function updateTransform(){
