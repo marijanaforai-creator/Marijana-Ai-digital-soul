@@ -5,6 +5,46 @@ const previewVideo=document.getElementById('previewVideo');
 const mockupPrompt=document.getElementById('mockupPrompt');
 const applyMockupPrompt=document.getElementById('applyMockupPrompt');
 
+const pixabaySearch=document.getElementById('pixabaySearch');
+const pixabaySearchBtn=document.getElementById('pixabaySearchBtn');
+const pixabayStatus=document.getElementById('pixabayStatus');
+const pixabayResults=document.getElementById('pixabayResults');
+
+async function searchPixabay(){
+  const q=String(pixabaySearch?.value||'').trim();
+  if(!q)return;
+  if(pixabaySearchBtn)pixabaySearchBtn.disabled=true;
+  if(pixabayStatus)pixabayStatus.textContent='Pretražujem Pixabay…';
+  try{
+    const response=await fetch('/api/pixabay-search?q='+encodeURIComponent(q));
+    const data=await response.json().catch(()=>({}));
+    if(!response.ok)throw new Error(data.error||'Pixabay pretraga nije uspela.');
+    if(pixabayResults){
+      pixabayResults.innerHTML='';
+      data.hits.forEach(hit=>{
+        const card=document.createElement('button');
+        card.type='button';
+        card.className='pixabay-result';
+        card.title=hit.tags||'Pixabay fotografija';
+        card.innerHTML='<img src="'+hit.previewURL+'" alt="">';
+        card.addEventListener('click',()=>{
+          if(mockupPrompt)mockupPrompt.value='Koristi ovu referentnu fotografiju kao osnovu za scenu: '+(hit.tags||q);
+          if(heroMockupPrompt)heroMockupPrompt.value='Koristi ovu referentnu fotografiju kao osnovu za scenu: '+(hit.tags||q);
+          if(pixabayStatus)pixabayStatus.textContent='Fotografija je izabrana kao referenca. Za generisanje scene koristi „Generiši scenu“.';
+        });
+        pixabayResults.appendChild(card);
+      });
+    }
+    if(pixabayStatus)pixabayStatus.textContent=(data.total||0)+' rezultata. Izaberi fotografiju kao referencu.';
+  }catch(error){
+    if(pixabayStatus)pixabayStatus.textContent=error?.message||'Pixabay trenutno nije dostupan.';
+  }finally{
+    if(pixabaySearchBtn)pixabaySearchBtn.disabled=false;
+  }
+}
+pixabaySearchBtn?.addEventListener('click',searchPixabay);
+pixabaySearch?.addEventListener('keydown',e=>{if(e.key==='Enter')searchPixabay();});
+
 const aiQuickActions=document.querySelectorAll('[data-ai-action]');
 const aiQuickPrompts={
   scene:'Napravi novu, drugačiju premium mockup scenu za moj dizajn. Zadrži moj dizajn kao glavni sadržaj i promeni samo kompoziciju/scenu.',
