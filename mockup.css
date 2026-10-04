@@ -1020,3 +1020,22 @@
 .mockup-body .preview-scene .preview-device::after{
   left:15%;right:15%;top:32%;bottom:15%;background:linear-gradient(180deg,#eee7dc 0 18%,#d7c9b7 18% 22%,#f7f3ed 22%);
 }
+
+/* Prompt Scenes folder */
+.mockup-body .template-folder-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:stretch}
+.mockup-body .template-folder-row .template-folder{min-height:142px}
+.mockup-body .prompt-scenes-folder{appearance:none;width:100%;padding:9px 0 0;text-align:left;color:inherit;cursor:pointer;background:transparent;border:0;font:inherit}
+.mockup-body .prompt-scenes-folder .template-folder-tab{display:inline-flex}
+.mockup-body .prompt-scenes-folder .template-folder-body{height:100%;box-sizing:border-box}
+.mockup-body .prompt-folder-hint{display:block;margin-top:13px;padding-top:10px;border-top:1px solid rgba(200,169,107,.16);color:#d8bd7a;font-size:9px;font-weight:700;letter-spacing:.04em}
+.mockup-body .prompt-scenes-folder:hover .folder-icon{transform:translateY(-2px);box-shadow:0 9px 20px rgba(200,169,107,.3)}
+.mockup-body .prompt-scenes-folder .folder-icon{transition:transform .2s ease,box-shadow .2s ease}
+.mockup-body .prompt-scenes-panel{margin-top:16px;padding:20px;border:1px solid rgba(200,169,107,.3);border-radius:15px;background:linear-gradient(145deg,#1b102b,#11091b);box-shadow:0 14px 30px rgba(0,0,0,.18)}
+.mockup-body .prompt-scenes-panel-head{display:flex;justify-content:space-between;gap:24px;align-items:flex-end}
+.mockup-body .prompt-scenes-panel-head h3{margin:4px 0 0;color:#fff;font-size:21px}
+.mockup-body .prompt-scenes-panel-head>span{max-width:520px;color:#b9a9c8;font-size:11px;line-height:1.5}
+.mockup-body .prompt-scenes-empty{margin-top:16px;min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border:1px dashed rgba(200,169,107,.28);border-radius:12px;background:rgba(118,84,168,.08)}
+.mockup-body .prompt-scenes-empty-icon{display:grid;place-items:center;width:35px;height:35px;margin-bottom:9px;border-radius:10px;background:linear-gradient(145deg,#d8bd7a,#a47d38);color:#24142f;font-size:18px}
+.mockup-body .prompt-scenes-empty strong{color:#fff;font-size:13px}
+.mockup-body .prompt-scenes-empty small{max-width:540px;margin-top:5px;color:#b9a9c8;font-size:10px}
+@media(max-width:850px){.mockup-body .template-folder-row{grid-template-columns:1fr}.mockup-body .prompt-scenes-panel-head{flex-direction:column;align-items:flex-start}}
