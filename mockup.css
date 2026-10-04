@@ -1657,3 +1657,30 @@
 .mockup-body .mockup-font-block select{width:100%;padding:10px 12px;border:1px solid #d8d0df;border-radius:9px;background:#fff;color:#241b2d;font:inherit}
 .mockup-body .font-preview-box{margin-top:9px;padding:14px 12px;border:1px solid rgba(118,84,168,.18);border-radius:9px;background:#fbf8ff;color:#241b2d;font-size:20px;line-height:1.2}
 .mockup-body .mockup-font-block small{display:block;margin-top:7px;color:#8a8190;font-size:10px}
+
+/* Canva-like selection for Mockup */
+.mockup-body .mockup-stage{position:relative}
+.mockup-body .mockup-selection-ui{
+  position:absolute;display:none;z-index:40;pointer-events:none;
+  border:2px solid #7B4DFF;box-shadow:0 0 0 1px rgba(123,77,255,.16);
+  box-sizing:border-box;
+}
+.mockup-body .mockup-selection-ui.active{display:block}
+.mockup-body .mockup-selection-ui .selection-handle,
+.mockup-body .mockup-selection-ui .selection-rotate{
+  position:absolute;pointer-events:auto;padding:0;margin:0;
+  border:2px solid #7B4DFF;background:#fff;box-sizing:border-box;
+}
+.mockup-body .mockup-selection-ui .selection-handle{width:12px;height:12px;border-radius:2px}
+.mockup-body .mockup-selection-ui .nw{left:-7px;top:-7px;cursor:nwse-resize}
+.mockup-body .mockup-selection-ui .ne{right:-7px;top:-7px;cursor:nesw-resize}
+.mockup-body .mockup-selection-ui .sw{left:-7px;bottom:-7px;cursor:nesw-resize}
+.mockup-body .mockup-selection-ui .se{right:-7px;bottom:-7px;cursor:nwse-resize}
+.mockup-body .mockup-selection-ui .selection-rotate{
+  left:50%;top:-38px;width:24px;height:24px;border-radius:50%;
+  transform:translateX(-50%);font-size:15px;line-height:18px;color:#7B4DFF;
+  cursor:grab;
+}
+.mockup-body .mockup-selection-ui .selection-rotate:active{cursor:grabbing}
+.mockup-body .mockup-selection-ui .selection-handle:hover,
+.mockup-body .mockup-selection-ui .selection-rotate:hover{background:#F3EEFF}
