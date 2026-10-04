@@ -518,6 +518,12 @@ function updateBatchStatus(){
   const total=s.scenes.length*s.formats.length;
   el.textContent=total? `Biće pripremljeno ${total} mockup kombinacija.`:'Izaberi najmanje jednu scenu i jedan format.';
   el.classList.toggle('ready',!!total);
+  const sceneSummary=document.getElementById('batchSceneSummary');
+  const formatSummary=document.getElementById('batchFormatSummary');
+  const buildCount=document.getElementById('batchBuildCount');
+  if(sceneSummary)sceneSummary.textContent=`${s.scenes.length} izabrano`;
+  if(formatSummary)formatSummary.textContent=`${s.formats.length} izabrano`;
+  if(buildCount)buildCount.textContent=total? `${total} mockupova`:'0 mockupova';
 }
 let lastBatch=[];
 function slugify(value){return value.toLowerCase().replace(/[^a-z0-9\\u00C0-\\u017F]+/gi,'-').replace(/^-|-$/g,'');}
