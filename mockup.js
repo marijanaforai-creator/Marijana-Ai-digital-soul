@@ -4,6 +4,22 @@ const previewImage=document.getElementById('previewImage');
 const previewVideo=document.getElementById('previewVideo');
 const mockupPrompt=document.getElementById('mockupPrompt');
 const applyMockupPrompt=document.getElementById('applyMockupPrompt');
+
+const aiQuickActions=document.querySelectorAll('[data-ai-action]');
+const aiQuickPrompts={
+  scene:'Napravi novu, drugačiju premium mockup scenu za moj dizajn. Zadrži moj dizajn kao glavni sadržaj i promeni samo kompoziciju/scenu.',
+  background:'Promeni samo pozadinu i atmosferu scene. Zadrži moj dizajn, njegov sadržaj, proporcije i glavni objekat. Napravi elegantnu premium pozadinu.',
+  device:'Promeni uređaj ili nosač mog dizajna u drugi realističan uređaj. Zadrži moj dizajn i njegov sadržaj što je moguće vernije.'
+};
+aiQuickActions.forEach(button=>button.addEventListener('click',async()=>{
+  const action=button.dataset.aiAction;
+  const prompt=aiQuickPrompts[action];
+  if(!prompt)return;
+  if(mockupPrompt)mockupPrompt.value=prompt;
+  if(heroMockupPrompt)heroMockupPrompt.value=prompt;
+  await applyMockupPromptInstruction(prompt);
+}));
+
 const mockupPromptStatus=document.getElementById('mockupPromptStatus');
 const heroMockupPrompt=document.getElementById('heroMockupPrompt');
 const heroGenerateScene=document.getElementById('heroGenerateScene');
