@@ -949,3 +949,14 @@
 .mockup-body .mini-object-sheet{position:absolute;inset:8%;display:block;border-radius:2px;background:linear-gradient(145deg,#fff,#eee9e0);box-shadow:0 2px 5px rgba(0,0,0,.12)}
 .mockup-body .mini-object-screen{position:absolute;left:14%;right:14%;top:16%;bottom:16%;border-radius:3px;background:linear-gradient(180deg,rgba(118,84,168,.22),transparent 42%),repeating-linear-gradient(180deg,rgba(60,45,73,.18) 0 2px,transparent 2px 7px)}
 .mockup-body .template-category-badge{position:absolute;left:9px;bottom:9px;padding:5px 8px;border:1px solid rgba(255,255,255,.3);border-radius:999px;background:rgba(20,10,31,.72);color:#fff;font-size:8px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+
+.mockup-body .template-name-wrap{min-width:0}
+.mockup-body .template-meta strong{display:block;overflow:hidden;color:#fff;font-size:12px;line-height:1.25;text-overflow:ellipsis;white-space:nowrap}
+.mockup-body .template-meta small{color:#b9a9c8;font-size:9px;margin-top:4px}
+.mockup-body .template-fav{width:30px;height:30px;flex:0 0 30px;border:1px solid rgba(200,169,107,.2);border-radius:9px;background:#24133a;color:#d8bd7a;font-size:16px;line-height:1}
+.mockup-body .template-use{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;padding:9px 11px;border-radius:9px;font-size:10px}
+.mockup-body .template-use span:last-child{font-size:15px;line-height:1}
+.mockup-body .template-load-more{grid-column:1/-1;justify-self:center;min-width:190px;margin-top:4px}
+@media(max-width:1100px){.mockup-body .template-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:700px){.mockup-body .template-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}}
+@media(max-width:480px){.mockup-body .template-grid{grid-template-columns:1fr}}
