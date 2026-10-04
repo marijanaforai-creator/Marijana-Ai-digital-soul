@@ -1327,6 +1327,7 @@ function initDirectImageControls(){
 
   screen.addEventListener('pointerdown',e=>{
     if(!images.length)return;
+    if(!e.altKey)return;
     if(e.target.closest('.frame-resize-handle'))return;
     if(e.target!==previewImage && e.target!==screen)return;
     e.preventDefault();
