@@ -583,10 +583,21 @@ function renderTemplateLibrary(resetVisible=true){
     const card=document.createElement('article');
     card.className='template-card';
     const active=favorites.includes(t.id);
-    card.innerHTML=`<div class="template-preview" style="background:${t.bg}"><div class="mini-object ${t.shape}"></div></div>
-      <div class="template-meta"><div><strong>${t.name}</strong><small>${sceneNames[t.scene]||t.scene}</small></div>
-      <button class="template-fav" type="button" aria-label="Favorit">${active?'♥':'♡'}</button></div>
-      <button class="btn primary template-use" type="button">Koristi šablon</button>`;
+    const categoryNames={device:'Uređaji',business:'Business',wellness:'Wellness',product:'Proizvodi',social:'Društvene mreže','3d':'3D kompozicije',sheets:'Dokumenti',web:'Web'};
+    const categoryLabel=categoryNames[t.category]||'Studio';
+    card.innerHTML=`<div class="template-preview" style="--preview-bg:${t.bg}">
+        <div class="template-preview-glow"></div>
+        <div class="mini-object ${t.shape}">
+          <span class="mini-object-sheet"></span>
+          <span class="mini-object-screen"></span>
+        </div>
+        <span class="template-category-badge">${categoryLabel}</span>
+      </div>
+      <div class="template-meta">
+        <div class="template-name-wrap"><strong>${t.name}</strong><small>${sceneNames[t.scene]||t.scene}</small></div>
+        <button class="template-fav" type="button" aria-label="Favorit" title="Dodaj u favorite">${active?'♥':'♡'}</button>
+      </div>
+      <button class="btn primary template-use" type="button"><span>Koristi šablon</span><span aria-hidden="true">→</span></button>`;
     card.querySelector('.template-fav').onclick=()=>{
       const next=getFavorites().filter(id=>id!==t.id);
       if(!active)next.push(t.id);
