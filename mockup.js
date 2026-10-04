@@ -751,82 +751,336 @@ let lastBatch=[];
 function slugify(value){return value.toLowerCase().replace(/[^a-z0-9\\u00C0-\\u017F]+/gi,'-').replace(/^-|-$/g,'');}
 function getBatchImage(){
   const img=document.getElementById('previewImage');
-  return img && img.src && img.src!=='about:blank' ? img : null;
+  return img && img.src && img.src!=='about:blank' && img.complete && img.naturalWidth ? img : null;
 }
-function renderBatchCanvas(scene,format){
-  const dims=formatSizes[format]||formatSizes.square;
-  const size={w:dims[0],h:dims[1]};
-  const canvas=document.createElement('canvas');
-  canvas.width=size.w; canvas.height=size.h;
-  const ctx=canvas.getContext('2d');
+
+const batchSceneConfigs={
+  phone:{x:.39,y:.12,w:.22,h:.58,r:30,frame:'#171817',pad:12},
+  tablet:{x:.31,y:.16,w:.38,h:.55,r:18,frame:'#1b1b1b',pad:14},
+  frame:{x:.30,y:.12,w:.40,h:.66,r:3,frame:'#ffffff',pad:0},
+  laptop:{x:.22,y:.25,w:.56,h:.42,r:14,frame:'#202120',pad:12},
+  planner:{x:.33,y:.15,w:.34,h:.58,r:5,frame:'#f8f8f4',pad:0},
+  poster:{x:.33,y:.12,w:.34,h:.65,r:5,frame:'#ffffff',pad:0},
+  business:{x:.28,y:.28,w:.44,h:.42,r:6,frame:'#ffffff',pad:0},
+  fitness:{x:.28,y:.28,w:.44,h:.42,r:6,frame:'#ffffff',pad:0},
+  hotel:{x:.28,y:.28,w:.44,h:.42,r:6,frame:'#ffffff',pad:0},
+  restaurant:{x:.28,y:.28,w:.44,h:.42,r:6,frame:'#ffffff',pad:0},
+  yoga:{x:.28,y:.28,w:.44,h:.42,r:6,frame:'#ffffff',pad:0},
+  beauty:{x:.28,y:.28,w:.44,h:.42,r:6,frame:'#ffffff',pad:0},
+  office:{x:.27,y:.30,w:.46,h:.40,r:10,frame:'#ffffff',pad:0},
+  desk:{x:.25,y:.30,w:.50,h:.40,r:7,frame:'#ffffff',pad:0},
+  product:{x:.34,y:.22,w:.32,h:.48,r:20,frame:'#ffffff',pad:0},
+  packaging:{x:.34,y:.17,w:.32,h:.62,r:5,frame:'#ffffff',pad:0},
+  social:{x:.38,y:.13,w:.24,h:.62,r:16,frame:'#181918',pad:12}
+};
+
+function getBatchSceneConfig(scene){
+  return batchSceneConfigs[scene]||batchSceneConfigs.phone;
+}
+
+function loadBatchImage(){
+  const source=getBatchImage();
+  if(!source)return Promise.resolve(null);
+  return new Promise(resolve=>{
+    if(source.complete && source.naturalWidth){
+      resolve(source);
+      return;
+    }
+    source.onload=()=>resolve(source);
+    source.onerror=()=>resolve(null);
+  });
+}
+
+function drawBatchBackground(ctx,w,h,scene){
   const preset=lifestylePresets[scene];
-  ctx.fillStyle=preset?.bg||bgColor.value||'#eee';
+  const background=preset?.bg||bgColor.value||'#eee';
+  ctx.fillStyle=background;
+  ctx.fillRect(0,0,w,h);
+
+  // Diskretna scenografija po sceni — dovoljno čista da proizvod ostane u fokusu.
+  ctx.save();
+  ctx.globalAlpha=.12;
+  ctx.fillStyle='#ffffff';
+  ctx.beginPath();
+  ctx.ellipse(w*.18,h*.18,w*.20,h*.13,0,0,Math.PI*2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(w*.84,h*.82,w*.24,h*.16,0,0,Math.PI*2);
+  ctx.fill();
+  ctx.restore();
+}
+
+async function renderBatchCanvas(scene,format){
+  const dims=formatSizes[format]||formatSizes.square;
+  const size={w:Math.max(1,Math.round(dims[0])),h:Math.max(1,Math.round(dims[1]))};
+  const canvas=document.createElement('canvas');
+  canvas.width=size.w;
+  canvas.height=size.h;
+  const ctx=canvas.getContext('2d');
+  if(!ctx)throw new Error('Canvas nije dostupan.');
+
+  drawBatchBackground(ctx,size.w,size.h,scene);
+
+  const img=await loadBatchImage();
+  if(!img)return canvas;
+
+  const c=getBatchSceneConfig(scene);
+  const x=size.w*c.x;
+  const y=size.h*c.y;
+  const w=size.w*c.w;
+  const h=size.h*c.h;
+  const radius=Math.max(2,Math.min(size.w,size.h)*c.r/1000);
+  const pad=Math.max(0,Math.min(w,h)*c.pad/1000);
+  const innerX=x+pad;
+  const innerY=y+pad;
+  const innerW=w-pad*2;
+  const innerH=h-pad*2;
+
+  ctx.save();
+  ctx.translate(x+w/2+offsetX*w*.0035,y+h/2+offsetY*h*.0035);
+  ctx.rotate(objectRotation*Math.PI/180);
+
+  const scale=objectScale/100;
+  ctx.scale(scale,scale);
+
+  // Senka i osnovno telo vizuelnog prikaza.
+  ctx.shadowColor='rgba(0,0,0,.28)';
+  ctx.shadowBlur=Math.max(12,Math.min(size.w,size.h)*.035);
+  ctx.shadowOffsetY=Math.max(6,Math.min(size.w,size.h)*.02);
+  ctx.fillStyle=c.frame;
+  roundedRect(ctx,-w/2,-h/2,w,h,radius);
+  ctx.fill();
+  ctx.shadowColor='transparent';
+
+  // Unutrašnja površina sa sadržajem.
+  const innerPad=pad;
+  ctx.save();
+  roundedRect(ctx,-w/2+innerPad,-h/2+innerPad,w-innerPad*2,h-innerPad*2,Math.max(1,radius-innerPad*.4));
+  ctx.clip();
+
+  // Za uređaje ostavljamo tanki okvir; za ravne scene sadržaj ide direktno na površinu.
+  const isDevice=['phone','tablet','laptop','social'].includes(scene);
+  const contentPad=isDevice?Math.max(8,Math.min(w,h)*.018):0;
+  const contentX=-w/2+innerPad+contentPad;
+  const contentY=-h/2+innerPad+contentPad;
+  const contentW=w-innerPad*2-contentPad*2;
+  const contentH=h-innerPad*2-contentPad*2;
+
+  drawImageCover(
+    ctx,
+    img,
+    contentX,
+    contentY,
+    contentW,
+    contentH,
+    fitSelect?.value||'cover',
+    offsetX,
+    offsetY
+  );
+  ctx.restore();
+  ctx.restore();
+
+  // Blagi „studio“ odsjaj daje premium izgled bez dodavanja teksta.
+  ctx.save();
+  const gradient=ctx.createLinearGradient(0,0,size.w,size.h);
+  gradient.addColorStop(0,'rgba(255,255,255,.08)');
+  gradient.addColorStop(.5,'rgba(255,255,255,0)');
+  gradient.addColorStop(1,'rgba(0,0,0,.04)');
+  ctx.fillStyle=gradient;
   ctx.fillRect(0,0,size.w,size.h);
-  const img=getBatchImage();
-  const scale=Math.min(size.w,size.h)*0.42;
-  const iw=img?.naturalWidth||1, ih=img?.naturalHeight||1;
-  const ratio=Math.min(scale/iw,scale/ih);
-  const w=iw*ratio,h=ih*ratio;
-  const x=(size.w-w)/2,y=(size.h-h)/2;
-  if(img)ctx.drawImage(img,x,y,w,h);
-  // Čist mockup bez natpisa preko donje ivice.
+  ctx.restore();
+
   return canvas;
 }
-function createBatchFile(scene,format){
-  const canvas=renderBatchCanvas(scene,format);
-  return new Promise(resolve=>canvas.toBlob(blob=>resolve({
-    blob,
-    name:`${slugify(sceneNames[scene]||scene)}-${slugify(format)}.png`
-  }),'image/png'));
+
+async function createBatchFile(scene,format){
+  const canvas=await renderBatchCanvas(scene,format);
+  return new Promise((resolve,reject)=>{
+    canvas.toBlob(blob=>{
+      if(!blob){reject(new Error('PNG nije mogao biti napravljen.'));return;}
+      resolve({
+        blob,
+        name:`vizuelni-prikaz-${slugify(sceneNames[scene]||scene)}-${slugify(formatLabelForBatch(format))}.png`
+      });
+    },'image/png');
+  });
 }
+
+function createBatchPreview(canvas,maxSize=760){
+  const ratio=Math.min(1,maxSize/Math.max(canvas.width,canvas.height));
+  if(ratio>=1)return canvas;
+  const preview=document.createElement('canvas');
+  preview.width=Math.max(1,Math.round(canvas.width*ratio));
+  preview.height=Math.max(1,Math.round(canvas.height*ratio));
+  const ctx=preview.getContext('2d');
+  ctx.drawImage(canvas,0,0,preview.width,preview.height);
+  return preview;
+}
+
+function formatLabelForBatch(format){
+  return (batchFormatList.find(x=>x[0]===format)||[format,format])[1];
+}
+
 async function exportBatchPngs(){
   const s=getBatchSelections();
   if(!s.scenes.length||!s.formats.length){updateBatchStatus();return;}
   const files=[];
-  for(const scene of s.scenes)for(const format of s.formats)files.push(await createBatchFile(scene,format));
+  const status=document.getElementById('batchStatus');
+  if(status)status.textContent='Izrada vizuelnih prikaza je u toku…';
+
+  for(const scene of s.scenes){
+    for(const format of s.formats){
+      try{
+        files.push(await createBatchFile(scene,format));
+      }catch(error){
+        console.error('Batch PNG greška',scene,format,error);
+      }
+    }
+  }
+
   files.forEach(file=>{
     const url=URL.createObjectURL(file.blob);
-    const a=document.createElement('a');a.href=url;a.download=file.name;a.click();
+    const a=document.createElement('a');
+    a.href=url;
+    a.download=file.name;
+    a.click();
     setTimeout(()=>URL.revokeObjectURL(url),1000);
   });
-  const status=document.getElementById('batchStatus');
-  if(status)status.textContent=`Preuzeto ${files.length} PNG fajlova.`;
+
+  if(status)status.textContent=files.length
+    ? `Preuzeto je ${files.length} vizuelnih prikaza.`
+    : 'Nijedan vizuelni prikaz nije mogao biti napravljen.';
   lastBatch=files;
 }
+
 async function exportBatchZip(){
   const s=getBatchSelections();
   if(!s.scenes.length||!s.formats.length){updateBatchStatus();return;}
-  const files=[];
-  for(const scene of s.scenes)for(const format of s.formats)files.push(await createBatchFile(scene,format));
   if(!window.JSZip){
     const status=document.getElementById('batchStatus');
-    if(status)status.textContent='ZIP modul nije učitan. PNG export je dostupan pojedinačno.';
+    if(status)status.textContent='ZIP modul nije učitan. PNG preuzimanje je dostupno.';
     return;
   }
+
+  const status=document.getElementById('batchStatus');
+  if(status)status.textContent='Pripremam ZIP paket…';
+  const files=[];
+
+  for(const scene of s.scenes){
+    for(const format of s.formats){
+      try{
+        files.push(await createBatchFile(scene,format));
+      }catch(error){
+        console.error('Batch ZIP greška',scene,format,error);
+      }
+    }
+  }
+
   const zip=new JSZip();
   files.forEach(file=>zip.file(file.name,file.blob));
   const blob=await zip.generateAsync({type:'blob'});
   const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');a.href=url;a.download='mockup-batch.zip';a.click();
+  const a=document.createElement('a');
+  a.href=url;
+  a.download='marijana-vizuelni-prikazi.zip';
+  a.click();
   setTimeout(()=>URL.revokeObjectURL(url),1000);
-  const status=document.getElementById('batchStatus');
-  if(status)status.textContent=`ZIP paket je spreman: ${files.length} PNG fajlova.`;
+
+  if(status)status.textContent=`ZIP paket je spreman: ${files.length} vizuelnih prikaza.`;
   lastBatch=files;
 }
-function generateBatch(){
-  const s=getBatchSelections(), results=document.getElementById('batchResults'), status=document.getElementById('batchStatus');
-  if(!s.scenes.length||!s.formats.length){updateBatchStatus();return;}
-  results.innerHTML='';
+
+async function generateBatch(){
+  const s=getBatchSelections();
+  const results=document.getElementById('batchResults');
+  const status=document.getElementById('batchStatus');
+
+  if(!s.scenes.length||!s.formats.length){
+    updateBatchStatus();
+    return;
+  }
+
+  if(!getBatchImage()){
+    if(status)status.textContent='Prvo ubaci sliku koju želiš da prikažeš.';
+    return;
+  }
+
+  if(results)results.innerHTML='';
+  if(status)status.textContent='Generišem vizuelne prikaze…';
+
   const sceneLabel=id=>(batchSceneList.find(x=>x[0]===id)||[id,id])[1];
   const formatLabel=id=>(batchFormatList.find(x=>x[0]===id)||[id,id])[1];
-  s.scenes.forEach(scene=>s.formats.forEach(format=>{
-    const wide=['landscape','pinterest'].includes(format);
-    const card=document.createElement('div'); card.className='batch-result';
-    card.innerHTML=`<div class="batch-result-preview" style="background:${lifestylePresets[scene]?.bg||'#eee'}"><div class="mini-batch-object ${wide?'wide':''}"></div></div>
-      <strong>${sceneLabel(scene)}</strong><small>${formatLabel(format)}</small>`;
-    results.appendChild(card);
-  }));
-  status.textContent=`Izrada je pripremljena: ${s.scenes.length*s.formats.length} kombinacija.`;
+  const total=s.scenes.length*s.formats.length;
+  let completed=0;
+
+  for(const scene of s.scenes){
+    for(const format of s.formats){
+      try{
+        const canvas=await renderBatchCanvas(scene,format);
+        const card=document.createElement('div');
+        card.className='batch-result';
+
+        const preview=document.createElement('div');
+        preview.className='batch-result-preview';
+        preview.style.background=lifestylePresets[scene]?.bg||'#eee';
+
+        // Thumbnail prikazuje isti canvas koji će kasnije otići u PNG/ZIP.
+        const previewImage=document.createElement('img');
+        previewImage.src=createBatchPreview(canvas).toDataURL('image/jpeg',.82);
+        previewImage.alt=`${sceneLabel(scene)} — ${formatLabel(format)}`;
+        previewImage.loading='lazy';
+        preview.appendChild(previewImage);
+
+        const title=document.createElement('strong');
+        title.textContent=sceneLabel(scene);
+        const meta=document.createElement('small');
+        meta.textContent=formatLabel(format);
+
+        const actions=document.createElement('div');
+        actions.className='batch-result-actions';
+
+        const download=document.createElement('button');
+        download.type='button';
+        download.className='btn';
+        download.textContent='Preuzmi prikaz';
+        download.addEventListener('click',()=>{
+          const url=canvas.toDataURL('image/png');
+          const a=document.createElement('a');
+          a.href=url;
+          a.download=`vizuelni-prikaz-${slugify(sceneNames[scene]||scene)}-${slugify(formatLabel(format))}.png`;
+          a.click();
+        });
+
+        const open=document.createElement('button');
+        open.type='button';
+        open.className='btn';
+        open.textContent='Otvori prikaz';
+        open.addEventListener('click',()=>{
+          const data=canvas.toDataURL('image/png');
+          const win=window.open();
+          if(win){
+            win.document.title=`${sceneLabel(scene)} — ${formatLabel(format)}`;
+            win.document.body.style.cssText='margin:0;background:#111;display:grid;place-items:center;min-height:100vh';
+            const img=document.createElement('img');
+            img.src=data;
+            img.style.cssText='max-width:96vw;max-height:96vh;object-fit:contain';
+            win.document.body.appendChild(img);
+          }
+        });
+
+        actions.append(download,open);
+        card.append(preview,title,meta,actions);
+        results?.appendChild(card);
+
+        completed++;
+        if(status)status.textContent=`Izrađeno ${completed} od ${total} vizuelnih prikaza.`;
+      }catch(error){
+        console.error('Batch prikaz greška',scene,format,error);
+      }
+    }
+  }
+
+  if(status)status.textContent=`Izrada završena: ${completed} od ${total} vizuelnih prikaza.`;
 }
 function applyLibraryTemplateFromUrl(){
   const id=new URLSearchParams(location.search).get('template');

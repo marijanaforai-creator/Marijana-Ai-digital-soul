@@ -1375,3 +1375,19 @@
  .mockup-body .internal-format-library-head{flex-direction:column;align-items:stretch}
  .mockup-body .internal-format-row{align-items:flex-start;flex-direction:column;gap:3px}
 }
+.batch-result-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+.batch-result-actions .btn{
+  flex:1 1 140px;
+  min-width:0;
+}
+.batch-result-preview img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
