@@ -123,19 +123,32 @@
       <p>Izaberi scene i formate. Isti proizvod možeš pripremiti za više kanala jednim klikom.</p>
     </div>
     <div class="batch-panel">
-      <div class="batch-group">
-        <h3>Scene</h3>
-        <div id="batchScenes" class="batch-options"></div>
-      </div>
-      <div class="batch-group">
-        <h3>Formati</h3>
-        <div id="batchFormats" class="batch-options"></div>
+      <div class="batch-select-grid">
+        <details class="batch-dropdown" open>
+          <summary>
+            <span>IZABERI SCENE</span>
+            <strong id="batchSceneSummary">0 izabrano</strong>
+          </summary>
+          <div class="batch-dropdown-body">
+            <div id="batchScenes" class="batch-options"></div>
+          </div>
+        </details>
+        <details class="batch-dropdown">
+          <summary>
+            <span>IZABERI FORMATE</span>
+            <strong id="batchFormatSummary">0 izabrano</strong>
+          </summary>
+          <div class="batch-dropdown-body">
+            <div id="batchFormats" class="batch-options"></div>
+          </div>
+        </details>
       </div>
       <div class="batch-actions">
         <button id="selectAllBatch" class="btn" type="button">Izaberi sve</button>
         <button id="clearBatch" class="btn" type="button">Poništi izbor</button>
         <button id="generateBatch" class="btn primary" type="button">Generiši sve</button>
       </div>
+      <div class="batch-build-summary"><span>Pregled izrade</span><strong id="batchBuildCount">0 mockupova</strong></div>
       <div id="batchStatus" class="batch-status">Izaberi najmanje jednu scenu i jedan format.</div>
       <div id="batchResults" class="batch-results"></div>
       <div class="batch-export-actions">
