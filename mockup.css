@@ -1684,3 +1684,19 @@
 .mockup-body .mockup-selection-ui .selection-rotate:active{cursor:grabbing}
 .mockup-body .mockup-selection-ui .selection-handle:hover,
 .mockup-body .mockup-selection-ui .selection-rotate:hover{background:#F3EEFF}
+
+/* Layers panel */
+.mockup-body .layers-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;color:#2b2134}
+.mockup-body .layers-head span{font-size:10px;color:#7654a8;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mockup-body .mockup-layers{display:flex;flex-direction:column;gap:5px;max-height:220px;overflow:auto}
+.mockup-body .layer-row{display:grid;grid-template-columns:28px 1fr 28px;gap:7px;align-items:center;padding:7px 8px;border:1px solid #e4dceb;border-radius:8px;background:#fff;cursor:pointer}
+.mockup-body .layer-row.active{border-color:#7b4dff;box-shadow:0 0 0 2px rgba(123,77,255,.12);background:#f8f4ff}
+.mockup-body .layer-row.hidden{opacity:.48}
+.mockup-body .layer-name{font-size:11px;font-weight:600;color:#33273d;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mockup-body .layer-btn{border:0;background:transparent;color:#7654a8;cursor:pointer;padding:4px;border-radius:5px}
+.mockup-body .layer-btn:hover{background:#f0e9fa}
+.mockup-body .layers-actions{display:flex;gap:7px;margin-top:8px}
+.mockup-body .layers-actions .btn{flex:1;padding:7px 5px;font-size:10px}
+/* Object drag */
+.mockup-body .mockup-object.is-selected{cursor:grab}
+.mockup-body .mockup-object.is-dragging{cursor:grabbing}
