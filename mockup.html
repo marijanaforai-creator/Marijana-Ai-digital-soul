@@ -86,9 +86,9 @@
         </div>
       </div>
       <div class="ai-scene-generator">
-        <div class="ai-scene-generator-kicker">AI SCENE GENERATOR</div>
+        <div class="ai-scene-generator-kicker">OPIŠI SVOJU SCENU</div>
         <div class="ai-scene-generator-row">
-          <textarea id="heroMockupPrompt" rows="2" placeholder=""></textarea>
+          <textarea id="heroMockupPrompt" rows="2" placeholder="Opiši šta želiš da vidiš — npr. „laptop na elegantnom stolu, sage green pozadina, 3D ugao“"></textarea>
           <button id="heroGenerateScene" class="btn primary" type="button">
             <span class="scene-3d-icon" aria-hidden="true">
               <svg viewBox="0 0 32 32" role="img"><path d="M16 3.5 27 9.8v12.4L16 28.5 5 22.2V9.8z"/><path d="m5 9.8 11 6.3 11-6.3M16 16.1v12.4"/><path d="m21.8 6.8-11 6.3"/></svg>
@@ -96,7 +96,7 @@
             <span>Generiši scenu</span>
           </button>
         </div>
-        <small id="heroPromptStatus">Opiši scenu svojim rečima.</small>
+        <small id="heroPromptStatus">Napiši opis svojim rečima. Generator će iz opisa izabrati uređaj/scenu, stil, boju i 3D podešavanja.</small>
       </div>
       <div class="template-tools">
         <input id="templateSearch" type="search" placeholder="Pretraži šablone..." aria-label="Pretraži šablone">
@@ -200,10 +200,10 @@
 
         <div class="panel-block prompt-studio-block">
           <div class="prompt-studio-kicker">PROMPT STUDIO</div>
-          <label for="mockupPrompt">Napiši šta želiš</label>
-          <textarea id="mockupPrompt" rows="4" placeholder="npr. „Tablet, video na ekranu, 3D rotacija, sage green pozadina“"></textarea>
+          <label for="mockupPrompt">Opiši šta želiš da vidiš</label>
+          <textarea id="mockupPrompt" rows="4" placeholder="Npr. „Laptop na radnom stolu, moj dizajn na ekranu, blagi 3D ugao, sage green pozadina.“"></textarea>
           <button id="applyMockupPrompt" class="btn primary prompt-apply" type="button">✨ Generiši scenu</button>
-          <small id="mockupPromptStatus">Prompt generiše scenu prema opisu: uređaj, dokumente, papire, stil, boju i 3D efekat.</small>
+          <small id="mockupPromptStatus">Opiši scenu normalnim rečima. Generator pokušava da prepozna uređaj, scenu, stil, boju, broj elemenata i 3D efekat.</small>
         </div>
 
         <div class="panel-block">
