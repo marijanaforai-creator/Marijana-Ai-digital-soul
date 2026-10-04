@@ -768,9 +768,20 @@
 /* Premium Template Library header polish */
 .mockup-body .template-library-head{
   display:grid;
-  grid-template-columns:minmax(0,1fr) minmax(360px,520px);
+  grid-template-columns:minmax(0,1fr) minmax(0,620px);
   gap:34px;
   align-items:center;
+}
+.mockup-body .template-folder-row{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:14px;
+  width:100%;
+  min-width:0;
+}
+.mockup-body .template-folder-row>*{
+  min-width:0;
+  box-sizing:border-box;
 }
 .mockup-body .template-library-title{min-width:0}
 .mockup-body .template-folder{
@@ -1022,8 +1033,8 @@
 }
 
 /* Prompt Scenes folder */
-.mockup-body .template-folder-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:stretch}
-.mockup-body .template-folder-row .template-folder{min-height:142px}
+.mockup-body .template-folder-row .template-folder{min-height:142px;min-width:0;box-sizing:border-box}
+.mockup-body .prompt-scenes-folder{min-width:0;box-sizing:border-box}
 .mockup-body .prompt-scenes-folder{appearance:none;width:100%;padding:9px 0 0;text-align:left;color:inherit;cursor:pointer;background:transparent;border:0;font:inherit}
 .mockup-body .prompt-scenes-folder .template-folder-tab{display:inline-flex}
 .mockup-body .prompt-scenes-folder .template-folder-body{height:100%;box-sizing:border-box}
