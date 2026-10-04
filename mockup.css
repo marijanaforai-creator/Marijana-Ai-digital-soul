@@ -443,7 +443,7 @@
   content:'' !important;
   display:block !important;
   width:100% !important;
-  height:48px !important;
+  height:82px !important;
   margin:-1px 0 0 !important;
   border-radius:2px 2px 22px 22px !important;
   background:
@@ -455,7 +455,7 @@
 }
 @media(max-width:600px){
   .mockup-object[data-scene="laptop"]::after,
-  .mockup-object.laptop-object::after{height:34px !important;border-radius:2px 2px 15px 15px !important}
+  .mockup-object.laptop-object::after{height:56px !important;border-radius:2px 2px 15px 15px !important}
 }
 
 /* Smart Surface — slika se vizuelno usisava u frame i ostaje isečena unutar površine */
