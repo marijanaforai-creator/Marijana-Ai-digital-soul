@@ -1510,3 +1510,5 @@
 .device-screen.is-dragging-image{cursor:grabbing!important}
 .device-screen img{cursor:grab!important;touch-action:none;user-select:none;-webkit-user-drag:none}
 .device-screen.is-dragging-image img{cursor:grabbing!important}
+
+.pixabay-search-row{display:flex;gap:8px}.pixabay-search-row input{flex:1;min-width:0;padding:10px 12px;border:1px solid #d8d0df;border-radius:9px;background:#fff;font:inherit}.pixabay-status{font-size:11px;color:#756b7d;margin-top:7px}.pixabay-results{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px;max-height:240px;overflow:auto}.pixabay-result{border:1px solid rgba(118,84,168,.16);padding:0;background:#fff;border-radius:7px;overflow:hidden;cursor:pointer}.pixabay-result:hover{border-color:#7654A8;transform:translateY(-1px)}.pixabay-result img{display:block;width:100%;height:74px;object-fit:cover}.pixabay-credit{display:block;margin-top:7px;color:#8a8190;font-size:10px}
