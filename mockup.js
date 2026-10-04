@@ -1903,6 +1903,5 @@ initBatchEngine();
     if (action && action.pointerId === e.pointerId) action=null;
   });
   window.addEventListener("resize",updateUI);
-  setInterval(updateUI,250);
-  selectObject();
+  setInterval(updateUI,250); 
 })();
