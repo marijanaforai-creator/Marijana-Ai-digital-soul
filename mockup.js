@@ -489,11 +489,59 @@ const batchFormatList=[
  ['landscape','Pejzaž 1600×900'],['story','Story / Reel 1080×1920'],
  ['pin','Pinterest 1000×1500']
 ];
+const CUSTOM_FORMAT_KEY='marijanaMockupCustomFormats';
+function loadCustomFormats(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(CUSTOM_FORMAT_KEY)||'[]');
+    saved.forEach(item=>{
+      if(item?.id && Number(item.width)>0 && Number(item.height)>0){
+        formatSizes[item.id]=[Number(item.width),Number(item.height)];
+        if(!batchFormatList.some(x=>x[0]===item.id)) batchFormatList.push([item.id, item.name+' '+item.width+'×'+item.height]);
+      }
+    });
+  }catch(e){}
+}
+function renderBatchFormats(){
+  const formats=document.getElementById('batchFormats');
+  if(!formats)return;
+  formats.innerHTML=batchFormatList.map(([id,label])=>'<label class="batch-option"><input type="checkbox" value="'+id+'" data-batch-format> '+label+'</label>').join('');
+  document.querySelectorAll('[data-batch-format]').forEach(x=>x.addEventListener('change',updateBatchStatus));
+}
+function addCustomBatchFormat(){
+  const nameEl=document.getElementById('customFormatName');
+  const widthEl=document.getElementById('customFormatWidth');
+  const heightEl=document.getElementById('customFormatHeight');
+  const name=(nameEl?.value||'').trim();
+  const width=Number(widthEl?.value), height=Number(heightEl?.value);
+  if(!name||!Number.isFinite(width)||!Number.isFinite(height)||width<100||height<100){
+    if(nameEl)nameEl.focus();
+    return;
+  }
+  const id='custom-'+slugify(name)+'-'+width+'x'+height;
+  const item={id,name,width,height};
+  formatSizes[id]=[width,height];
+  const existing=batchFormatList.findIndex(x=>x[0]===id);
+  if(existing>=0) batchFormatList[existing]=[id,name+' '+width+'×'+height];
+  else batchFormatList.push([id,name+' '+width+'×'+height]);
+  try{
+    const saved=JSON.parse(localStorage.getItem(CUSTOM_FORMAT_KEY)||'[]').filter(x=>x.id!==id);
+    saved.push(item);
+    localStorage.setItem(CUSTOM_FORMAT_KEY,JSON.stringify(saved.slice(-30)));
+  }catch(e){}
+  renderBatchFormats();
+  const checkbox=document.querySelector('[data-batch-format][value="'+CSS.escape(id)+'"]');
+  if(checkbox)checkbox.checked=true;
+  updateBatchStatus();
+  if(nameEl)nameEl.value='';
+  if(widthEl)widthEl.value='';
+  if(heightEl)heightEl.value='';
+}
 function initBatchEngine(){
+  loadCustomFormats();
   const scenes=document.getElementById('batchScenes'), formats=document.getElementById('batchFormats');
   if(!scenes||!formats)return;
   scenes.innerHTML=batchSceneList.map(([id,label])=>`<label class="batch-option"><input type="checkbox" value="${id}" data-batch-scene> ${label}</label>`).join('');
-  formats.innerHTML=batchFormatList.map(([id,label])=>`<label class="batch-option"><input type="checkbox" value="${id}" data-batch-format> ${label}</label>`).join('');
+  renderBatchFormats();
   document.getElementById('selectAllBatch')?.addEventListener('click',()=>{
     document.querySelectorAll('[data-batch-scene],[data-batch-format]').forEach(x=>x.checked=true); updateBatchStatus();
   });
@@ -502,6 +550,7 @@ function initBatchEngine(){
   });
   document.querySelectorAll('[data-batch-scene],[data-batch-format]').forEach(x=>x.addEventListener('change',updateBatchStatus));
   document.getElementById('generateBatch')?.addEventListener('click',generateBatch);
+  document.getElementById('addCustomFormat')?.addEventListener('click',addCustomBatchFormat);
 document.getElementById('downloadBatchPngs')?.addEventListener('click',exportBatchPngs);
 document.getElementById('downloadBatchZip')?.addEventListener('click',exportBatchZip);
   updateBatchStatus();

@@ -140,6 +140,17 @@
           </summary>
           <div class="batch-dropdown-body">
             <div id="batchFormats" class="batch-options"></div>
+            <div class="custom-format-box">
+              <strong>Prilagođena veličina</strong>
+              <div class="custom-format-fields">
+                <input id="customFormatName" type="text" maxlength="40" placeholder="Naziv formata">
+                <input id="customFormatWidth" type="number" min="100" max="5000" placeholder="Širina">
+                <span>×</span>
+                <input id="customFormatHeight" type="number" min="100" max="5000" placeholder="Visina">
+                <button id="addCustomFormat" class="btn" type="button">＋ Dodaj format</button>
+              </div>
+              <small>Unesi naziv i dimenzije u pikselima. Sačuvani formati će ostati dostupni sledeći put.</small>
+            </div>
           </div>
         </details>
       </div>
