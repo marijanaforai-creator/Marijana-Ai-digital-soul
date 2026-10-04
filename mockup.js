@@ -598,7 +598,7 @@ function generateBatch(){
       <strong>${sceneLabel(scene)}</strong><small>${formatLabel(format)}</small>`;
     results.appendChild(card);
   }));
-  status.textContent=`Batch je pripremljen: ${s.scenes.length*s.formats.length} kombinacija.`;
+  status.textContent=`Izrada je pripremljena: ${s.scenes.length*s.formats.length} kombinacija.`;
 }
 function applyLibraryTemplateFromUrl(){
   const id=new URLSearchParams(location.search).get('template');
