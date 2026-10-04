@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="sr-Latn-RS">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Layout po promptu — Marijana AI Digital Soul</title>
+<link rel="stylesheet" href="style.css"><link rel="stylesheet" href="layout-prompt.css">
+</head>
+<body>
+<header class="site-header"><div class="container nav">
+<a class="logo" href="index.html">MARIJANA<span>AI DIGITAL SOUL</span></a>
+<nav class="nav-links"><a href="index.html">Početna</a><a href="canvas.html">Canvas Studio</a><a href="layout-prompt.html" aria-current="page">Layout po promptu</a><a href="mockup.html">Mockup Studio</a><a href="templates.html">Biblioteka šablona</a></nav>
+</div></header>
+<main class="layout-studio">
+<section class="layout-hero"><div class="kicker">MARIJANA AI STUDIO</div><h1>Gotovi layout <em>po promptu</em></h1><p>Napiši šta želiš da napraviš. Sistem će pripremiti strukturu stranica, format, stil i editabilne elemente.</p></section>
+<section class="layout-builder">
+<div class="layout-form">
+<label>Šta želiš da napraviš?<textarea id="layoutPrompt" placeholder="Npr. Napravi A4 radnu svesku o finansijskoj pismenosti, 12 strana, ivory + sage green + gold, minimalistički stil, sa naslovnom stranom, tabelama, vežbama, checklistama i prostorom za beleške."></textarea></label>
+<div class="layout-grid">
+<label>Tip<select id="layoutType"><option value="workbook">Radna sveska</option><option value="planner">Planer</option><option value="document">Dokument</option><option value="presentation">Prezentacija</option><option value="cv">CV</option><option value="ebook">E-book</option><option value="guide">Vodič</option><option value="worksheet">Radni list</option><option value="social">Social media paket</option></select></label>
+<label>Format<select id="layoutFormat"><option value="a4">A4</option><option value="a5">A5</option><option value="presentation">16:9 prezentacija</option><option value="square">1200×1200</option><option value="portrait">1080×1350</option><option value="story">1080×1920</option></select></label>
+<label>Stranice<input id="layoutPages" type="number" min="1" max="100" value="8"></label>
+<label>Stil<select id="layoutStyle"><option>Minimal Luxury</option><option>Ivory + Sage + Gold</option><option>Black + Gold</option><option>Editorial</option><option>Business</option><option>Wellness</option></select></label>
+</div>
+<div class="layout-actions"><button id="generateLayout" class="btn primary" type="button">✦ Generiši layout</button><button id="clearLayout" class="btn" type="button">Obriši</button></div>
+<div id="layoutStatus" class="layout-status"></div>
+</div>
+<div class="layout-preview"><div class="preview-head"><strong>Pregled layouta</strong><span id="layoutMeta">—</span></div><div id="pagePreview" class="page-preview empty">Ovde će se pojaviti generisane stranice.</div></div>
+</section>
+<section class="layout-output" id="layoutOutput" hidden><div class="section-head"><div><div class="kicker">GENERISANO</div><h2>Struktura dokumenta</h2></div><div class="output-actions"><button id="openCanvas" class="btn primary">Otvori u Canvas Studio</button><button id="downloadStructure" class="btn">Sačuvaj strukturu</button></div></div><div id="pageCards" class="page-cards"></div></section>
+</main>
+<script src="layout-prompt.js"></script>
+</body></html>
