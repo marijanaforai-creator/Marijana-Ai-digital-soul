@@ -1284,6 +1284,33 @@ function setScene(value){
   sceneTitle.textContent=sceneNames[scene]||'Mockup';
   if(images[activeImageIndex]) mockupObject.style.setProperty('--scene-image', `url("${images[activeImageIndex].data}")`);
 
+  // Laptop dobija zasebno kućište baze sa tastaturom i touchpadom.
+  const existingLaptopBase=mockupObject.querySelector('.laptop-base');
+  if(existingLaptopBase)existingLaptopBase.remove();
+  if(scene==='laptop'){
+    const base=document.createElement('div');
+    base.className='laptop-base';
+    const keyboard=document.createElement('div');
+    keyboard.className='laptop-keyboard';
+    const rows=[13,13,13,12,11,9];
+    rows.forEach((count,rowIndex)=>{
+      const row=document.createElement('div');
+      row.className='laptop-key-row';
+      for(let i=0;i<count;i++){
+        const key=document.createElement('span');
+        key.className='laptop-key';
+        if(rowIndex===5 && i===0)key.classList.add('key-wide');
+        if(rowIndex===5 && i===count-1)key.classList.add('key-wide');
+        row.appendChild(key);
+      }
+      keyboard.appendChild(row);
+    });
+    const trackpad=document.createElement('div');
+    trackpad.className='laptop-trackpad';
+    base.append(keyboard,trackpad);
+    mockupObject.appendChild(base);
+  }
+
   // Nateraj browser da osveži geometriju uređaja odmah nakon promene.
   mockupObject.style.display='none';
   void mockupObject.offsetHeight;
