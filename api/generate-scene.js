@@ -28,7 +28,7 @@ function scenePrompt(userPrompt,hasReference){
     'Create a professional, photorealistic product mockup scene for Marijana AI Digital Soul.',
     referenceInstruction,
     'Follow the user description for device, environment, materials, camera angle, lighting, background, color palette, and 3D perspective.',
-    'Make the main requested object clearly visible and recognizable. If the user asks for a laptop, show a realistic complete laptop with screen, keyboard deck, trackpad, hinge, bezel, and believable proportions — never a floating black rectangle.',
+    'Make the main requested object clearly visible and recognizable. If the user asks for a laptop, it MUST be a complete physical 3D laptop, not a flat front-facing screen: show the display panel with bezel, visible hinge, substantial lower chassis/base, keyboard deck with recognizable individual keys, trackpad, side thickness, and realistic perspective. The screen must be open at a natural angle and connected to the base. Show enough three-quarter camera angle that the depth and construction are unmistakable. Never render only the front of a laptop, a black rectangle, a floating screen, or a screen without keyboard and base.'
     'Keep the composition clean, premium, realistic, commercially usable, with natural contact shadows and studio lighting.',
     'Do not add watermarks. Do not invent logos or unrelated text.',
     'User description: '+userPrompt
