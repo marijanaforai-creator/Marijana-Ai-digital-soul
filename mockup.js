@@ -739,7 +739,10 @@ const batchSceneList=[
  ['business','Business scena'],['fitness','Fitness scena'],['hotel','Hotel scena'],
  ['restaurant','Restoran scena'],['yoga','Yoga scena'],['beauty','Beauty scena'],
  ['office','Kancelarija'],['desk','Radni sto'],['product','Premium proizvod'],
- ['packaging','Ambalaža'],['social','Social media ekran']
+ ['packaging','Ambalaža'],['social','Social media ekran'],
+ ['coffee-cup','Čaša za kafu za poneti'],['travel-mug','Termo šolja'],['mug','Keramička šolja'],
+ ['tote-bag','Tote torba'],['paper-bag','Papirna kesa'],['bottle','Flaša'],
+ ['cosmetic-jar','Kozmetička teglica'],['food-box','Kutija za hranu'],['pouch','Pouch / vrećica'],['tshirt','Majica']
 ];
 const batchFormatList=[
  ['square','Kvadrat 1200×1200'],['portrait','Portret 1080×1350'],
@@ -1600,6 +1603,16 @@ function downloadMockup(){
     product:{x:width*.34,y:height*.22,w:width*.32,h:height*.48,r:20},
     packaging:{x:width*.34,y:height*.17,w:width*.32,h:height*.62,r:5},
     social:{x:width*.38,y:height*.13,w:width*.24,h:height*.62,r:16},
+    'coffee-cup':{x:width*.37,y:height*.18,w:width*.26,h:height*.55,r:24},
+    'travel-mug':{x:width*.38,y:height*.18,w:width*.24,h:height*.58,r:26},
+    mug:{x:width*.35,y:height*.24,w:width*.30,h:height*.44,r:24},
+    'tote-bag':{x:width*.27,y:height*.20,w:width*.46,h:height*.56,r:10},
+    'paper-bag':{x:width*.31,y:height*.20,w:width*.38,h:height*.56,r:8},
+    bottle:{x:width*.39,y:height*.16,w:width*.22,h:height*.62,r:28},
+    'cosmetic-jar':{x:width*.34,y:height*.28,w:width*.32,h:height*.32,r:18},
+    'food-box':{x:width*.27,y:height*.28,w:width*.46,h:height*.34,r:8},
+    pouch:{x:width*.31,y:height*.19,w:width*.38,h:height*.57,r:12},
+    tshirt:{x:width*.25,y:height*.16,w:width*.50,h:height*.64,r:5},
     fitness:{x:width*.28,y:height*.28,w:width*.44,h:height*.42,r:6},
     hotel:{x:width*.28,y:height*.28,w:width*.44,h:height*.42,r:6},
     restaurant:{x:width*.28,y:height*.28,w:width*.44,h:height*.42,r:6},
