@@ -37,7 +37,7 @@ async function loadPixabayImage(hit,q){
     if(heroMockupPrompt)heroMockupPrompt.value=referencePrompt;
     if(pixabayStatus)pixabayStatus.textContent='Pixabay fotografija je ubačena u Mockup i postavljena kao aktivna slika.'+(item.author?' Autor: '+item.author+'.':'');
   }catch(error){
-    if(pixabayStatus)pixabayStatus.textContent=error?.message||'Pixabay fotografija trenutno nije dostupna.';
+    if(pixabayStatus)pixabayStatus.textContent='Greška pri učitavanju Pixabay slike (ID '+String(hit?.id||'nepoznat')+'): '+(error?.message||'Pixabay fotografija trenutno nije dostupna.');
   }
 }
 
