@@ -477,6 +477,159 @@ const formatSizes={
   pin:[1000,1500]
 };
 
+/* Interna biblioteka formata — proširena lista za Marijanin rad. */
+const internalFormatLibrary=[
+  ['Društvene mreže','Instagram objava',1080,1080],
+  ['Društvene mreže','Instagram portret',1080,1350],
+  ['Društvene mreže','Instagram Story / Reel',1080,1920],
+  ['Društvene mreže','Facebook objava',1200,630],
+  ['Društvene mreže','Facebook Story',1080,1920],
+  ['Društvene mreže','Facebook Cover',1640,856],
+  ['Društvene mreže','Facebook Event Cover',1920,1005],
+  ['Društvene mreže','LinkedIn objava',1200,627],
+  ['Društvene mreže','LinkedIn Cover',1584,396],
+  ['Društvene mreže','LinkedIn Company Cover',1128,191],
+  ['Društvene mreže','X / Twitter objava',1600,900],
+  ['Društvene mreže','X / Twitter Header',1500,500],
+  ['Društvene mreže','Threads objava',1080,1350],
+  ['Društvene mreže','TikTok video',1080,1920],
+  ['Društvene mreže','YouTube Thumbnail',1280,720],
+  ['Društvene mreže','YouTube Channel Art',2560,1440],
+  ['Društvene mreže','YouTube Shorts',1080,1920],
+  ['Društvene mreže','Pinterest Pin',1000,1500],
+  ['Društvene mreže','Pinterest Idea Pin',1080,1920],
+  ['Društvene mreže','Pinterest Board Cover',600,600],
+  ['Društvene mreže','Google Business Profile Cover',1024,576],
+  ['Baneri i oglasi','Web leaderboard',728,90],
+  ['Baneri i oglasi','Web banner',1920,600],
+  ['Baneri i oglasi','Website hero banner',1920,800],
+  ['Baneri i oglasi','Website hero wide',1600,600],
+  ['Baneri i oglasi','Mobile web banner',1080,300],
+  ['Baneri i oglasi','Display square',300,300],
+  ['Baneri i oglasi','Display rectangle',300,250],
+  ['Baneri i oglasi','Large rectangle',336,280],
+  ['Baneri i oglasi','Half page ad',300,600],
+  ['Baneri i oglasi','Wide skyscraper',160,600],
+  ['Baneri i oglasi','Skyscraper',120,600],
+  ['Baneri i oglasi','Billboard ad',970,250],
+  ['Baneri i oglasi','Large leaderboard',970,90],
+  ['Baneri i oglasi','Facebook ad landscape',1200,628],
+  ['Baneri i oglasi','Facebook ad square',1080,1080],
+  ['Baneri i oglasi','Instagram ad portrait',1080,1350],
+  ['Baneri i oglasi','Story ad',1080,1920],
+  ['Web i sajt','Homepage desktop',1440,900],
+  ['Web i sajt','Homepage full width',1920,1080],
+  ['Web i sajt','Landing page',1440,1200],
+  ['Web i sajt','Website section',1440,800],
+  ['Web i sajt','Blog header',1600,900],
+  ['Web i sajt','Blog featured image',1200,630],
+  ['Web i sajt','Open Graph / link preview',1200,630],
+  ['Web i sajt','Email newsletter header',1200,400],
+  ['Web i sajt','Website popup',600,800],
+  ['Prezentacije','16:9 prezentacija',1920,1080],
+  ['Prezentacije','4:3 prezentacija',1600,1200],
+  ['Prezentacije','A4 prezentacija',2480,3508],
+  ['Prezentacije','Presentation portrait',1080,1350],
+  ['Prezentacije','LinkedIn carousel',1080,1080],
+  ['Prezentacije','Square presentation',1080,1080],
+  ['Dokumenti i PDF','A4 portrait',2480,3508],
+  ['Dokumenti i PDF','A4 landscape',3508,2480],
+  ['Dokumenti i PDF','A5 portrait',1748,2480],
+  ['Dokumenti i PDF','A5 landscape',2480,1748],
+  ['Dokumenti i PDF','A6 portrait',1240,1748],
+  ['Dokumenti i PDF','Letter portrait',2550,3300],
+  ['Dokumenti i PDF','Letter landscape',3300,2550],
+  ['Dokumenti i PDF','Legal portrait',2550,4200],
+  ['Dokumenti i PDF','Square PDF',2400,2400],
+  ['Planeri i radne sveske','A4 planner',2480,3508],
+  ['Planeri i radne sveske','A5 planner',1748,2480],
+  ['Planeri i radne sveske','A6 planner',1240,1748],
+  ['Planeri i radne sveske','US Letter planner',2550,3300],
+  ['Planeri i radne sveske','Half Letter planner',1650,2550],
+  ['Planeri i radne sveske','Daily planner portrait',1600,2400],
+  ['Planeri i radne sveske','Weekly planner',1600,1200],
+  ['Planeri i radne sveske','Monthly planner',1600,1200],
+  ['Planeri i radne sveske','Workbook page',1600,2400],
+  ['Planeri i radne sveske','Worksheet',1600,1200],
+  ['Knjige i e-knjige','Ebook portrait',1600,2560],
+  ['Knjige i e-knjige','Kindle-style page',1600,2560],
+  ['Knjige i e-knjige','Book cover portrait',1600,2560],
+  ['Knjige i e-knjige','Paperback 6×9',1800,2700],
+  ['Knjige i e-knjige','Square ebook',2400,2400],
+  ['Štampa','A3 portrait',3508,4961],
+  ['Štampa','A3 landscape',4961,3508],
+  ['Štampa','A2 portrait',4961,7016],
+  ['Štampa','A2 landscape',7016,4961],
+  ['Štampa','A1 portrait',7016,9933],
+  ['Štampa','A1 landscape',9933,7016],
+  ['Štampa','A0 portrait',9933,14043],
+  ['Štampa','A0 landscape',14043,9933],
+  ['Štampa','Poster 18×24 in',5400,7200],
+  ['Štampa','Poster 24×36 in',7200,10800],
+  ['Štampa','Flyer A5',1748,2480],
+  ['Štampa','Flyer A6',1240,1748],
+  ['Štampa','Business card',1050,600],
+  ['Štampa','Postcard',1800,1200],
+  ['Štampa','Square card',1800,1800],
+  ['Štampa','Brochure tri-fold',3508,2480],
+  ['Štampa','Menu A4',2480,3508],
+  ['Štampa','Certificate A4',3508,2480],
+  ['Štampa','Invitation 5×7 in',1500,2100],
+  ['Štampa','Bookmark',900,2100],
+  ['Marketing','Coupon',1500,1000],
+  ['Marketing','Gift certificate',2100,1500],
+  ['Marketing','Price list',1600,2400],
+  ['Marketing','Media kit page',1600,2400],
+  ['Marketing','Lead magnet',1600,2400],
+  ['Marketing','Sales page section',1600,1000],
+  ['Marketing','Product sheet',1600,2200],
+  ['Email','Email header',1200,400],
+  ['Email','Email banner',1200,600],
+  ['Email','Email promo card',600,800],
+  ['Email','Email signature banner',600,200],
+  ['Video','Full HD landscape',1920,1080],
+  ['Video','4K landscape',3840,2160],
+  ['Video','Vertical Full HD',1080,1920],
+  ['Video','Square video',1080,1080],
+  ['Video','HD landscape',1280,720],
+  ['E-commerce','Product image square',2000,2000],
+  ['E-commerce','Product image portrait',2000,2500],
+  ['E-commerce','Shop banner',1920,600],
+  ['E-commerce','Product comparison',1600,1200],
+  ['E-commerce','Product feature card',1200,1200],
+  ['E-commerce','Marketplace listing',2000,2000],
+  ['Business','Business presentation cover',1920,1080],
+  ['Business','Proposal cover',1600,2400],
+  ['Business','Report cover',1600,2400],
+  ['Business','Invoice A4',2480,3508],
+  ['Business','Letterhead A4',2480,3508],
+  ['Business','Social proof card',1200,1200],
+  ['Digital proizvodi','Course cover',1600,900],
+  ['Digital proizvodi','Course lesson cover',1600,900],
+  ['Digital proizvodi','Digital product cover',1600,2000],
+  ['Digital proizvodi','Template preview',1600,1200],
+  ['Digital proizvodi','Workbook cover',1600,2400],
+  ['Digital proizvodi','Checklist',1600,2400],
+  ['Digital proizvodi','Cheat sheet',1600,2400],
+  ['Digital proizvodi','Carousel square',1080,1080],
+  ['Digital proizvodi','Carousel portrait',1080,1350],
+  ['Mockup i scene','Phone mockup',1080,1920],
+  ['Mockup i scene','Laptop mockup',1600,1000],
+  ['Mockup i scene','Tablet mockup',1200,1600],
+  ['Mockup i scene','Desktop mockup',1600,1000],
+  ['Mockup i scene','Magazine mockup',1600,1200],
+  ['Mockup i scene','Document stack',1600,1200],
+  ['Mockup i scene','3D cards',1600,1200],
+  ['Mockup i scene','Packaging scene',1600,1200],
+  ['Oglasi','Google Display square',300,300],
+  ['Oglasi','Google Display medium rectangle',300,250],
+  ['Oglasi','Google Display leaderboard',728,90],
+  ['Oglasi','Google Display wide',970,250],
+  ['Oglasi','Google Display half page',300,600],
+  ['Oglasi','Google Ads image landscape',1200,628],
+  ['Oglasi','Google Ads image square',1200,1200]
+];
+
 const batchSceneList=[
  ['phone','Telefon'],['tablet','Tablet'],['laptop','Laptop'],['frame','Obični Frame'],['planner','Planner'],['poster','Poster'],
  ['business','Business scena'],['fitness','Fitness scena'],['hotel','Hotel scena'],
@@ -490,6 +643,23 @@ const batchFormatList=[
  ['pin','Pinterest 1000×1500']
 ];
 const CUSTOM_FORMAT_KEY='marijanaMockupCustomFormats';
+function renderInternalFormatLibrary(){
+  const root=document.getElementById('internalFormatList');
+  const search=document.getElementById('internalFormatSearch');
+  if(!root)return;
+  const q=(search?.value||'').trim().toLowerCase();
+  const rows=internalFormatLibrary.filter(x=>!q||x.join(' ').toLowerCase().includes(q));
+  const groups={};
+  rows.forEach(x=>(groups[x[0]]??=[]).push(x));
+  root.innerHTML=Object.entries(groups).map(([category,items])=>'<div class="internal-format-group"><h4>'+category+'</h4>'+items.map(x=>'<div class="internal-format-row"><span>'+x[1]+'</span><strong>'+x[2]+' × '+x[3]+' px</strong></div>').join('')+'</div>').join('') || '<div class="internal-format-empty">Nema rezultata.</div>';
+}
+function syncInternalFormatSizes(){
+  internalFormatLibrary.forEach(([category,name,w,h])=>{
+    const id='internal-'+slugify(name)+'-'+w+'x'+h;
+    formatSizes[id]=[w,h];
+    if(!batchFormatList.some(x=>x[0]===id)) batchFormatList.push([id,name+' '+w+'×'+h]);
+  });
+}
 function loadCustomFormats(){
   try{
     const saved=JSON.parse(localStorage.getItem(CUSTOM_FORMAT_KEY)||'[]');
@@ -537,6 +707,7 @@ function addCustomBatchFormat(){
   if(heightEl)heightEl.value='';
 }
 function initBatchEngine(){
+  syncInternalFormatSizes();
   loadCustomFormats();
   const scenes=document.getElementById('batchScenes'), formats=document.getElementById('batchFormats');
   if(!scenes||!formats)return;
@@ -554,6 +725,8 @@ function initBatchEngine(){
 document.getElementById('downloadBatchPngs')?.addEventListener('click',exportBatchPngs);
 document.getElementById('downloadBatchZip')?.addEventListener('click',exportBatchZip);
   updateBatchStatus();
+  renderInternalFormatLibrary();
+  document.getElementById('internalFormatSearch')?.addEventListener('input',renderInternalFormatLibrary);
 }
 function getBatchSelections(){
   return {
