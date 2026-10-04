@@ -1171,6 +1171,18 @@ resetBtn.addEventListener('click',resetAll);
 saveTemplateBtn.addEventListener('click',saveTemplate);
 templateSearch?.addEventListener('input',renderTemplateLibrary);
 templateCategory?.addEventListener('change',renderTemplateLibrary);
+document.querySelectorAll('[data-template-category]').forEach(button=>{
+  button.addEventListener('click',()=>{
+    if(templateCategory){
+      templateCategory.value=button.dataset.templateCategory||'all';
+      templateSearch.value='';
+      favoritesOnly.dataset.active='false';
+      favoritesOnly.textContent='♡ Favoriti';
+      renderTemplateLibrary();
+      document.querySelector('.template-tools')?.scrollIntoView({behavior:'smooth',block:'center'});
+    }
+  });
+});
 favoritesOnly?.addEventListener('click',()=>{
   const active=favoritesOnly.dataset.active==='true';
   favoritesOnly.dataset.active=String(!active);
