@@ -807,7 +807,7 @@ async function exportBatchZip(){
   files.forEach(file=>zip.file(file.name,file.blob));
   const blob=await zip.generateAsync({type:'blob'});
   const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');a.href=url;a.download='mockup-batch.zip';a.click();
+  const a=document.createElement('a');a.href=url;a.download='paket-mockupova.zip';a.click();
   setTimeout(()=>URL.revokeObjectURL(url),1000);
   const status=document.getElementById('batchStatus');
   if(status)status.textContent=`ZIP paket je spreman: ${files.length} PNG fajlova.`;
