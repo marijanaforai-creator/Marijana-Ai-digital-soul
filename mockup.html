@@ -39,7 +39,8 @@
           <div class="kicker">TEMPLATE LIBRARY</div>
           <h2>Izaberi početnu scenu</h2>
         </div>
-        <div class="template-folder" aria-label="Biblioteka gotovih šablona">
+        <div class="template-folder-row">
+          <div class="template-folder" aria-label="Biblioteka gotovih šablona">
           <div class="template-folder-tab">BIBLIOTEKA</div>
           <div class="template-folder-body">
             <div class="template-folder-heading">
@@ -62,6 +63,36 @@
               <button type="button" data-template-category="web">Web</button>
             </div>
           </div>
+        </div>
+          <button class="template-folder prompt-scenes-folder" id="promptScenesFolder" type="button" aria-expanded="false" aria-controls="promptScenesPanel">
+            <span class="template-folder-tab">GOTOVE SCENE</span>
+            <span class="template-folder-body">
+              <span class="template-folder-heading">
+                <span class="folder-icon" aria-hidden="true">
+                  <svg viewBox="0 0 48 40" role="img"><path d="M3 9.5A5.5 5.5 0 0 1 8.5 4H20l5 5h14.5A5.5 5.5 0 0 1 45 14.5v17A5.5 5.5 0 0 1 39.5 37h-31A5.5 5.5 0 0 1 3 31.5z"/><path d="M4 13h40"/></svg>
+                </span>
+                <span>
+                  <strong>Prompt scene</strong>
+                  <small>Gotove kompozicije iz tvojih promptova</small>
+                </span>
+              </span>
+              <span class="prompt-folder-hint">Klikni da otvoriš kolekciju →</span>
+            </span>
+          </button>
+        </div>
+      </div>
+      <div class="prompt-scenes-panel" id="promptScenesPanel" hidden>
+        <div class="prompt-scenes-panel-head">
+          <div>
+            <div class="kicker">PROMPT SCENE</div>
+            <h3>Gotove kompozicije</h3>
+          </div>
+          <span>Ovde ćemo ubacivati tvoje gotove promptove i pretvarati ih u scene koje se biraju jednim klikom.</span>
+        </div>
+        <div class="prompt-scenes-empty">
+          <div class="prompt-scenes-empty-icon">✦</div>
+          <strong>Spremno za tvoje promptove</strong>
+          <small>Pošalji mi promptove i napravićemo svaku scenu kao gotov izbor u ovoj fascikli.</small>
         </div>
       </div>
       <div class="ai-scene-generator">
