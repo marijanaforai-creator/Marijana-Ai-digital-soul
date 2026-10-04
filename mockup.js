@@ -276,6 +276,8 @@ const templateCategory=document.getElementById('templateCategory');
 const favoritesOnly=document.getElementById('favoritesOnly');
 const promptScenesFolder=document.getElementById('promptScenesFolder');
 const promptScenesPanel=document.getElementById('promptScenesPanel');
+const libraryTab=document.getElementById('libraryTab');
+const promptTab=document.getElementById('promptTab');
 
 let images=[];
 let activeImageIndex=0;
@@ -1215,11 +1217,18 @@ document.querySelectorAll('[data-template-category]').forEach(button=>{
     }
   });
 });
-promptScenesFolder?.addEventListener('click',()=>{
-  const open=promptScenesFolder.getAttribute('aria-expanded')==='true';
-  promptScenesFolder.setAttribute('aria-expanded',String(!open));
-  if(promptScenesPanel) promptScenesPanel.hidden=open;
-}); 
+function setLibraryTab(tab){
+  const promptOpen=tab==='prompt';
+  libraryTab?.classList.toggle('active',!promptOpen);
+  promptTab?.classList.toggle('active',promptOpen);
+  libraryTab?.setAttribute('aria-selected',String(!promptOpen));
+  promptTab?.setAttribute('aria-selected',String(promptOpen));
+  if(promptScenesPanel) promptScenesPanel.hidden=!promptOpen;
+  document.querySelector('.template-tools')?.classList.toggle('prompt-mode',promptOpen);
+}
+libraryTab?.addEventListener('click',()=>setLibraryTab('library'));
+promptTab?.addEventListener('click',()=>setLibraryTab('prompt'));
+
 favoritesOnly?.addEventListener('click',()=>{
   const active=favoritesOnly.dataset.active==='true';
   favoritesOnly.dataset.active=String(!active);
