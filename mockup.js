@@ -1226,32 +1226,48 @@ function clampImagePosition(){
   imageOffsetY=Math.max(-maxY,Math.min(maxY,imageOffsetY));
 }
 function initDirectImageControls(){
-  if(!previewImage)return;
-  previewImage.addEventListener('pointerdown',e=>{
+  const screen=document.querySelector('.device-screen');
+  if(!screen)return;
+
+  screen.addEventListener('pointerdown',e=>{
     if(!images.length)return;
+    if(e.target.closest('.frame-resize-handle'))return;
+    if(e.target!==previewImage && e.target!==screen)return;
     e.preventDefault();
-    previewImage.setPointerCapture?.(e.pointerId);
+    screen.setPointerCapture?.(e.pointerId);
     imageDrag={pointerId:e.pointerId,startX:e.clientX,startY:e.clientY,baseX:imageOffsetX,baseY:imageOffsetY};
-    previewImage.style.cursor='grabbing';
+    screen.classList.add('is-dragging-image');
   });
-  previewImage.addEventListener('pointermove',e=>{
+
+  screen.addEventListener('pointermove',e=>{
     if(!imageDrag||imageDrag.pointerId!==e.pointerId)return;
+    e.preventDefault();
     imageOffsetX=imageDrag.baseX+(e.clientX-imageDrag.startX);
     imageOffsetY=imageDrag.baseY+(e.clientY-imageDrag.startY);
     clampImagePosition();
     updateImageTransform();
   });
-  const finishDrag=()=>{if(imageDrag){imageDrag=null;updateImageTransform();}};
-  previewImage.addEventListener('pointerup',finishDrag);
-  previewImage.addEventListener('pointercancel',finishDrag);
-  previewImage.addEventListener('wheel',e=>{
+
+  const finishDrag=()=>{
+    if(!imageDrag)return;
+    imageDrag=null;
+    screen.classList.remove('is-dragging-image');
+    updateImageTransform();
+  };
+  screen.addEventListener('pointerup',finishDrag);
+  screen.addEventListener('pointercancel',finishDrag);
+  screen.addEventListener('lostpointercapture',finishDrag);
+
+  screen.addEventListener('wheel',e=>{
     if(!images.length)return;
     e.preventDefault();
-    imageZoom=Math.max(40,Math.min(220,imageZoom+(e.deltaY<0?5:-5)));
+    const delta=e.deltaY<0?5:-5;
+    imageZoom=Math.max(40,Math.min(220,imageZoom+delta));
     clampImagePosition();
     updateImageTransform();
   },{passive:false});
-  previewImage.title='Prevuci za pomeranje • Točkić miša za uvećanje/smanjenje';
+
+  screen.title='Prevuci sliku za pomeranje • Točkić miša za uvećanje/smanjenje';
 }
 function resizeImageFromHandle(e){
   if(!images.length)return;
