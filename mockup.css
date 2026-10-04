@@ -1432,3 +1432,4 @@
  .mockup-body .internal-format-library-head{flex-direction:column;align-items:stretch}
  .mockup-body .internal-format-row{align-items:flex-start;flex-direction:column;gap:3px}
 }
+.ai-quick-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:9px}.ai-quick-action{flex:1 1 150px;min-width:0}.ai-quick-action:disabled{opacity:.55;cursor:wait}
