@@ -34,65 +34,55 @@
 
   <section class="template-library">
     <div class="container">
-      <div class="section-head template-library-head">
+      <div class="template-library-head">
         <div class="template-library-title">
           <div class="kicker">TEMPLATE LIBRARY</div>
           <h2>Izaberi početnu scenu</h2>
         </div>
-        <div class="template-folder-row">
-          <div class="template-folder" aria-label="Biblioteka gotovih šablona">
-          <div class="template-folder-tab">BIBLIOTEKA</div>
-          <div class="template-folder-body">
-            <div class="template-folder-heading">
-              <span class="folder-icon" aria-hidden="true">
-                <svg viewBox="0 0 48 40" role="img"><path d="M3 9.5A5.5 5.5 0 0 1 8.5 4H20l5 5h14.5A5.5 5.5 0 0 1 45 14.5v17A5.5 5.5 0 0 1 39.5 37h-31A5.5 5.5 0 0 1 3 31.5z"/><path d="M4 13h40"/></svg>
-              </span>
-              <div>
-                <strong>Gotovi šabloni</strong>
-                <small>Spremne scene za tvoj dizajn</small>
-              </div>
-            </div>
-            <div class="template-folder-list" aria-label="Kategorije gotovih šablona">
-              <button type="button" data-template-category="device">Uređaji</button>
-              <button type="button" data-template-category="business">Business</button>
-              <button type="button" data-template-category="wellness">Wellness</button>
-              <button type="button" data-template-category="product">Proizvodi</button>
-              <button type="button" data-template-category="social">Društvene mreže</button>
-              <button type="button" data-template-category="3d">3D kompozicije</button>
-              <button type="button" data-template-category="sheets">Dokumenti</button>
-              <button type="button" data-template-category="web">Web</button>
-            </div>
-          </div>
-        </div>
-          <button class="template-folder prompt-scenes-folder" id="promptScenesFolder" type="button" aria-expanded="false" aria-controls="promptScenesPanel">
-            <span class="template-folder-tab">GOTOVE SCENE</span>
-            <span class="template-folder-body">
-              <span class="template-folder-heading">
-                <span class="folder-icon" aria-hidden="true">
-                  <svg viewBox="0 0 48 40" role="img"><path d="M3 9.5A5.5 5.5 0 0 1 8.5 4H20l5 5h14.5A5.5 5.5 0 0 1 45 14.5v17A5.5 5.5 0 0 1 39.5 37h-31A5.5 5.5 0 0 1 3 31.5z"/><path d="M4 13h40"/></svg>
-                </span>
-                <span>
-                  <strong>Prompt scene</strong>
-                  <small>Gotove kompozicije iz tvojih promptova</small>
-                </span>
-              </span>
-              <span class="prompt-folder-hint">Klikni da otvoriš kolekciju →</span>
-            </span>
+        <div class="library-tabs" role="tablist" aria-label="Biblioteka">
+          <button class="library-tab active" id="libraryTab" type="button" role="tab" aria-selected="true" aria-controls="libraryContent">
+            <span class="library-tab-label">BIBLIOTEKA</span>
+            <span class="library-tab-icon" aria-hidden="true">▦</span>
+            <strong>Gotovi šabloni</strong>
+            <small>Spremne scene za tvoj dizajn</small>
+          </button>
+          <button class="library-tab" id="promptTab" type="button" role="tab" aria-selected="false" aria-controls="promptScenesPanel">
+            <span class="library-tab-label">GOTOVI PROMPTOVI</span>
+            <span class="library-tab-icon" aria-hidden="true">✦</span>
+            <strong>Prompt scene</strong>
+            <small>Gotove kompozicije iz tvojih promptova</small>
           </button>
         </div>
       </div>
       <div class="prompt-scenes-panel" id="promptScenesPanel" hidden>
         <div class="prompt-scenes-panel-head">
           <div>
-            <div class="kicker">PROMPT SCENE</div>
-            <h3>Gotove kompozicije</h3>
+            <div class="kicker">GOTOVI PROMPTOVI</div>
+            <h3>Izaberi gotovu scenu</h3>
           </div>
           <span>Ovde ćemo ubacivati tvoje gotove promptove i pretvarati ih u scene koje se biraju jednim klikom.</span>
         </div>
-        <div class="prompt-scenes-empty">
-          <div class="prompt-scenes-empty-icon">✦</div>
-          <strong>Spremno za tvoje promptove</strong>
-          <small>Pošalji mi promptove i napravićemo svaku scenu kao gotov izbor u ovoj fascikli.</small>
+        <div class="prompt-scenes-grid">
+          <button class="prompt-scene-card" type="button">
+            <span class="prompt-scene-preview preview-document"><span class="preview-sheet"></span><span class="preview-sheet back"></span></span>
+            <strong>3 lista dokumenta</strong>
+            <small>3 lista · stack · blaga rotacija</small>
+          </button>
+          <button class="prompt-scene-card" type="button">
+            <span class="prompt-scene-preview preview-cards"><span></span><span></span><span></span></span>
+            <strong>3D kartice</strong>
+            <small>Više kartica · dubina · perspektiva</small>
+          </button>
+          <button class="prompt-scene-card" type="button">
+            <span class="prompt-scene-preview preview-stack"><span></span><span></span></span>
+            <strong>Složeni dokumenti</strong>
+            <small>Dokumenti · slojevi · prirodne senke</small>
+          </button>
+          <div class="prompt-scene-coming">
+            <span>+</span>
+            <strong>Tvoji sledeći promptovi</strong>
+            <small>Pošalji ih i dodaćemo ih ovde.</small>
+          </div>
         </div>
       </div>
       <div class="ai-scene-generator">
