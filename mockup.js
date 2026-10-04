@@ -1817,3 +1817,92 @@ updateImageTransform();
 
 // Pokreni listu scena i formata za izradu više mockupova.
 initBatchEngine();
+
+/* Canva-like object selection */
+(() => {
+  const stage = document.getElementById("mockupStage");
+  const object = document.getElementById("mockupObject");
+  const ui = document.getElementById("mockupSelectionUI");
+  if (!stage || !object || !ui) return;
+  let selected = false;
+  let action = null;
+
+  function updateUI() {
+    if (!selected) return;
+    const sr = stage.getBoundingClientRect();
+    const or = object.getBoundingClientRect();
+    ui.style.left = (or.left - sr.left) + "px";
+    ui.style.top = (or.top - sr.top) + "px";
+    ui.style.width = or.width + "px";
+    ui.style.height = or.height + "px";
+  }
+  function selectObject() {
+    selected = true;
+    ui.classList.add("active");
+    ui.setAttribute("aria-hidden","false");
+    updateUI();
+  }
+  function deselect(e) {
+    if (e.target === stage) {
+      selected = false;
+      ui.classList.remove("active");
+      ui.setAttribute("aria-hidden","true");
+    }
+  }
+
+  stage.addEventListener("pointerdown", e => {
+    if (e.target.closest("#mockupSelectionUI")) return;
+    if (e.target.closest("#mockupObject")) {
+      selectObject();
+      return;
+    }
+    deselect(e);
+  });
+
+  ui.querySelectorAll(".selection-handle").forEach(handle => {
+    handle.addEventListener("pointerdown", e => {
+      e.preventDefault();
+      e.stopPropagation();
+      selectObject();
+      const rect = object.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const startDistance = Math.max(1, Math.hypot(e.clientX-centerX,e.clientY-centerY));
+      const startScale = Number(scaleRange?.value || 100);
+      action = {type:"scale", pointerId:e.pointerId, centerX, centerY, startDistance, startScale};
+      handle.setPointerCapture?.(e.pointerId);
+    });
+  });
+
+  const rotate = ui.querySelector(".selection-rotate");
+  rotate?.addEventListener("pointerdown", e => {
+    e.preventDefault();
+    e.stopPropagation();
+    selectObject();
+    const rect = object.getBoundingClientRect();
+    action = {type:"rotate", pointerId:e.pointerId, centerX:rect.left+rect.width/2, centerY:rect.top+rect.height/2, startAngle:Math.atan2(e.clientY-(rect.top+rect.height/2),e.clientX-(rect.left+rect.width/2))*180/Math.PI, startRotation:Number(rotateRange?.value || 0)};
+    rotate.setPointerCapture?.(e.pointerId);
+  });
+
+  window.addEventListener("pointermove", e => {
+    if (!action || action.pointerId !== e.pointerId) return;
+    if (action.type === "scale") {
+      const d = Math.max(1, Math.hypot(e.clientX-action.centerX,e.clientY-action.centerY));
+      const next = Math.max(50,Math.min(150,action.startScale*(d/action.startDistance)));
+      if (scaleRange) { scaleRange.value = Math.round(next); scaleRange.dispatchEvent(new Event("input",{bubbles:true})); }
+    } else {
+      const angle = Math.atan2(e.clientY-action.centerY,e.clientX-action.centerX)*180/Math.PI;
+      const delta = angle-action.startAngle;
+      let next = action.startRotation+delta;
+      while(next>180) next-=360; while(next<-180) next+=360;
+      if (rotateRange) { rotateRange.value = Math.round(next); rotateRange.dispatchEvent(new Event("input",{bubbles:true})); }
+    }
+    updateUI();
+  });
+  window.addEventListener("pointerup", e => {
+    if (action && action.pointerId === e.pointerId) action=null;
+  });
+  window.addEventListener("resize",updateUI);
+  setInterval(updateUI,250);
+  selectObject();
+})();
