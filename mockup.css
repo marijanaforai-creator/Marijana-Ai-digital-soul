@@ -1504,3 +1504,9 @@
   .mockup-object.laptop-object .laptop-key{height:5px}
   .mockup-object.laptop-object .laptop-trackpad{height:12px;bottom:8px}
 }
+
+/* Direktna kontrola slike mišem */
+.device-screen{cursor:grab!important;touch-action:none}
+.device-screen.is-dragging-image{cursor:grabbing!important}
+.device-screen img{cursor:grab!important;touch-action:none;user-select:none;-webkit-user-drag:none}
+.device-screen.is-dragging-image img{cursor:grabbing!important}
