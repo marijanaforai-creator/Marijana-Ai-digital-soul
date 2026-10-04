@@ -1905,3 +1905,83 @@ initBatchEngine();
   window.addEventListener("resize",updateUI);
   setInterval(updateUI,250); 
 })();
+/* Real object dragging + Layers */
+(() => {
+  const stage=document.getElementById("mockupStage");
+  const object=document.getElementById("mockupObject");
+  const list=document.getElementById("mockupLayers");
+  const selectedName=document.getElementById("layerSelectionName");
+  const up=document.getElementById("layerUpBtn");
+  const down=document.getElementById("layerDownBtn");
+  if(!stage||!object||!list)return;
+
+  let objectDrag=null;
+  let locked=false;
+
+  const layers=[
+    {id:"background",name:"Pozadina",el:stage,locked:true},
+    {id:"decorations",name:"Dekoracije",el:stage.querySelector(".scene-decoration"),locked:false},
+    {id:"mockup",name:"Mockup / proizvod",el:object,locked:false},
+    {id:"label",name:"Tekst scene",el:document.getElementById("sceneLabel"),locked:false}
+  ];
+
+  function renderLayers(){
+    list.innerHTML="";
+    layers.forEach(layer=>{
+      const row=document.createElement("div");
+      row.className="layer-row"+(layer.id==="mockup"?" active":"")+(layer.el?.hidden?" hidden":"");
+      row.dataset.layer=layer.id;
+      row.innerHTML='<button class="layer-btn layer-eye" type="button" title="Prikaži/sakrij">'+(layer.el?.hidden?"◌":"◉")+'</button><span class="layer-name">'+layer.name+'</span><button class="layer-btn layer-lock" type="button" title="Zaključaj">'+(layer.locked?"🔒":"🔓")+'</button>';
+      row.addEventListener("click",e=>{
+        if(e.target.closest("button"))return;
+        layers.forEach(x=>x.el?.classList.remove("is-selected"));
+        layer.el?.classList.add("is-selected");
+        if(layer.id==="mockup" && window.__mockupSelectObject)window.__mockupSelectObject();
+        selectedName.textContent=layer.name;
+      });
+      row.querySelector(".layer-eye").addEventListener("click",e=>{
+        e.stopPropagation();
+        if(layer.el){layer.el.hidden=!layer.el.hidden;renderLayers();}
+      });
+      row.querySelector(".layer-lock").addEventListener("click",e=>{
+        e.stopPropagation();
+        layer.locked=!layer.locked;
+        renderLayers();
+      });
+      list.appendChild(row);
+    });
+  }
+
+  function selectMockup(){
+    if(window.__mockupSelectObject)window.__mockupSelectObject();
+    selectedName.textContent="Mockup / proizvod";
+    object.classList.add("is-selected");
+    locked=layers.find(x=>x.id==="mockup")?.locked||false;
+  }
+
+  object.addEventListener("pointerdown",e=>{
+    if(e.target.closest(".frame-resize-handle")||e.target.closest(".selection-handle")||e.target.closest(".selection-rotate"))return;
+    if(e.target.closest(".device-screen"))return;
+    selectMockup();
+    if(locked)return;
+    object.setPointerCapture?.(e.pointerId);
+    objectDrag={pointerId:e.pointerId,startX:e.clientX,startY:e.clientY,baseX:offsetX,baseY:offsetY};
+    object.classList.add("is-dragging");
+  });
+  object.addEventListener("pointermove",e=>{
+    if(!objectDrag||objectDrag.pointerId!==e.pointerId)return;
+    const dx=e.clientX-objectDrag.startX,dy=e.clientY-objectDrag.startY;
+    offsetX=Math.max(-100,Math.min(100,objectDrag.baseX+dx*0.55));
+    offsetY=Math.max(-100,Math.min(100,objectDrag.baseY+dy*0.55));
+    if(positionX)positionX.value=Math.round(offsetX);
+    if(positionY)positionY.value=Math.round(offsetY);
+    updateTransform();
+    if(window.__mockupUpdateSelectionUI)window.__mockupUpdateSelectionUI();
+  });
+  const finish=()=>{if(objectDrag){objectDrag=null;object.classList.remove("is-dragging");}};
+  object.addEventListener("pointerup",finish);
+  object.addEventListener("pointercancel",finish);
+  up?.addEventListener("click",()=>{object.style.zIndex=String((Number(getComputedStyle(object).zIndex)||1)+1);});
+  down?.addEventListener("click",()=>{object.style.zIndex=String(Math.max(1,(Number(getComputedStyle(object).zIndex)||1)-1));});
+  renderLayers();
+})();
