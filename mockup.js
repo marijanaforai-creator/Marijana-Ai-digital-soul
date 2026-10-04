@@ -829,8 +829,8 @@ async function renderBatchCanvas(scene,format){
   const y=size.h*c.y;
   const w=size.w*c.w;
   const h=size.h*c.h;
-  const radius=Math.max(1,Math.min(size.w,size.h)*c.r/100);
-  const pad=Math.max(0,Math.min(w,h)*c.pad/100);
+  const radius=Math.max(2,Math.min(size.w,size.h)*c.r/1000);
+  const pad=Math.max(0,Math.min(w,h)*c.pad/1000);
   const innerX=x+pad;
   const innerY=y+pad;
   const innerW=w-pad*2;
@@ -904,6 +904,17 @@ async function createBatchFile(scene,format){
       });
     },'image/png');
   });
+}
+
+function createBatchPreview(canvas,maxSize=760){
+  const ratio=Math.min(1,maxSize/Math.max(canvas.width,canvas.height));
+  if(ratio>=1)return canvas;
+  const preview=document.createElement('canvas');
+  preview.width=Math.max(1,Math.round(canvas.width*ratio));
+  preview.height=Math.max(1,Math.round(canvas.height*ratio));
+  const ctx=preview.getContext('2d');
+  ctx.drawImage(canvas,0,0,preview.width,preview.height);
+  return preview;
 }
 
 function formatLabelForBatch(format){
@@ -1015,7 +1026,7 @@ async function generateBatch(){
 
         // Thumbnail prikazuje isti canvas koji će kasnije otići u PNG/ZIP.
         const previewImage=document.createElement('img');
-        previewImage.src=canvas.toDataURL('image/jpeg',.82);
+        previewImage.src=createBatchPreview(canvas).toDataURL('image/jpeg',.82);
         previewImage.alt=`${sceneLabel(scene)} — ${formatLabel(format)}`;
         previewImage.loading='lazy';
         preview.appendChild(previewImage);
