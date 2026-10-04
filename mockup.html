@@ -396,6 +396,15 @@
           </div>
         </div>
 
+
+        <div class="panel-block mockup-font-block">
+          <div class="prompt-studio-kicker">FONT STUDIO</div>
+          <label for="mockupFontSelect">Font za tekst scene</label>
+          <select id="mockupFontSelect"><option value="">Učitavanje fontova...</option></select>
+          <div class="font-preview-box" id="mockupFontPreview">Marijana AI Digital Soul</div>
+          <small id="mockupFontStatus">Učitaćemo fontove dostupne na ovom računaru.</small>
+        </div>
+
         <div class="panel-actions">
           <button id="saveTemplateBtn" class="btn" type="button">Sačuvaj šablon</button>
           <button id="myTemplatesBtn" class="btn" type="button">Moji šabloni</button>
@@ -432,7 +441,40 @@
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="mockup-font-manager.js"></script>
 <script src="mockup.js"></script>
+<script>
+(() => {
+  const select = document.getElementById("mockupFontSelect");
+  const preview = document.getElementById("mockupFontPreview");
+  const status = document.getElementById("mockupFontStatus");
+  const label = document.getElementById("sceneLabel");
+  function apply() {
+    const font = select && select.value;
+    if (!font) return;
+    const family = '"' + font.replace(/"/g, "") + '", sans-serif';
+    if (label) label.style.fontFamily = family;
+    if (preview) preview.style.fontFamily = family;
+    localStorage.setItem("marijanaMockupFont", font);
+  }
+  function fill(fonts) {
+    if (!select) return;
+    select.innerHTML = fonts.map(font => {
+      const safe = font.replace(/"/g, "&quot;");
+      return '<option value="' + safe + '">' + font + "</option>";
+    }).join("");
+    const saved = localStorage.getItem("marijanaMockupFont");
+    if (saved && fonts.includes(saved)) select.value = saved;
+    apply();
+    if (status) status.textContent = fonts.length + " fontova dostupno za izbor.";
+  }
+  select && select.addEventListener("change", apply);
+  window.addEventListener("marijana:fonts-ready", event => fill(event.detail.fonts));
+  if (window.MarijanaMockupFontManager) {
+    window.MarijanaMockupFontManager.load().then(fill);
+  }
+})();
+</script>
 <script>
 const mobileMenuToggle=document.getElementById('mobileMenuToggle');
 const mobileNav=document.getElementById('mobileNav');
