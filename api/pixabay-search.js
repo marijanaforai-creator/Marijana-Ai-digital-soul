@@ -24,7 +24,7 @@ export default async function handler(req,res){
   aliases.forEach(([from,to])=>{
     q=q.split(from).join(to);
   });
-  q=q.replace(/\\s+/g,' ').trim();
+  q=q.replace(/\s+/g,' ').trim();
 
   const params=new URLSearchParams({
     key,
