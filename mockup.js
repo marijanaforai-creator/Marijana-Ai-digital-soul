@@ -1036,7 +1036,40 @@ async function generateBatch(){
         const meta=document.createElement('small');
         meta.textContent=formatLabel(format);
 
-        card.append(preview,title,meta);
+        const actions=document.createElement('div');
+        actions.className='batch-result-actions';
+
+        const download=document.createElement('button');
+        download.type='button';
+        download.className='btn';
+        download.textContent='Preuzmi prikaz';
+        download.addEventListener('click',()=>{
+          const url=canvas.toDataURL('image/png');
+          const a=document.createElement('a');
+          a.href=url;
+          a.download=`vizuelni-prikaz-${slugify(sceneNames[scene]||scene)}-${slugify(formatLabel(format))}.png`;
+          a.click();
+        });
+
+        const open=document.createElement('button');
+        open.type='button';
+        open.className='btn';
+        open.textContent='Otvori prikaz';
+        open.addEventListener('click',()=>{
+          const data=canvas.toDataURL('image/png');
+          const win=window.open();
+          if(win){
+            win.document.title=`${sceneLabel(scene)} — ${formatLabel(format)}`;
+            win.document.body.style.cssText='margin:0;background:#111;display:grid;place-items:center;min-height:100vh';
+            const img=document.createElement('img');
+            img.src=data;
+            img.style.cssText='max-width:96vw;max-height:96vh;object-fit:contain';
+            win.document.body.appendChild(img);
+          }
+        });
+
+        actions.append(download,open);
+        card.append(preview,title,meta,actions);
         results?.appendChild(card);
 
         completed++;
