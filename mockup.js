@@ -653,7 +653,7 @@ function getPromptScene(text){
   }
   return null;
 }
-function applyMockupPromptInstruction(value){
+function applyMockupPromptInstructionLocal(value){
   const text=String(value||'').trim().toLowerCase();
   if(!text){
     const msg='Napiši šta želiš, npr. „3 bela dokumenta, jedan preko drugog, champagne gold pozadina, luxury stil“.';
@@ -725,6 +725,50 @@ function applyMockupPromptInstruction(value){
   if(mockupPromptStatus)mockupPromptStatus.textContent=result;
   if(heroPromptStatus)heroPromptStatus.textContent=result;
   return true;
+}
+async function applyMockupPromptInstruction(value){
+  const text=String(value||'').trim();
+  if(!text){
+    const msg='Napiši šta želiš, npr. „3 bela dokumenta, jedan preko drugog, champagne gold pozadina, luxury stil“.';
+    if(mockupPromptStatus)mockupPromptStatus.textContent=msg;
+    if(heroPromptStatus)heroPromptStatus.textContent=msg;
+    return false;
+  }
+  const setStatus=(msg)=>{
+    if(mockupPromptStatus)mockupPromptStatus.textContent=msg;
+    if(heroPromptStatus)heroPromptStatus.textContent=msg;
+  };
+  setStatus('AI razume opis scene…');
+  try{
+    const response=await fetch('/api/generate-scene',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:text})});
+    const data=await response.json().catch(()=>({}));
+    if(!response.ok||!data.scenePlan)throw new Error(data.error||'AI scena nije vraćena.');
+    const plan=data.scenePlan;
+    if(plan.scene&&sceneNames[plan.scene]){sceneSelect.value=plan.scene;setScene(plan.scene);}
+    if(plan.layout&&templatePresets[plan.layout]){templateSelect.value=plan.layout;applyTemplate(plan.layout);}
+    if(plan.backgroundColor){const color=normalizeColorPrompt(plan.backgroundColor)||plan.backgroundColor;if(/^#[0-9a-f]{6}$/i.test(color)){bgColor.value=color;mockupStage.style.background=color;}}
+    if(Number.isFinite(plan.rotation)){objectRotation=Math.max(-180,Math.min(180,Number(plan.rotation)));rotateRange.value=objectRotation;}
+    if(Number.isFinite(plan.scale)){objectScale=Math.max(40,Math.min(180,Number(plan.scale)));scaleRange.value=objectScale;}
+    if(Number.isFinite(plan.positionX)){offsetX=Math.max(-100,Math.min(100,Number(plan.positionX)));positionX.value=offsetX;}
+    if(Number.isFinite(plan.positionY)){offsetY=Math.max(-100,Math.min(100,Number(plan.positionY)));positionY.value=offsetY;}
+    if(Number.isFinite(plan.perspective)){perspective=Math.max(-60,Math.min(60,Number(plan.perspective)));perspectiveRange.value=perspective;}
+    if(Number.isFinite(plan.tiltX)){tiltX=Math.max(-45,Math.min(45,Number(plan.tiltX)));tiltXRange.value=tiltX;}
+    if(Number.isFinite(plan.tiltY)){tiltY=Math.max(-45,Math.min(45,Number(plan.tiltY)));tiltYRange.value=tiltY;}
+    if(typeof plan.fit==='string'&&['cover','contain'].includes(plan.fit)){fitSelect.value=plan.fit;setFit();}
+    if(typeof plan.autoRotate3D==='boolean')autoRotate3D.checked=plan.autoRotate3D;
+    updateTransform();
+    if(Number.isInteger(plan.count))mockupObject.dataset.promptCount=String(Math.max(1,Math.min(9,plan.count)));
+    if(plan.video&&images.some(x=>x.kind==='video')){const idx=images.findIndex(x=>x.kind==='video');selectImage(idx);}
+    const parts=[];if(plan.scene)parts.push(sceneNames[plan.scene]||plan.scene);if(plan.count>1)parts.push(plan.count+' komada');if(plan.layout)parts.push('stil '+(templateSelect.options[templateSelect.selectedIndex]?.text||plan.layout));if(plan.autoRotate3D)parts.push('3D');if(plan.backgroundColor)parts.push('pozadina '+plan.backgroundColor);if(plan.summary)parts.push(plan.summary);
+    setStatus('AI scena: '+parts.join(' · '));
+    return true;
+  }catch(error){
+    console.warn('AI Scene Generator fallback:',error);
+    const fallback=applyMockupPromptInstructionLocal(text);
+    if(fallback)setStatus((heroPromptStatus?.textContent||'')+' · AI fallback.');
+    else setStatus('AI generator trenutno nije dostupan. Pokušaj ponovo.');
+    return fallback;
+  }
 }
 function updateTransform(){
   mockupObject.classList.toggle('is-rotating-3d',!!autoRotate3D?.checked);
