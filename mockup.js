@@ -1946,7 +1946,16 @@ initBatchEngine();
       });
       row.querySelector(".layer-eye").addEventListener("click",e=>{
         e.stopPropagation();
-        if(layer.el){layer.el.hidden=!layer.el.hidden;renderLayers();}
+        if(layer.id==="background"){
+          const hidden=stage.dataset.backgroundHidden==="1";
+          if(hidden){stage.style.background=savedBackground||""; delete stage.dataset.backgroundHidden;}
+          else{savedBackground=stage.style.background; stage.style.background="transparent"; stage.dataset.backgroundHidden="1";}
+        } else if(layer.id==="decorations"){
+          const items=[...stage.querySelectorAll(".scene-decoration")];
+          const hide=items.some(el=>!el.hidden);
+          items.forEach(el=>el.hidden=hide);
+        } else if(layer.el){layer.el.hidden=!layer.el.hidden;}
+        renderLayers();
       });
       row.querySelector(".layer-lock").addEventListener("click",e=>{
         e.stopPropagation();
@@ -1966,7 +1975,7 @@ initBatchEngine();
 
   object.addEventListener("pointerdown",e=>{
     if(e.target.closest(".frame-resize-handle")||e.target.closest(".selection-handle")||e.target.closest(".selection-rotate"))return;
-    if(e.target.closest(".device-screen"))return;
+    if(e.target.closest(".device-screen") && e.altKey)return;
     selectMockup();
     if(locked)return;
     object.setPointerCapture?.(e.pointerId);
