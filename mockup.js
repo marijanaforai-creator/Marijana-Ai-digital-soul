@@ -1842,6 +1842,8 @@ initBatchEngine();
     ui.setAttribute("aria-hidden","false");
     updateUI();
   }
+  window.__mockupSelectObject = selectObject;
+  window.__mockupUpdateSelectionUI = updateUI;
   function deselect(e) {
     if (e.target === stage) {
       selected = false;
@@ -1917,10 +1919,11 @@ initBatchEngine();
 
   let objectDrag=null;
   let locked=false;
+  let savedBackground=stage.style.background || "";
 
   const layers=[
-    {id:"background",name:"Pozadina",el:stage,locked:true},
-    {id:"decorations",name:"Dekoracije",el:stage.querySelector(".scene-decoration"),locked:false},
+    {id:"background",name:"Pozadina",el:null,locked:true},
+    {id:"decorations",name:"Dekoracije",el:null,locked:false},
     {id:"mockup",name:"Mockup / proizvod",el:object,locked:false},
     {id:"label",name:"Tekst scene",el:document.getElementById("sceneLabel"),locked:false}
   ];
@@ -1929,9 +1932,10 @@ initBatchEngine();
     list.innerHTML="";
     layers.forEach(layer=>{
       const row=document.createElement("div");
-      row.className="layer-row"+(layer.id==="mockup"?" active":"")+(layer.el?.hidden?" hidden":"");
+      row.className="layer-row"+(layer.id==="mockup"?" active":"")+((layer.id==='background' && stage.dataset.backgroundHidden==='1') || (layer.id!=='background' && layer.id!=='decorations' && layer.el?.hidden)?" hidden":"");
       row.dataset.layer=layer.id;
-      row.innerHTML='<button class="layer-btn layer-eye" type="button" title="Prikaži/sakrij">'+(layer.el?.hidden?"◌":"◉")+'</button><span class="layer-name">'+layer.name+'</span><button class="layer-btn layer-lock" type="button" title="Zaključaj">'+(layer.locked?"🔒":"🔓")+'</button>';
+      const isHidden = layer.id==='background' ? stage.dataset.backgroundHidden==='1' : layer.id==='decorations' ? [...stage.querySelectorAll('.scene-decoration')].every(el=>el.hidden) : !!layer.el?.hidden;
+      row.innerHTML='<button class="layer-btn layer-eye" type="button" title="Prikaži/sakrij">'+(isHidden?"◌":"◉")+'</button><span class="layer-name">'+layer.name+'</span><button class="layer-btn layer-lock" type="button" title="Zaključaj">'+(layer.locked?"🔒":"🔓")+'</button>';
       row.addEventListener("click",e=>{
         if(e.target.closest("button"))return;
         layers.forEach(x=>x.el?.classList.remove("is-selected"));
