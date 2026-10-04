@@ -7,7 +7,7 @@ export default async function handler(req,res){
   if(!key)return json(res,500,{error:'PIXABAY_API_KEY nije podešen na Vercelu.'});
 
   const id=String(req.query?.id||'').trim();
-  if(!/^\\d+$/.test(id))return json(res,400,{error:'Neispravan Pixabay ID.'});
+  if(!/^\d+$/.test(id))return json(res,400,{error:'Neispravan Pixabay ID.'});
 
   try{
     const lookup=new URLSearchParams({key,id});
