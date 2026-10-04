@@ -274,6 +274,8 @@ const templateGrid=document.getElementById('templateGrid');
 const templateSearch=document.getElementById('templateSearch');
 const templateCategory=document.getElementById('templateCategory');
 const favoritesOnly=document.getElementById('favoritesOnly');
+const promptScenesFolder=document.getElementById('promptScenesFolder');
+const promptScenesPanel=document.getElementById('promptScenesPanel');
 
 let images=[];
 let activeImageIndex=0;
@@ -1213,6 +1215,11 @@ document.querySelectorAll('[data-template-category]').forEach(button=>{
     }
   });
 });
+promptScenesFolder?.addEventListener('click',()=>{
+  const open=promptScenesFolder.getAttribute('aria-expanded')==='true';
+  promptScenesFolder.setAttribute('aria-expanded',String(!open));
+  if(promptScenesPanel) promptScenesPanel.hidden=open;
+}); 
 favoritesOnly?.addEventListener('click',()=>{
   const active=favoritesOnly.dataset.active==='true';
   favoritesOnly.dataset.active=String(!active);
