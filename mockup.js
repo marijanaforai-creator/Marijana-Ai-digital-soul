@@ -116,6 +116,10 @@ function renderColorPalette(){
 
 const paletteCategory=document.getElementById('paletteCategory');
 const paletteLicenseNote=document.getElementById('paletteLicenseNote');
+const hexListToggle=document.getElementById('hexListToggle');
+const downloadHexList=document.getElementById('downloadHexList');
+const hexListDocument=document.getElementById('hexListDocument');
+const hexListRows=document.getElementById('hexListRows');
 
 const COLOR_LIBRARY=[
   ['Royal Luxury',['#111111','#2B1B2B','#6F4E7C','#C8A96B','#F7F3FB'],'luxury'],
@@ -228,20 +232,26 @@ function renderColorLibrary(){
   if(!colorPalette)return;
   const category=paletteCategory?.value||'all';
   const items=category==='gradient'
-    ? GRADIENT_LIBRARY.map(([name,colors])=>({name,colors,type:'gradient'}))
-    : COLOR_LIBRARY.filter(([, ,cat])=>category==='all'||cat===category).map(([name,colors])=>({name,colors,type:'palette'}));
+    ? GRADIENT_LIBRARY.map(([name,colors],sourceIndex)=>({name,colors,type:'gradient',sourceIndex}))
+    : COLOR_LIBRARY.map(([name,colors,cat],sourceIndex)=>({name,colors,type:'palette',category:cat,sourceIndex}))
+        .filter(item=>category==='all'||item.category===category);
   colorPalette.innerHTML='';
   items.forEach(item=>{
+    const unlocked=item.type==='palette' && item.sourceIndex<8;
     const button=document.createElement('button');
     button.type='button';
-    button.className='palette-card '+(item.type==='gradient'?'gradient-card':'');
-    button.title=item.name;
-    button.setAttribute('aria-label',item.name);
+    button.className='palette-card '+(item.type==='gradient'?'gradient-card':'')+(unlocked?'':' locked-palette');
+    button.title=unlocked ? item.name : item.name+' — Premium';
+    button.setAttribute('aria-label',item.name+(unlocked?'':' — zaključano'));
     button.style.background=item.type==='gradient'
       ? `linear-gradient(135deg,${item.colors.join(',')})`
       : `linear-gradient(90deg,${item.colors.join(',')})`;
-    button.innerHTML=`<span class="palette-card-name">${item.name}</span><span class="palette-card-hex">${item.colors.join(' · ')}</span>`;
+    button.innerHTML=`<span class="palette-card-name">${item.name}</span><span class="palette-card-hex">${item.colors.join(' · ')}</span>${unlocked?'':'<span class="palette-lock">🔒 Premium</span>'}`;
     button.onclick=()=>{
+      if(!unlocked){
+        if(colorPromptStatus)colorPromptStatus.textContent='Ova paleta je zaključana. Premium pakete i cenu određujemo kasnije.';
+        return;
+      }
       if(item.type==='gradient'){
         mockupStage.style.background=`linear-gradient(135deg,${item.colors.join(',')})`;
         if(colorPromptStatus)colorPromptStatus.textContent='Primenen gradient: '+item.name+'.';
@@ -249,12 +259,52 @@ function renderColorLibrary(){
         bgColor.value=item.colors[0];
         mockupStage.style.background=item.colors[0];
         if(colorPrompt)colorPrompt.value=item.name;
-        if(colorPromptStatus)colorPromptStatus.textContent='Primenjena paleta: '+item.name+' · klikni boju u kartici samo preko HEX prompta ako želiš tačnu nijansu.';
+        if(colorPromptStatus)colorPromptStatus.textContent='Primenjena paleta: '+item.name+'.';
       }
     };
     colorPalette.appendChild(button);
   });
 }
+
+function renderHexList(){
+  if(!hexListRows)return;
+  hexListRows.innerHTML='';
+  COLOR_LIBRARY.forEach(([name,colors],index)=>{
+    const row=document.createElement('div');
+    row.className='hex-list-row '+(index<8?'':'hex-list-locked');
+    row.innerHTML=`<strong>${name}</strong><span>${colors.join(' · ')}</span><em>${index<8?'OTKLJUČANO':'ZAKLJUČANO'}</em>`;
+    hexListRows.appendChild(row);
+  });
+  const gradientHeading=document.createElement('div');
+  gradientHeading.className='hex-list-section';
+  gradientHeading.textContent='GRADIENTI / PRELAZI';
+  hexListRows.appendChild(gradientHeading);
+  GRADIENT_LIBRARY.forEach(([name,colors])=>{
+    const row=document.createElement('div');
+    row.className='hex-list-row hex-list-locked';
+    row.innerHTML=`<strong>${name}</strong><span>${colors.join(' · ')}</span><em>ZAKLJUČANO</em>`;
+    hexListRows.appendChild(row);
+  });
+}
+renderHexList();
+hexListToggle?.addEventListener('click',()=>{
+  const open=hexListToggle.getAttribute('aria-expanded')==='true';
+  hexListToggle.setAttribute('aria-expanded',String(!open));
+  if(hexListDocument)hexListDocument.hidden=open;
+});
+downloadHexList?.addEventListener('click',()=>{
+  const lines=['MARIJANA AI STUDIO — HEX SPISAK PALETA','','OTKLJUČANE PALETE'];
+  COLOR_LIBRARY.forEach(([name,colors],index)=>{
+    lines.push(`${name}: ${colors.join(' · ')}${index<8?'':' [ZAKLJUČANO]'}`);
+  });
+  lines.push('','GRADIENTI / PRELAZI');
+  GRADIENT_LIBRARY.forEach(([name,colors])=>lines.push(`${name}: ${colors.join(' · ')} [ZAKLJUČANO]`));
+  const blob=new Blob([lines.join('\n')],{type:'text/plain;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='marijana-ai-studio-hex-spisak.txt';a.click();
+  URL.revokeObjectURL(url);
+});
 
 const mockupStage=document.getElementById('mockupStage');
 const mockupObject=document.getElementById('mockupObject');
