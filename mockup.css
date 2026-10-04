@@ -1249,3 +1249,66 @@
   .mockup-body .hex-list-row{grid-template-columns:1fr}
   .mockup-body .hex-list-row em{justify-self:start}
 }
+
+
+/* Padajući izbori za izradu više mockupova */
+.mockup-body .batch-select-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+  margin-bottom:18px;
+}
+.mockup-body .batch-dropdown{
+  border:1px solid rgba(200,169,107,.2);
+  background:#24133A;
+}
+.mockup-body .batch-dropdown summary{
+  list-style:none;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:16px 18px;
+  color:#F7F3FB;
+  font-weight:700;
+  letter-spacing:.08em;
+  font-size:13px;
+}
+.mockup-body .batch-dropdown summary::-webkit-details-marker{display:none}
+.mockup-body .batch-dropdown summary::after{
+  content:'＋';
+  font-size:18px;
+  color:#A98BCB;
+}
+.mockup-body .batch-dropdown[open] summary::after{content:'−'}
+.mockup-body .batch-dropdown summary strong{
+  font-size:11px;
+  color:#B9A9C8;
+  letter-spacing:.03em;
+}
+.mockup-body .batch-dropdown-body{
+  padding:0 16px 16px;
+  border-top:1px solid rgba(200,169,107,.12);
+}
+.mockup-body .batch-dropdown-body .batch-options{
+  padding-top:14px;
+}
+.mockup-body .batch-build-summary{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:14px 16px;
+  margin:4px 0 12px;
+  background:#140A22;
+  border:1px solid rgba(200,169,107,.18);
+  color:#B9A9C8;
+}
+.mockup-body .batch-build-summary strong{
+  color:#F7F3FB;
+  font-size:15px;
+}
+@media(max-width:700px){
+  .mockup-body .batch-select-grid{grid-template-columns:1fr}
+}
