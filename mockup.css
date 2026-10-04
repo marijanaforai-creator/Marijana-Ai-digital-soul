@@ -1433,3 +1433,74 @@
  .mockup-body .internal-format-row{align-items:flex-start;flex-direction:column;gap:3px}
 }
 .ai-quick-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:9px}.ai-quick-action{flex:1 1 150px;min-width:0}.ai-quick-action:disabled{opacity:.55;cursor:wait}
+
+
+/* Pravi laptop: zasebna baza, tastatura i touchpad */
+.mockup-object.laptop-object{
+  align-items:center!important;
+  transform-style:preserve-3d;
+}
+.mockup-object.laptop-object .device-frame{
+  position:relative!important;
+  z-index:3!important;
+  transform:perspective(1200px) rotateX(0deg)!important;
+  width:78%!important;
+}
+.mockup-object.laptop-object .laptop-base{
+  position:relative;
+  z-index:2;
+  width:96%;
+  height:116px;
+  margin-top:-2px;
+  padding:13px 18px 18px;
+  box-sizing:border-box;
+  border-radius:3px 3px 24px 24px;
+  background:linear-gradient(180deg,#d9d9d5 0%,#b9b9b5 58%,#92928e 100%);
+  border:1px solid rgba(0,0,0,.18);
+  box-shadow:0 22px 32px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.7);
+  transform:perspective(900px) rotateX(52deg);
+  transform-origin:top center;
+}
+.mockup-object.laptop-object .laptop-keyboard{
+  width:82%;
+  margin:0 auto;
+  padding:8px;
+  border-radius:8px;
+  background:linear-gradient(145deg,#8d8d8a,#b7b7b3);
+  box-shadow:inset 0 2px 5px rgba(0,0,0,.25);
+}
+.mockup-object.laptop-object .laptop-key-row{
+  display:flex;
+  gap:4px;
+  margin-bottom:4px;
+}
+.mockup-object.laptop-object .laptop-key{
+  flex:1;
+  height:8px;
+  min-width:0;
+  border-radius:2px;
+  background:linear-gradient(180deg,#303035,#111116);
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 1px 1px rgba(0,0,0,.35);
+}
+.mockup-object.laptop-object .laptop-key.key-wide{flex:1.8}
+.mockup-object.laptop-object .laptop-trackpad{
+  position:absolute;
+  left:50%;
+  bottom:12px;
+  width:20%;
+  height:18px;
+  transform:translateX(-50%);
+  border-radius:4px;
+  background:linear-gradient(145deg,#bfc0bc,#a0a19d);
+  border:1px solid rgba(0,0,0,.16);
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.15);
+}
+.mockup-object.laptop-object::after{display:none!important}
+@media(max-width:600px){
+  .mockup-object.laptop-object .device-frame{width:82%!important}
+  .mockup-object.laptop-object .laptop-base{height:78px;padding:8px 10px 10px}
+  .mockup-object.laptop-object .laptop-keyboard{padding:5px;gap:2px}
+  .mockup-object.laptop-object .laptop-key{height:5px}
+  .mockup-object.laptop-object .laptop-trackpad{height:12px;bottom:8px}
+}
