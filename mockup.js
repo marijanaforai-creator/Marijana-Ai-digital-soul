@@ -10,6 +10,37 @@ const pixabaySearchBtn=document.getElementById('pixabaySearchBtn');
 const pixabayStatus=document.getElementById('pixabayStatus');
 const pixabayResults=document.getElementById('pixabayResults');
 
+async function loadPixabayImage(hit,q){
+  if(pixabayStatus)pixabayStatus.textContent='Učitavam izabranu Pixabay fotografiju…';
+  try{
+    const response=await fetch('/api/pixabay-image?id='+encodeURIComponent(hit.id));
+    const data=await response.json().catch(()=>({}));
+    if(!response.ok)throw new Error(data.error||'Pixabay fotografija nije mogla da se učita.');
+
+    const item={
+      data:data.data,
+      name:'Pixabay - '+(hit.tags||q||'fotografija'),
+      kind:'image',
+      mime:'image/jpeg',
+      generated:false,
+      source:'Pixabay',
+      sourceUrl:data.pageURL||hit.pageURL||'',
+      author:data.user||hit.user||'Pixabay'
+    };
+
+    images=[...images.filter(x=>x.source!=='Pixabay'),item].slice(-4);
+    activeImageIndex=images.length-1;
+    selectImage(activeImageIndex);
+
+    const referencePrompt='Koristi ovu Pixabay fotografiju kao referencu za scenu: '+(hit.tags||q||'fotografija');
+    if(mockupPrompt)mockupPrompt.value=referencePrompt;
+    if(heroMockupPrompt)heroMockupPrompt.value=referencePrompt;
+    if(pixabayStatus)pixabayStatus.textContent='Pixabay fotografija je ubačena u Mockup i postavljena kao aktivna slika.'+(item.author?' Autor: '+item.author+'.':'');
+  }catch(error){
+    if(pixabayStatus)pixabayStatus.textContent=error?.message||'Pixabay fotografija trenutno nije dostupna.';
+  }
+}
+
 async function searchPixabay(){
   const q=String(pixabaySearch?.value||'').trim();
   if(!q)return;
@@ -27,15 +58,11 @@ async function searchPixabay(){
         card.className='pixabay-result';
         card.title=hit.tags||'Pixabay fotografija';
         card.innerHTML='<img src="'+hit.previewURL+'" alt="">';
-        card.addEventListener('click',()=>{
-          if(mockupPrompt)mockupPrompt.value='Koristi ovu referentnu fotografiju kao osnovu za scenu: '+(hit.tags||q);
-          if(heroMockupPrompt)heroMockupPrompt.value='Koristi ovu referentnu fotografiju kao osnovu za scenu: '+(hit.tags||q);
-          if(pixabayStatus)pixabayStatus.textContent='Fotografija je izabrana kao referenca. Za generisanje scene koristi „Generiši scenu“.';
-        });
+        card.addEventListener('click',()=>loadPixabayImage(hit,q));
         pixabayResults.appendChild(card);
       });
     }
-    if(pixabayStatus)pixabayStatus.textContent=(data.total||0)+' rezultata. Izaberi fotografiju kao referencu.';
+    if(pixabayStatus)pixabayStatus.textContent=(data.total||0)+' rezultata. Izaberi fotografiju.';
   }catch(error){
     if(pixabayStatus)pixabayStatus.textContent=error?.message||'Pixabay trenutno nije dostupan.';
   }finally{
