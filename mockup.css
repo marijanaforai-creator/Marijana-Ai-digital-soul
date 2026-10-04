@@ -92,6 +92,103 @@
 .planner-object .device-screen{width:380px;height:510px;border-radius:4px}
 .poster-object .device-screen{width:420px;height:550px}
 .business-object .device-screen,.fitness-object .device-screen,.hotel-object .device-screen,.restaurant-object .device-screen,.yoga-object .device-screen,.beauty-object .device-screen{width:520px;height:380px;border-radius:4px}
+/* Branding / proizvod mockup scene — čaše, šolje, kese i ambalaža. */
+.coffee-cup-object .device-frame,
+.travel-mug-object .device-frame,
+.mug-object .device-frame{
+  position:relative;
+  background:linear-gradient(90deg,#d7d3ca,#faf8f1 18%,#fff 50%,#ddd9d0 82%,#c7c3ba);
+  padding:10px;
+  box-shadow:0 32px 55px rgba(0,0,0,.24);
+}
+.coffee-cup-object .device-frame{width:245px;border-radius:18px 18px 30px 30px}
+.travel-mug-object .device-frame{width:230px;border-radius:24px 24px 38px 38px}
+.mug-object .device-frame{width:250px;border-radius:18px 18px 34px 34px}
+.coffee-cup-object .device-screen,
+.travel-mug-object .device-screen,
+.mug-object .device-screen{width:100%;height:300px;border-radius:10px 10px 22px 22px}
+.coffee-cup-object .device-frame:before,
+.travel-mug-object .device-frame:before{
+  content:'';position:absolute;z-index:4;left:-2px;right:-2px;top:-16px;height:28px;
+  background:linear-gradient(#333,#111);border-radius:50%;box-shadow:0 5px 10px rgba(0,0,0,.22);
+}
+.coffee-cup-object .device-frame:after{
+  content:'';position:absolute;z-index:5;left:8px;right:8px;top:2px;height:10px;
+  background:rgba(255,255,255,.16);border-radius:50%;
+}
+.travel-mug-object .device-frame:after{
+  content:'';position:absolute;right:-35px;top:92px;width:48px;height:110px;
+  border:10px solid #b9b6ae;border-left:0;border-radius:0 30px 30px 0;
+}
+.mug-object .device-frame:after{
+  content:'';position:absolute;right:-55px;top:72px;width:65px;height:130px;
+  border:13px solid #d0ccc3;border-left:0;border-radius:0 40px 40px 0;
+}
+.tote-bag-object .device-frame,
+.paper-bag-object .device-frame{
+  position:relative;background:linear-gradient(100deg,#c9bba8,#eee4d5 48%,#b9a996);
+  padding:12px;border-radius:5px 5px 12px 12px;box-shadow:0 35px 65px rgba(0,0,0,.25);
+}
+.tote-bag-object .device-frame{width:390px}
+.paper-bag-object .device-frame{width:330px}
+.tote-bag-object .device-screen,
+.paper-bag-object .device-screen{width:100%;height:390px;border-radius:2px}
+.tote-bag-object .device-frame:before,
+.paper-bag-object .device-frame:before{
+  content:'';position:absolute;z-index:0;left:20%;right:20%;top:-92px;height:105px;
+  border:12px solid currentColor;border-bottom:0;border-radius:70px 70px 0 0;opacity:.5;
+}
+.tote-bag-object .device-frame:before{color:#5e554b}
+.paper-bag-object .device-frame:before{color:#876f58;border-width:9px;top:-72px}
+.bottle-object .device-frame{
+  position:relative;width:210px;background:linear-gradient(90deg,#c7d7d0,#fff 30%,#e7f0ec 70%,#b7c8c0);
+  padding:10px;border-radius:35px 35px 28px 28px;box-shadow:0 35px 65px rgba(0,0,0,.25);
+}
+.bottle-object .device-screen{width:100%;height:360px;border-radius:22px}
+.bottle-object .device-frame:before{
+  content:'';position:absolute;z-index:5;top:-48px;left:70px;width:70px;height:52px;
+  background:linear-gradient(90deg,#222,#555,#222);border-radius:8px 8px 3px 3px;
+}
+.cosmetic-jar-object .device-frame{
+  position:relative;width:300px;background:linear-gradient(#fff,#e9e5dd);
+  padding:12px;border-radius:18px 18px 35px 35px;box-shadow:0 30px 55px rgba(0,0,0,.25);
+}
+.cosmetic-jar-object .device-screen{width:100%;height:220px;border-radius:10px 10px 25px 25px}
+.cosmetic-jar-object .device-frame:before{
+  content:'';position:absolute;z-index:5;top:-52px;left:8px;right:8px;height:58px;
+  background:linear-gradient(#4b4945,#171717);border-radius:12px 12px 5px 5px;box-shadow:0 8px 15px rgba(0,0,0,.2);
+}
+.food-box-object .device-frame,
+.pouch-object .device-frame{
+  position:relative;background:linear-gradient(135deg,#e8d9c0,#fffaf0 48%,#c9b48f);
+  padding:12px;border-radius:10px;box-shadow:0 32px 60px rgba(0,0,0,.23);
+}
+.food-box-object .device-frame{width:380px;transform:rotateX(3deg)}
+.pouch-object .device-frame{width:330px;border-radius:12px 12px 22px 22px}
+.food-box-object .device-screen{width:100%;height:270px;border-radius:4px}
+.pouch-object .device-screen{width:100%;height:350px;border-radius:5px 5px 18px 18px}
+.pouch-object .device-frame:before{
+  content:'';position:absolute;z-index:5;top:-9px;left:0;right:0;height:15px;background:#aaa096;border-radius:5px;
+}
+.tshirt-object .device-frame{
+  position:relative;width:430px;background:linear-gradient(135deg,#f5f3ed,#d5d0c5);
+  padding:20px 55px 30px;clip-path:polygon(22% 0,37% 10%,63% 10%,78% 0,100% 24%,82% 40%,74% 30%,74% 100%,26% 100%,26% 30%,18% 40%,0 24%);
+  box-shadow:0 35px 65px rgba(0,0,0,.2);
+}
+.tshirt-object .device-screen{width:100%;height:390px;border-radius:0;background:transparent}
+@media(max-width:600px){
+  .coffee-cup-object .device-frame{width:190px}.coffee-cup-object .device-screen{height:235px}
+  .travel-mug-object .device-frame{width:180px}.travel-mug-object .device-screen{height:250px}
+  .mug-object .device-frame{width:190px}.mug-object .device-screen{height:230px}
+  .tote-bag-object .device-frame{width:300px}.tote-bag-object .device-screen{height:300px}
+  .paper-bag-object .device-frame{width:250px}.paper-bag-object .device-screen{height:290px}
+  .bottle-object .device-frame{width:165px}.bottle-object .device-screen{height:280px}
+  .cosmetic-jar-object .device-frame{width:230px}.cosmetic-jar-object .device-screen{height:165px}
+  .food-box-object .device-frame{width:285px}.food-box-object .device-screen{height:205px}
+  .pouch-object .device-frame{width:250px}.pouch-object .device-screen{height:270px}
+  .tshirt-object .device-frame{width:320px;padding-left:40px;padding-right:40px}.tshirt-object .device-screen{height:285px}
+}
+
 .scene-label{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);z-index:3;font-size:10px;letter-spacing:.18em;font-weight:700;color:rgba(59,35,95,.7);white-space:nowrap}
 @media(max-width:900px){.mockup-grid{grid-template-columns:1fr}.mockup-panel{position:static}.mockup-stage{min-height:560px}}
 @media(max-width:900px){.laptop-object{width:88%;}.laptop-object .device-screen{height:clamp(220px,32vw,365px)}}
