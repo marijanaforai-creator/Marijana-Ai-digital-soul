@@ -1066,12 +1066,23 @@ function setFit(){
 }
 
 function loadTransferredCanvasDesign(){
+  const params=new URLSearchParams(window.location.search);
+  const fromCanvas=params.get('from')==='canvas';
   const data=sessionStorage.getItem('marijanaMockupSource');
-  if(!data)return;
-  images=[{data,name:sessionStorage.getItem('marijanaMockupSourceName')||'Canvas dizajn'}];
-  activeImageIndex=0;
-  selectImage(0);
-  statusText.textContent='Canvas dizajn je automatski prenet u 3D Mockup. Izaberi scenu i prilagodi perspektivu.';
+  const name=sessionStorage.getItem('marijanaMockupSourceName')||'Canvas dizajn';
+
+  // Prenos iz Canvas-a važi samo za ovaj direktni dolazak.
+  // Nakon preuzimanja brišemo privremeni podatak da se stari dizajn
+  // ne bi ponovo pojavljivao kada korisnik kasnije otvori Mockup Studio.
+  if(fromCanvas && data){
+    images=[{data,name}];
+    activeImageIndex=0;
+    selectImage(0);
+    statusText.textContent='Canvas dizajn je automatski prenet u 3D Mockup. Izaberi scenu i prilagodi perspektivu.';
+  }
+
+  sessionStorage.removeItem('marijanaMockupSource');
+  sessionStorage.removeItem('marijanaMockupSourceName');
 }
 function loadImages(files){
   const selected=Array.from(files).filter(file=>file.type.startsWith('image/')||file.type.startsWith('video/')).slice(0,4);
