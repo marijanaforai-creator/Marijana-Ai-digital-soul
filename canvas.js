@@ -1,4 +1,4 @@
-const formats={square:[1200,1200],portrait:[1080,1350],story:[1080,1920],pin:[1000,1500],landscape:[1600,900]};
+const formats={square:[1200,1200],portrait:[1080,1350],story:[1080,1920],pin:[1000,1500],landscape:[1600,900],a4:[2480,3508],a5:[1748,2480],presentation:[1920,1080]};
 const page=document.getElementById('canvasPage'), elementsEl=document.getElementById('canvasElements'), viewport=document.getElementById('canvasViewport');
 const layersList=document.getElementById('layersList'), pagesList=document.getElementById('pagesList');
 const elName=document.getElementById('elName'),elX=document.getElementById('elX'),elY=document.getElementById('elY'),elW=document.getElementById('elW'),elH=document.getElementById('elH'),elRotation=document.getElementById('elRotation'),elRotationValue=document.getElementById('elRotationValue'),elOpacity=document.getElementById('elOpacity'),elOpacityValue=document.getElementById('elOpacityValue'),elColor=document.getElementById('elColor'),elText=document.getElementById('elText'),elFontSize=document.getElementById('elFontSize');
@@ -17,7 +17,7 @@ function renderPage(){
   const scale=Math.min(600/f[0],600/f[1]);
   page.style.width=f[0]*scale+'px';page.style.height=f[1]*scale+'px';
   page.dataset.baseW=f[0]*scale;page.dataset.baseH=f[1]*scale;
-  page.style.transform='scale('+zoom+')';
+  page.style.transform='scale('+zoom+')';page.style.background=current().background||'#fff';
   page.classList.toggle('show-grid',document.getElementById('gridToggle').checked);
   elementsEl.innerHTML='';
   current().elements.forEach(el=>{
