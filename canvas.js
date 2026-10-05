@@ -295,7 +295,16 @@ elementSearch?.addEventListener('input',()=>{
     cat.style.display=any?'':'none';
   });
 });
-document.querySelectorAll('[data-add]').forEach(b=>b.addEventListener('click',()=>{ if(b.dataset.add==='image'){canvasUpload?.click();return;} addElement(b.dataset.add); }));
+document.querySelectorAll('[data-add]').forEach(b=>b.addEventListener('click',()=>{
+  if(b.dataset.add==='image'){canvasUpload?.click();return;}
+  // Sidebar Mockup nije običan element: šalje trenutni Canvas dizajn
+  // direktno u Mockup/Frame workflow.
+  if(b.dataset.add==='mockup'){
+    document.getElementById('sendToMockup')?.click();
+    return;
+  }
+  addElement(b.dataset.add);
+}));
 document.querySelector('[data-tool="select"]')?.addEventListener('click',e=>{
   e.preventDefault();
   selectedId=null;
