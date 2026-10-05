@@ -1,0 +1,1 @@
+// AI Digital Expert konfiguracija je namerno odvojena od UI-ja. Backend/API povezivanje dodajemo kasnije.
