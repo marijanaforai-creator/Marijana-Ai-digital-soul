@@ -433,17 +433,35 @@ async function exportCanvas(){
   const a=document.createElement('a');a.download='marijana-canvas.png';a.href=c.toDataURL('image/png');a.click();
 }
 document.getElementById('downloadCanvas').onclick=exportCanvas;
+async function optimizeMockupDataUrl(dataUrl,maxSize=1800){
+  if(!dataUrl)return dataUrl;
+  try{
+    const img=await new Promise((resolve,reject)=>{const i=new Image();i.onload=()=>resolve(i);i.onerror=reject;i.src=dataUrl});
+    const scale=Math.min(1,maxSize/Math.max(img.naturalWidth||img.width,img.naturalHeight||img.height));
+    if(scale>=1 && dataUrl.length<4500000)return dataUrl;
+    const c=document.createElement('canvas');
+    c.width=Math.max(1,Math.round((img.naturalWidth||img.width)*scale));
+    c.height=Math.max(1,Math.round((img.naturalHeight||img.height)*scale));
+    c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+    return c.toDataURL('image/jpeg',.86);
+  }catch(e){return dataUrl}
+}
+
 document.getElementById('sendToMockup').onclick=async()=>{
   const btn=document.getElementById('sendToMockup');
   if(btn)btn.disabled=true;
   try{
-    const dataUrl=await renderCanvasToDataURL();
-    const scene=document.getElementById('quickMockupScene')?.value||'laptop';
+    const selected=findSelected();
+    const directFrame=selected&&selected.type==='frame'&&selected.src?selected.src:'';
+    const rawData=directFrame||await renderCanvasToDataURL();
+    const dataUrl=await optimizeMockupDataUrl(rawData);
+    const quickScene=document.getElementById('quickMockupScene')?.value||'laptop';
+    const scene=directFrame?'frame':quickScene;
     sessionStorage.setItem('marijanaMockupSource',dataUrl);
-    sessionStorage.setItem('marijanaMockupSourceName',current().name||'Canvas dizajn');
+    sessionStorage.setItem('marijanaMockupSourceName',selected?.name||current().name||'Canvas dizajn');
     window.location.href=`mockup.html?from=canvas&scene=${encodeURIComponent(scene)}&layout=blank-white`;
   }catch(err){
-    alert('Dizajn je prevelik za direktan prenos. Prvo izvezi PNG pa ga ubaci u 3D Mockup.');
+    alert('Prenos u Mockup nije uspeo. Pokušaj ponovo ili prvo izvezi PNG.');
     if(btn)btn.disabled=false;
   }
 };
