@@ -254,7 +254,7 @@
     </aside>
   </div>
 </main>
-<script src="canvas.js?v=20261005-6"></script>
+<script src="canvas.js?v=20261005-7"></script>
 <script src="canvas-boot.js?v=20261005-4"></script>
 <script>
 /* DIRECT CANVAS CONTROLS */
@@ -305,16 +305,6 @@
         box.style.color='#28222F';
         box.textContent=add==='frame'?'FRAME':add==='circle'?'KRUG':add==='rect'?'OBLIK':'SLIKA';
         page.appendChild(box);
-        return;
-      }
-
-      if(btn.id==='openElements'){
-        ev.preventDefault();
-        ev.stopPropagation();
-        const panel=document.getElementById('elementsPanel');
-        const typography=document.getElementById('typographyPanel');
-        if(panel) panel.hidden=!panel.hidden;
-        if(typography) typography.hidden=true;
         return;
       }
 
