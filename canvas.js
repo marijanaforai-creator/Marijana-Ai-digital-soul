@@ -282,7 +282,7 @@ function addDesignElement(kind){
  const el={id:nextId++,visible:true,locked:false,x:80+n*10,y:80+n*10,rotation:0,opacity:100,src:'',fontSize:48,text:'',designKind:kind,...p};
  current().elements.push(el);selectedId=el.id;render();elementsPanel.hidden=true;
 }
-document.querySelectorAll('[data-element]').forEach(b=>b.addEventListener('click',()=>addDesignElement(b.dataset.element)));
+elementsPanel?.addEventListener('click',e=>{const b=e.target.closest('button[data-element]');if(!b||!elementsPanel.contains(b))return;e.preventDefault();e.stopPropagation();addDesignElement(b.dataset.element);},{capture:true});
 const elementSearch=document.getElementById('elementSearch');
 elementSearch?.addEventListener('input',()=>{
   const q=elementSearch.value.toLowerCase().trim();
