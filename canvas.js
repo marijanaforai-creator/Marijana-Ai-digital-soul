@@ -136,6 +136,32 @@ function startDrag(e){
   const up=()=>{snapshot();document.removeEventListener('pointermove',move);document.removeEventListener('pointerup',up);};
   document.addEventListener('pointermove',move);document.addEventListener('pointerup',up);
 }
+const elementsPanel=document.getElementById('elementsPanel');
+document.getElementById('openElements')?.addEventListener('click',()=>{elementsPanel.hidden=!elementsPanel.hidden});
+function addDesignElement(kind){
+ snapshot();
+ const presets={
+  line:{type:'rect',name:'Linija',w:320,h:4,color:'#8EA386'},
+  rounded:{type:'rect',name:'Zaobljeni blok',w:300,h:150,color:'#E8EEE7'},
+  pill:{type:'rect',name:'Pill',w:220,h:54,color:'#8EA386'},
+  badge:{type:'text',name:'Badge',w:180,h:55,color:'#FFFFFF',text:'NOVO',fontSize:22},
+  label:{type:'text',name:'Label',w:180,h:55,color:'#252522',text:'LABEL',fontSize:20},
+  number:{type:'text',name:'Broj',w:100,h:70,color:'#C8A96B',text:'01',fontSize:48},
+  divider:{type:'rect',name:'Divider',w:420,h:2,color:'#C8A96B'},
+  button:{type:'text',name:'Dugme',w:220,h:58,color:'#FFFFFF',text:'Saznaj više',fontSize:22},
+  quote:{type:'text',name:'Citat',w:380,h:100,color:'#252522',text:'Tvoja glavna poruka',fontSize:30},
+  checklist:{type:'text',name:'Checklist',w:340,h:100,color:'#252522',text:'☐ Zadatak 1\n☐ Zadatak 2\n☐ Zadatak 3',fontSize:20},
+  price:{type:'text',name:'Cena',w:220,h:80,color:'#C8A96B',text:'€ 00',fontSize:42},
+  dotgrid:{type:'rect',name:'Mreža tačaka',w:220,h:160,color:'#F6F2EA'},
+  star:{type:'text',name:'Zvezda',w:100,h:100,color:'#C8A96B',text:'✦',fontSize:70},
+  spark:{type:'text',name:'Spark',w:100,h:100,color:'#C8A96B',text:'✧',fontSize:70},
+  triangle:{type:'text',name:'Trougao',w:100,h:100,color:'#8EA386',text:'△',fontSize:70}
+ };
+ const p=presets[kind]||presets.rounded;const n=current().elements.length;
+ const el={id:nextId++,visible:true,locked:false,x:80+n*10,y:80+n*10,rotation:0,opacity:100,src:'',fontSize:48,text:'',...p};
+ current().elements.push(el);selectedId=el.id;render();elementsPanel.hidden=true;
+}
+document.querySelectorAll('[data-element]').forEach(b=>b.addEventListener('click',()=>addDesignElement(b.dataset.element)));
 document.querySelectorAll('[data-add]').forEach(b=>b.addEventListener('click',()=>{ if(b.dataset.add==='image'){canvasUpload?.click();return;} addElement(b.dataset.add); }));
 const canvasUpload=document.getElementById('canvasUpload');
 function putImageIntoFrame(src){
