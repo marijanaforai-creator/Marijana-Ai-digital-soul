@@ -132,7 +132,7 @@ function addElement(type,src){
   const n=current().elements.length;
   const isFrame=type==='frame';
   const frameShape=isFrame?'rect':'';
-  const el={id:nextId++,name:type==='text'?'Tekst':type==='image'?'Slika':type==='mockup'?'Mockup':isFrame?'Frame':'Oblik',type,frameShape,visible:true,locked:false,x:80+n*15,y:80+n*15,w:type==='text'?300:type==='image'?260:type==='mockup'?280:260,h:type==='text'?90:type==='image'?260:type==='mockup'?360:isFrame?260:160,rotation:0,opacity:100,color:type==='circle'?'#C8A96B':'#B9A3E3',text:type==='text'?'Novi tekst':'',fontSize:48,fontFamily:'Cormorant Garamond',fontWeight:500,letterSpacing:0,lineHeight:1.2,src:src||''};
+  const el={id:nextId++,name:type==='text'?'Tekst':type==='image'?'Slika':type==='mockup'?'Mockup':isFrame?'Frame':'Oblik',type,frameShape,visible:true,locked:false,x:80+n*15,y:80+n*15,w:type==='text'?300:type==='image'?260:type==='mockup'?280:260,h:type==='text'?90:type==='image'?260:type==='mockup'?360:isFrame?260:160,rotation:0,opacity:100,color:type==='circle'?'#C8A96B':'#B9A3E3',text:type==='text'?'Novi tekst':'',fontSize:48,fontFamily:'Cormorant Garamond',fontWeight:500,letterSpacing:0,lineHeight:1.2,textAlign:'center',textTransform:'none',fontStyle:'normal',textDecoration:'none',textShadow:false,highlightColor:'',src:src||''};
   current().elements.push(el);selectedId=el.id;render();
 }
 function moveLayer(id,delta){snapshot();const arr=current().elements,i=arr.findIndex(e=>e.id===id),j=i+delta;if(j<0||j>=arr.length)return;[arr[i],arr[j]]=[arr[j],arr[i]];render()}
@@ -334,8 +334,8 @@ async function renderCanvasToDataURL(){
     ctx.translate(el.x*sx+el.w*sx/2,el.y*sy+el.h*sy/2);
     ctx.rotate(el.rotation*Math.PI/180);
     if(el.type==='text'){
-      ctx.fillStyle=el.color;ctx.font=(el.fontWeight||500)+' '+(el.fontSize*sx)+'px '+(el.fontFamily||'Cormorant Garamond');
-      ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(el.text,0,0);
+      ctx.fillStyle=el.highlightColor||el.color;ctx.font=(el.fontWeight||500)+' '+(el.fontSize*sx)+'px '+(el.fontFamily||'Cormorant Garamond');
+      ctx.textAlign=el.textAlign||'center';ctx.textBaseline='middle';ctx.fontStyle=el.fontStyle||'normal';ctx.fillText(el.text,0,0);
     }else if((el.type==='image'||el.type==='frame')&&imageCache[el.id]){
       if(el.type==='frame'){
         ctx.beginPath();
