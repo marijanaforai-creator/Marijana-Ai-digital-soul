@@ -167,7 +167,7 @@ function startDrag(e){
 }
 const elementsPanel=document.getElementById('elementsPanel');
 const typographyPanel=document.getElementById('typographyPanel');
-document.getElementById('openElements')?.addEventListener('click',()=>{elementsPanel.hidden=!elementsPanel.hidden;typographyPanel.hidden=true});
+
 document.getElementById('openTypography')?.addEventListener('click',()=>{typographyPanel.hidden=!typographyPanel.hidden;elementsPanel.hidden=true});
 function addDesignElement(kind){
  snapshot();
