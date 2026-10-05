@@ -38,8 +38,15 @@ function renderPage(){
       else node.innerHTML='<span class="frame-placeholder">＋ UBACI SLIKU</span>';
     }
     else if(el.type==='rect'||el.type==='circle'){node.style.background=el.color}
+    if(el.shapeKind){
+      node.style.background=el.color||'#8EA386';
+      const clips={triangle:'polygon(50% 4%, 96% 96%, 4% 96%)',oval:'ellipse(50% 50% at 50% 50%)',diamond:'polygon(50% 2%, 98% 50%, 50% 98%, 2% 50%)',pentagon:'polygon(50% 2%, 98% 38%, 80% 98%, 20% 98%, 2% 38%)',hexagon:'polygon(25% 2%, 75% 2%, 98% 50%, 75% 98%, 25% 98%, 2% 50%)',octagon:'polygon(30% 2%, 70% 2%, 98% 30%, 98% 70%, 70% 98%, 30% 98%, 2% 70%, 2% 30%)',star:'polygon(50% 2%, 61% 35%, 98% 38%, 69% 58%, 79% 96%, 50% 74%, 21% 96%, 31% 58%, 2% 38%, 39% 35%)',heart:'polygon(50% 96%, 8% 48%, 8% 25%, 20% 8%, 38% 7%, 50% 20%, 62% 7%, 80% 8%, 92% 25%, 92% 48%)',plus:'polygon(35% 2%,65% 2%,65% 35%,98% 35%,98% 65%,65% 65%,65% 98%,35% 98%,35% 65%,2% 65%,2% 35%,35% 35%)',arrow:'polygon(2% 35%,65% 35%,65% 12%,98% 50%,65% 88%,65% 65%,2% 65%)',speech:'polygon(8% 4%,92% 4%,98% 12%,98% 76%,82% 84%,72% 98%,68% 84%,8% 84%,2% 76%,2% 12%)'};
+      if(el.shapeKind==='circle')node.style.borderRadius='50%';
+      else if(el.shapeKind==='ring'){node.style.borderRadius='50%';node.style.background='transparent';node.style.border='18px solid '+(el.color||'#C8A96B');}
+      else if(clips[el.shapeKind])node.style.clipPath=clips[el.shapeKind];
+    }
     else if(el.type==='mockup'){node.textContent='3D MOCKUP';node.style.background=el.color}
-    if(el.designKind==='arrow')node.textContent='➜';
+    if(el.designKind==='arrow' && !el.shapeKind)node.textContent='➜';
     if(el.designKind==='wave')node.textContent='〰';
     if(el.designKind==='table')node.innerHTML='<span>Naslov</span><span>Vrednost</span><span>Status</span><span>1</span><span>Primer</span><span>OK</span><span>2</span><span>Primer</span><span>OK</span><span>3</span><span>Primer</span><span>OK</span>';
     if(el.designKind==='chart')node.innerHTML='<i style="height:35%"></i><i style="height:65%"></i><i style="height:48%"></i><i style="height:82%"></i><i style="height:58%"></i>';
@@ -179,7 +186,19 @@ function addDesignElement(kind){
   dotgrid:{type:'rect',name:'Mreža tačaka',w:220,h:160,color:'#F6F2EA'},
   star:{type:'text',name:'Zvezda',w:100,h:100,color:'#C8A96B',text:'✦',fontSize:70},
   spark:{type:'text',name:'Spark',w:100,h:100,color:'#C8A96B',text:'✧',fontSize:70},
-  triangle:{type:'text',name:'Trougao',w:100,h:100,color:'#8EA386',text:'△',fontSize:70},
+  triangle:{type:'rect',name:'Trougao',w:150,h:150,color:'#8EA386',shapeKind:'triangle'},
+  'circle-shape':{type:'circle',name:'Krug',w:150,h:150,color:'#C8A96B',shapeKind:'circle'},
+  oval:{type:'rect',name:'Oval',w:220,h:140,color:'#8EA386',shapeKind:'oval'},
+  diamond:{type:'rect',name:'Romb',w:150,h:150,color:'#C8A96B',shapeKind:'diamond'},
+  pentagon:{type:'rect',name:'Pentagon',w:160,h:150,color:'#7654A8',shapeKind:'pentagon'},
+  hexagon:{type:'rect',name:'Šestougao',w:170,h:150,color:'#8EA386',shapeKind:'hexagon'},
+  octagon:{type:'rect',name:'Osmougao',w:160,h:160,color:'#C8A96B',shapeKind:'octagon'},
+  'star-shape':{type:'rect',name:'Zvezda',w:170,h:170,color:'#C8A96B',shapeKind:'star'},
+  heart:{type:'rect',name:'Srce',w:170,h:150,color:'#7654A8',shapeKind:'heart'},
+  ring:{type:'circle',name:'Prsten',w:160,h:160,color:'#C8A96B',shapeKind:'ring'},
+  'plus-shape':{type:'rect',name:'Plus',w:150,h:150,color:'#8EA386',shapeKind:'plus'},
+  'arrow-shape':{type:'rect',name:'Strelica',w:220,h:100,color:'#7654A8',shapeKind:'arrow'},
+  speech:{type:'rect',name:'Oblak za poruku',w:240,h:150,color:'#E8EEE7',shapeKind:'speech'},
   wave:{type:'text',name:'Talas',w:260,h:80,color:'#8EA386',text:'〰',fontSize:70},
   blob:{type:'rect',name:'Blob',w:220,h:170,color:'#E8EEE7'},
   ribbon:{type:'text',name:'Traka',w:260,h:55,color:'#C8A96B',text:'ISTAKNUTO',fontSize:18},
