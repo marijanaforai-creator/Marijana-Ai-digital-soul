@@ -22,7 +22,7 @@ function renderPage(){
   elementsEl.innerHTML='';
   current().elements.forEach(el=>{
     const node=document.createElement('div');
-    node.className='canvas-element '+(el.designKind?'design-'+el.designKind:el.type==='text'?'text-element':el.type==='rect'?'shape':el.type==='circle'?'circle':el.type==='frame'?'frame-element':el.type==='mockup'?'mockup-element':'image-element');
+    node.className='canvas-element '+(el.paperFold?'paper-frame '+el.paperFold:el.designKind?'design-'+el.designKind:el.type==='text'?'text-element':el.type==='rect'?'shape':el.type==='circle'?'circle':el.type==='frame'?'frame-element':el.type==='mockup'?'mockup-element':'image-element');
     if(el.id===selectedId)node.classList.add('selected');
     node.dataset.id=el.id;
     node.dataset.locked=el.locked?'true':'false';
@@ -124,6 +124,21 @@ function renderInspector(){
   document.getElementById('textControl').hidden=el.type!=='text';document.getElementById('fontControl').hidden=el.type!=='text';
   document.getElementById('fontControlsExtra').hidden=el.type!=='text';document.getElementById('fontControlsExtra2').hidden=el.type!=='text';document.getElementById('textAdvancedControls').hidden=el.type!=='text';
 }
+
+let copiedElement=null;
+const contextMenu=document.getElementById('canvasContextMenu');
+function hideContextMenu(){if(contextMenu)contextMenu.hidden=true}
+function showContextMenu(x,y,el){if(!contextMenu)return;selectedId=el?.id??null;renderInspector();contextMenu.hidden=false;contextMenu.style.left=Math.min(x,window.innerWidth-180)+'px';contextMenu.style.top=Math.min(y,window.innerHeight-190)+'px';contextMenu.dataset.target=el?'element':'page';}
+function copySelected(){const el=findSelected();if(!el)return;copiedElement=JSON.parse(JSON.stringify(el));}
+function pasteElement(){if(!copiedElement)return;snapshot();const copy=JSON.parse(JSON.stringify(copiedElement));copy.id=nextId++;copy.x=(copy.x||80)+24;copy.y=(copy.y||80)+24;copy.name=(copy.name||'Element')+' kopija';current().elements.push(copy);selectedId=copy.id;render();}
+function addNewPage(){snapshot();pages.push({id:Date.now()+Math.random(),name:'Stranica '+(pages.length+1),elements:[]});activePage=pages.length-1;selectedId=null;render();}
+elementsEl.addEventListener('contextmenu',e=>{const node=e.target.closest('.canvas-element');if(!node)return;e.preventDefault();const el=current().elements.find(x=>x.id===Number(node.dataset.id));if(el){selectedId=el.id;renderPage();renderLayers();showContextMenu(e.clientX,e.clientY,el)}});
+page.addEventListener('contextmenu',e=>{if(e.target.closest('.canvas-element'))return;e.preventDefault();showContextMenu(e.clientX,e.clientY,null)});
+document.addEventListener('contextmenu',e=>{if(!e.target.closest('#canvasPage'))hideContextMenu()});
+document.addEventListener('click',e=>{if(!e.target.closest('#canvasContextMenu'))hideContextMenu()});
+contextMenu?.addEventListener('click',e=>{const btn=e.target.closest('[data-context-action]');if(!btn)return;const action=btn.dataset.contextAction;hideContextMenu();if(action==='copy')copySelected();if(action==='paste')pasteElement();if(action==='add-page')addNewPage();if(action==='delete'){if(selectedId==null)return;snapshot();current().elements=current().elements.filter(el=>el.id!==selectedId);selectedId=null;render();}});
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='c'&&selectedId!=null){e.preventDefault();copySelected()}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='v'){e.preventDefault();pasteElement()}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='d'&&selectedId!=null){e.preventDefault();copySelected();pasteElement()}});
+
 function findSelected(){return current().elements.find(e=>e.id===selectedId)}
 function updateSelected(field,value){const el=findSelected();if(!el||el.locked)return;snapshot();el[field]=value;render()}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -169,6 +184,11 @@ function addDesignElement(kind){
   blob:{type:'rect',name:'Blob',w:220,h:170,color:'#E8EEE7'},
   ribbon:{type:'text',name:'Traka',w:260,h:55,color:'#C8A96B',text:'ISTAKNUTO',fontSize:18},
   'photo-frame':{type:'rect',name:'Foto okvir',w:300,h:220,color:'#F7F3FB',text:'＋ FOTO',fontSize:18},
+  'paper-top-left':{type:'rect',name:'Papir — savijen gore levo',w:360,h:460,color:'#FFFDF8',paperFold:'top-left'},
+  'paper-top-right':{type:'rect',name:'Papir — savijen gore desno',w:360,h:460,color:'#FFFDF8',paperFold:'top-right'},
+  'paper-bottom-left':{type:'rect',name:'Papir — savijen dole levo',w:360,h:460,color:'#FFFDF8',paperFold:'bottom-left'},
+  'paper-bottom-right':{type:'rect',name:'Papir — savijen dole desno',w:360,h:460,color:'#FFFDF8',paperFold:'bottom-right'},
+
   arrow:{type:'text',name:'Strelica',w:180,h:90,color:'#7654A8',text:'➜',fontSize:64},
   callout:{type:'text',name:'Callout',w:320,h:120,color:'#28222F',text:'Važna napomena',fontSize:20},
   table:{type:'rect',name:'Tabela',w:360,h:220,color:'#FFFFFF'},
@@ -314,7 +334,7 @@ document.getElementById('redoBtn').onclick=()=>{if(!future.length)return;history
 document.getElementById('centerSelected').onclick=()=>{const el=findSelected();if(!el)return;snapshot();el.x=(Number(page.dataset.baseW)-el.w)/2;el.y=(Number(page.dataset.baseH)-el.h)/2;render()};
 document.getElementById('duplicateEl').onclick=()=>{const el=findSelected();if(!el)return;snapshot();const copy=JSON.parse(JSON.stringify(el));copy.id=nextId++;copy.name=el.name+' kopija';copy.x+=20;copy.y+=20;current().elements.push(copy);selectedId=copy.id;render()};
 document.getElementById('deleteEl').onclick=()=>{if(selectedId==null)return;snapshot();current().elements=current().elements.filter(e=>e.id!==selectedId);selectedId=null;render()};
-document.getElementById('addPage').onclick=()=>{snapshot();pages.push({id:Date.now()+Math.random(),name:'Stranica '+(pages.length+1),elements:[]});activePage=pages.length-1;selectedId=null;render()};
+document.getElementById('addPage').onclick=addNewPage;
 
 [['elName','name',v=>v],['elFontFamily','fontFamily',v=>v],['elFontWeight','fontWeight',Number],['elLetterSpacing','letterSpacing',Number],['elLineHeight','lineHeight',Number],['elX','x',Number],['elY','y',Number],['elW','w',Number],['elH','h',Number],['elRotation','rotation',Number],['elOpacity','opacity',Number],['elColor','color',v=>v],['elText','text',v=>v],['elFontSize','fontSize',Number]].forEach(([id,field,fn])=>document.getElementById(id).addEventListener('change',e=>updateSelected(field,fn(e.target.value))));
 document.getElementById('elRotation').addEventListener('input',e=>{const el=findSelected();if(!el)return;el.rotation=Number(e.target.value);document.getElementById('elRotationValue').value=el.rotation+'°';renderPage()});
