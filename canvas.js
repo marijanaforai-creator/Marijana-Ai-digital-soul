@@ -150,7 +150,7 @@ function addElement(type,src){
   const el={id:nextId++,name:type==='text'?'Tekst':type==='image'?'Slika':type==='mockup'?'Mockup':isFrame?'Frame':'Oblik',type,frameShape,visible:true,locked:false,x:80+n*15,y:80+n*15,w:type==='text'?300:type==='image'?260:type==='mockup'?280:260,h:type==='text'?90:type==='image'?260:type==='mockup'?360:isFrame?260:160,rotation:0,opacity:100,color:type==='circle'?'#C8A96B':'#B9A3E3',text:type==='text'?'Novi tekst':'',fontSize:48,fontFamily:'Cormorant Garamond',fontWeight:500,letterSpacing:0,lineHeight:1.2,textAlign:'center',textTransform:'none',fontStyle:'normal',textDecoration:'none',textShadow:false,highlightColor:'',src:src||''};
   current().elements.push(el);selectedId=el.id;render();
 }
-function moveLayer(id,delta){snapshot();const arr=current().elements,i=arr.findIndex(e=>e.id===id),j=i+delta;if(j<0||j>=arr.length)return;[arr[i],arr[j]]=[arr[j],arr[i]];render()}
+function moveLayer(id,delta){const arr=current().elements,i=arr.findIndex(e=>e.id===id),j=i+delta;if(i<0||j<0||j>=arr.length)return;snapshot();[arr[i],arr[j]]=[arr[j],arr[i]];render()}
 function startDrag(e){
   e.preventDefault();const id=Number(e.currentTarget.dataset.id);selectedId=id;render();
   const el=findSelected();if(!el||el.locked)return;const startX=e.clientX,startY=e.clientY,ox=el.x,oy=el.y;
@@ -333,6 +333,8 @@ function putImageIntoFrame(src){
 // Drag & drop slike direktno na Oblik, Krug ili Frame — Canva princip.
 function bindFrameDropTargets(){
   document.querySelectorAll('.canvas-element.shape,.canvas-element.circle,.canvas-element.frame-element').forEach(node=>{
+    if(node.dataset.frameDropBound==='true')return;
+    node.dataset.frameDropBound='true';
     node.addEventListener('dragover',e=>{e.preventDefault();node.classList.add('frame-suck-target');});
     node.addEventListener('dragleave',()=>node.classList.remove('frame-suck-target'));
     node.addEventListener('drop',e=>{
@@ -412,14 +414,17 @@ async function exportCanvas(){
 }
 document.getElementById('downloadCanvas').onclick=exportCanvas;
 document.getElementById('sendToMockup').onclick=async()=>{
-  const dataUrl=await renderCanvasToDataURL();
-  const scene=document.getElementById('quickMockupScene')?.value||'laptop';
+  const btn=document.getElementById('sendToMockup');
+  if(btn)btn.disabled=true;
   try{
+    const dataUrl=await renderCanvasToDataURL();
+    const scene=document.getElementById('quickMockupScene')?.value||'laptop';
     sessionStorage.setItem('marijanaMockupSource',dataUrl);
     sessionStorage.setItem('marijanaMockupSourceName',current().name||'Canvas dizajn');
     window.location.href=`mockup.html?from=canvas&scene=${encodeURIComponent(scene)}&layout=blank-white`;
   }catch(err){
     alert('Dizajn je prevelik za direktan prenos. Prvo izvezi PNG pa ga ubaci u 3D Mockup.');
+    if(btn)btn.disabled=false;
   }
 };
 render();
