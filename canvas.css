@@ -137,3 +137,23 @@
 }
 
 .elements-panel{position:absolute;left:72px;top:250px;width:220px;background:#fff;border:1px solid #ddd6cb;border-radius:12px;padding:12px;box-shadow:0 14px 35px rgba(0,0,0,.12);z-index:50}.elements-panel-title{font-weight:800;margin-bottom:10px}.elements-category{border-top:1px solid #eee8df;padding:10px 0;display:grid;grid-template-columns:1fr 1fr;gap:6px}.elements-category:first-of-type{border-top:0}.elements-category strong{grid-column:1/-1;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#777}.elements-category button{border:1px solid #e2dbd0;background:#faf8f3;border-radius:7px;padding:7px 5px;cursor:pointer;font-size:11px}.elements-category button:hover{background:#e8eee7;border-color:#8ea386}.canvas-element.element-rounded{border-radius:18px}.canvas-element.element-pill{border-radius:999px}.canvas-element.element-line{height:3px!important}.canvas-element.element-badge,.canvas-element.element-label,.canvas-element.element-button,.canvas-element.element-price{display:flex;align-items:center;justify-content:center;font-weight:700}.canvas-element.element-button{border-radius:8px}.canvas-element.element-badge{border-radius:999px}.canvas-element.element-quote{font-family:"Cormorant Garamond",serif;font-size:28px!important}.canvas-element.element-dotgrid{background-image:radial-gradient(circle,#8ea386 1.5px,transparent 1.5px);background-size:12px 12px!important}.canvas-element.element-star,.canvas-element.element-spark{text-align:center;background:transparent!important;color:#c8a96b;font-size:70px!important}
+
+.elements-search{width:100%;box-sizing:border-box;border:1px solid #e2dbd0;background:#fff;border-radius:7px;padding:8px 9px;font:11px Montserrat,sans-serif;margin-bottom:8px}
+.canvas-element.design-arrow{display:flex;align-items:center;justify-content:center;background:transparent!important;color:#7654A8;font-size:64px!important;font-family:Arial,sans-serif;font-weight:700}
+.canvas-element.design-callout{background:#f7f3fb!important;border:1px solid #c8a96b;border-radius:16px;padding:12px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;text-align:center;font-family:Montserrat,sans-serif;font-size:14px!important;color:#28222F}
+.canvas-element.design-photo-frame{border:3px solid #8ea386;background:#f7f3fb;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#7654A8;font:700 10px Montserrat,sans-serif}
+.canvas-element.design-table{background:#fff!important;border:1px solid #8ea386;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(4,1fr)}
+.canvas-element.design-table span{border-right:1px solid #ddd;border-bottom:1px solid #ddd;padding:5px;font:10px Montserrat,sans-serif;display:flex;align-items:center}
+.canvas-element.design-chart{background:linear-gradient(to top,#8ea386 0 25%,transparent 25% 100%)!important;border-bottom:3px solid #7654A8;display:flex;align-items:flex-end;justify-content:space-around;padding:15px;box-sizing:border-box}
+.canvas-element.design-chart i{width:16%;background:#c8a96b;border-radius:5px 5px 0 0}
+.canvas-element.design-progress{background:#ece7df!important;border-radius:999px;overflow:hidden}
+.canvas-element.design-progress:after{content:"";display:block;width:68%;height:100%;background:#8ea386;border-radius:999px}
+.canvas-element.design-checkbox{display:flex;align-items:center;justify-content:flex-start;font:600 18px Montserrat,sans-serif;white-space:pre-line}
+.canvas-element.design-form-field{border:1px solid #aaa;background:#fff;display:flex;align-items:center;padding:0 12px;font:11px Montserrat,sans-serif;color:#888}
+.canvas-element.design-header,.canvas-element.design-footer{border-bottom:2px solid #c8a96b;background:#faf8f3!important;display:flex;align-items:center;padding:0 18px;font:700 14px Montserrat,sans-serif}
+.canvas-element.design-footer{border-top:2px solid #c8a96b;border-bottom:0}
+.canvas-element.design-page-number{display:flex;align-items:center;justify-content:center;font:700 20px Montserrat,sans-serif;color:#7654A8}
+.canvas-element.design-brand-block{display:flex;align-items:center;gap:10px;background:#28222F!important;color:#fff!important;padding:12px;box-sizing:border-box;font:700 16px Montserrat,sans-serif;border-radius:8px}
+.canvas-element.design-wave{background:transparent!important;font-size:72px!important;color:#8ea386}
+.canvas-element.design-blob{border-radius:45% 55% 60% 40% / 55% 45% 55% 45%;background:#e8eee7!important}
+.canvas-element.design-ribbon{display:flex;align-items:center;justify-content:center;background:#c8a96b!important;color:#fff!important;font:700 13px Montserrat,sans-serif}
