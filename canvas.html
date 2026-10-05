@@ -91,6 +91,26 @@
       <button class="side-tool" data-add="frame">▣ <span>Frame</span></button>
       <button class="side-tool" data-add="rect">□ <span>Oblik</span></button>
       <button class="side-tool" data-add="circle">○ <span>Krug</span></button>
+      <button class="side-tool" id="openElements" type="button">✦ <span>Elementi</span></button>
+      <div id="elementsPanel" class="elements-panel" hidden>
+        <div class="elements-panel-title">Dodaci</div>
+        <div class="elements-category">
+          <strong>Oblici</strong>
+          <button data-element="line">╱ Linija</button><button data-element="rounded">▢ Zaobljeni blok</button><button data-element="pill">▬ Pill</button><button data-element="triangle">△ Trougao</button>
+        </div>
+        <div class="elements-category">
+          <strong>Akcenti</strong>
+          <button data-element="badge">BADGE</button><button data-element="label">LABEL</button><button data-element="number">01 Broj</button><button data-element="divider">— Divider</button>
+        </div>
+        <div class="elements-category">
+          <strong>Komponente</strong>
+          <button data-element="button">Dugme</button><button data-element="quote">❝ Citat</button><button data-element="checklist">☑ Checklist</button><button data-element="price">Cena</button>
+        </div>
+        <div class="elements-category">
+          <strong>Dekoracija</strong>
+          <button data-element="dotgrid">••• Mreža tačaka</button><button data-element="star">✦ Zvezda</button><button data-element="spark">✧ Spark</button>
+        </div>
+      </div>
       <button id="uploadTrigger" class="side-tool upload-tool" type="button">＋ <span>Upload sliku</span></button><input id="canvasUpload" class="sr-only-input" type="file" accept="image/png,image/jpeg,image/webp,image/gif">
       <div class="tool-divider"></div>
       <button class="side-tool" data-add="mockup">◇ <span>Mockup</span></button>
