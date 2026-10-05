@@ -150,6 +150,12 @@ function findSelected(){return current().elements.find(e=>e.id===selectedId)}
 function updateSelected(field,value){const el=findSelected();if(!el||el.locked)return;snapshot();el[field]=value;render()}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function addElement(type,src){
+  // Mockup nije Canvas element. Ako bilo koji stari/sekundarni
+  // handler pokuša da ga doda, preusmeri ga na pravi transfer.
+  if(type==='mockup'){
+    document.getElementById('sendToMockup')?.click();
+    return;
+  }
   snapshot();
   const n=current().elements.length;
   const isFrame=type==='frame';
