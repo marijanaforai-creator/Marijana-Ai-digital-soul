@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="sr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Marijana AI — Meditation Studio</title>
+<style>
+:root{--ivory:#f6f1e8;--black:#111;--gold:#c8a96b;--sage:#8ea386;--azure:#6aa7c8;--muted:#716d66;--card:#fffdf8}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#f7f3eb,#edf1eb);color:var(--black);font-family:Inter,Arial,sans-serif}
+.wrap{max-width:1180px;margin:auto;padding:32px 20px 60px}.brand{font-family:Georgia,serif;letter-spacing:.4px}.brand span{color:var(--gold)}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:26px}.pill{padding:8px 13px;border:1px solid #ddd5c7;border-radius:999px;background:#fff8}
+.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:20px}.card{background:#ffffffd9;border:1px solid #e5ded1;border-radius:22px;padding:22px;box-shadow:0 12px 35px #00000008}
+h1,h2{font-family:Georgia,serif;margin:0 0 8px}h1{font-size:38px}.sub{color:var(--muted);margin:0 0 22px}.label{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:#777;margin:16px 0 8px}
+textarea{width:100%;min-height:210px;resize:vertical;border:1px solid #ddd5c7;border-radius:16px;padding:16px;font:16px/1.65 Georgia,serif;background:#fffdf9;outline:none}textarea:focus{border-color:var(--sage);box-shadow:0 0 0 3px #8ea38622}
+.row{display:flex;gap:10px;flex-wrap:wrap}.btn{border:0;border-radius:12px;padding:12px 17px;font-weight:700;cursor:pointer}.primary{background:var(--black);color:white}.gold{background:var(--gold);color:white}.soft{background:#e9eee7}.ghost{background:white;border:1px solid #ddd5c7}.btn:disabled{opacity:.5;cursor:not-allowed}
+.cont{margin-top:16px;padding:16px;border-left:3px solid var(--sage);background:#f5f8f3;border-radius:12px;white-space:pre-wrap;line-height:1.7;font-family:Georgia,serif}
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{padding:13px;border:1px solid #e2dbcf;border-radius:14px;background:#fff}.field label{display:block;font-size:12px;color:#777;margin-bottom:7px}.field select,.field input{width:100%;border:0;background:transparent;font-size:15px;outline:0}
+.status{font-size:13px;color:var(--muted);min-height:20px}.player{width:100%;margin-top:10px}.note{font-size:12px;color:#777;line-height:1.5;margin-top:12px}
+@media(max-width:800px){.grid{grid-template-columns:1fr}h1{font-size:31px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><div class="brand">Marijana <span>AI</span> · Meditation Studio</div><div class="pill">🎙️ Moj glas</div></header>
+<div class="grid">
+<section class="card">
+<h1>AI Meditation Studio</h1>
+<p class="sub">Ti pišeš. AI nastavlja. Ti odobravaš. Tek onda govori tvoj glas.</p>
+<div class="label">Moj tekst</div>
+<textarea id="source" placeholder="Napiši početak meditacije..."></textarea>
+<div class="row" style="margin-top:12px">
+<button class="btn primary" id="continueBtn">✨ Nastavi</button>
+<button class="btn ghost" id="clearBtn">Obriši</button>
+</div>
+<div class="label">AI nastavak</div>
+<div id="continuation" class="cont">Ovde će se pojaviti nastavak. Tvoj originalni tekst ostaje odvojen i ne menja se.</div>
+<div class="row" style="margin-top:12px">
+<button class="btn soft" id="appendBtn" disabled>➕ Dodaj nastavak u skriptu</button>
+<button class="btn ghost" id="rewriteBtn" disabled>✏️ Prepravi nastavak</button>
+</div>
+<div class="label">Finalna skripta</div>
+<textarea id="finalText" placeholder="Ovde će biti tekst koji će se poslati tvom glasu."></textarea>
+</section>
+<section class="card">
+<h2>Produkcija</h2><p class="sub">Prva verzija je fokusirana na tvoj glas i čist workflow.</p>
+<div class="controls">
+<div class="field"><label>Glas</label><select id="voice"><option>Marijana Voice</option></select></div>
+<div class="field"><label>Trajanje / stil</label><select id="style"><option>Mirna meditacija</option><option>Duboko opuštanje</option><option>Večernja meditacija</option><option>Jutarnja meditacija</option></select></div>
+<div class="field"><label>Brzina</label><input id="speed" type="range" min=".75" max="1.15" step=".01" value=".9"></div>
+<div class="field"><label>Pauze</label><select id="pauses"><option value="natural">Prirodne</option><option value="long">Duže</option><option value="short">Kraće</option></select></div>
+</div>
+<div class="label">Audio</div>
+<div class="row">
+<button class="btn gold" id="generateBtn">🎙️ Govori mojim glasom</button>
+<button class="btn ghost" id="stopBtn" disabled>■ Zaustavi</button>
+</div>
+<audio id="player" class="player" controls></audio>
+<div class="label">Pozadinska muzika</div>
+<input id="music" type="file" accept="audio/*">
+<div class="row" style="margin-top:12px"><button class="btn soft" id="previewMix" disabled>🎵 Preview sa muzikom</button></div>
+<div id="status" class="status"></div>
+<p class="note">API ključevi se ne stavljaju u ovaj frontend. Backend koristi server-side secrets. Za produkcijski kvalitet tvog glasa preporučujemo profesionalni voice clone; originalni snimci glasa ostaju pod tvojom kontrolom.</p>
+</section>
+</div>
+</div>
+<script>
+const $=id=>document.getElementById(id); let lastContinuation="";
+$("continueBtn").onclick=async()=>{
+ const text=$("source").value.trim(); if(!text)return;
+ $("status").textContent="AI priprema nastavak…"; $("continueBtn").disabled=true;
+ try{const r=await fetch("/api/meditation-continue",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text,style:$("style").value})});
+ const d=await r.json(); if(!r.ok)throw new Error(d.error||"Greška");
+ lastContinuation=d.continuation||""; $("continuation").textContent=lastContinuation; $("appendBtn").disabled=!lastContinuation; $("rewriteBtn").disabled=!lastContinuation; $("status").textContent="Nastavak je spreman.";
+ }catch(e){$("status").textContent=e.message}finally{$("continueBtn").disabled=false}
+};
+$("appendBtn").onclick=()=>{$("finalText").value=[$("source").value.trim(),lastContinuation].filter(Boolean).join("\n\n");$("status").textContent="Nastavak je dodat u finalnu skriptu."};
+$("rewriteBtn").onclick=async()=>{$("source").value=$("source").value.trim()+"\n\n"+lastContinuation; $("continueBtn").click()};
+$("clearBtn").onclick=()=>{["source","finalText"].forEach(id=>$(id).value="");$("continuation").textContent="Ovde će se pojaviti nastavak. Tvoj originalni tekst ostaje odvojen i ne menja se.";lastContinuation="";$("appendBtn").disabled=true;$("rewriteBtn").disabled=true};
+$("generateBtn").onclick=async()=>{
+ const text=$("finalText").value.trim()||[$("source").value.trim(),lastContinuation].filter(Boolean).join("\n\n"); if(!text){$("status").textContent="Prvo napiši ili generiši skriptu.";return}
+ $("status").textContent="Generišem audio u tvom glasu…";$("generateBtn").disabled=true;
+ try{const r=await fetch("/api/meditation-voice",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text,style:$("style").value,pauses:$("pauses").value,speed:Number($("speed").value)})});
+ if(!r.ok){const d=await r.json().catch(()=>({}));throw new Error(d.error||"Audio nije generisan");}
+ const blob=await r.blob(); const url=URL.createObjectURL(blob); $("player").src=url; $("player").play().catch(()=>{}); $("status").textContent="Audio je spreman.";
+ }catch(e){$("status").textContent=e.message}finally{$("generateBtn").disabled=false}
+};
+$("music").onchange=()=>{$("previewMix").disabled=!$("music").files.length||!$("player").src;$("status").textContent="Muzika je učitana za preview. Finalni miks ćemo dodati u sledećoj fazi."};
+</script>
+</body>
+</html>
