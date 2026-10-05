@@ -244,18 +244,23 @@ render();
 
 // Učitaj layout generisan iz Layout po promptu.
 function loadGeneratedLayout(){
-  const raw=localStorage.getItem('marijanaGeneratedLayout');
-  if(!raw)return;
+  const raw=localStorage.getItem('marijanaGeneratedLayout'); if(!raw)return;
   try{
     const data=JSON.parse(raw); if(!data.pages?.length)return;
-    const colorMap={'Ivory + Sage + Gold':'#8EA386','Black + Gold':'#C8A96B','Editorial':'#252522','Business':'#536675','Wellness':'#8EA386','Minimal Luxury':'#C8A96B'};
-    const accent=colorMap[data.style]||'#8EA386';
-    pages=data.pages.map((p,i)=>({id:Date.now()+i,name:'Stranica '+p.number,elements:[
-      {id:nextId++,name:'Naslov',type:'text',visible:true,locked:false,x:70,y:60,w:460,h:70,rotation:0,opacity:100,color:'#252522',text:p.title,fontSize:42,src:''},
-      {id:nextId++,name:'Akcent',type:'rect',visible:true,locked:false,x:70,y:145,w:180,h:8,rotation:0,opacity:100,color:accent,text:'',fontSize:48,src:''},
-      {id:nextId++,name:'Sadržaj',type:'text',visible:true,locked:false,x:70,y:185,w:460,h:120,rotation:0,opacity:100,color:'#555555',text:p.description,fontSize:20,src:''}
-    ]}));
+    const accentMap={'Ivory + Sage + Gold':'#8EA386','Black + Gold':'#C8A96B','Editorial':'#252522','Business':'#536675','Wellness':'#8EA386','Minimal Luxury':'#C8A96B'};
+    const accent=accentMap[data.style]||'#8EA386';
+    const fx=data.effects||{};
+    const bg=fx.gradientCss||'#FFFFFF';
+    pages=data.pages.map((p,i)=>{
+      const elements=[
+        {id:nextId++,name:'Naslov',type:'text',visible:true,locked:false,x:70,y:60,w:460,h:70,rotation:0,opacity:100,color:'#252522',text:p.title,fontSize:42,src:''},
+        {id:nextId++,name:'Akcent',type:'rect',visible:true,locked:false,x:70,y:145,w:180,h:8,rotation:0,opacity:100,color:accent,text:'',fontSize:48,src:''},
+        {id:nextId++,name:'Sadržaj',type:'text',visible:true,locked:false,x:70,y:185,w:460,h:120,rotation:0,opacity:100,color:'#555555',text:p.description,fontSize:20,src:''}
+      ];
+      if(fx.overlayColor&&fx.overlay!=='none') elements.unshift({id:nextId++,name:'Overlay',type:'rect',visible:true,locked:false,x:0,y:0,w:560,h:560,rotation:0,opacity:Number(fx.overlayOpacity||25),color:fx.overlayColor,text:'',fontSize:48,src:''});
+      return {id:Date.now()+i,name:'Stranica '+p.number,elements,background:bg};
+    });
     activePage=0;selectedId=null;localStorage.removeItem('marijanaGeneratedLayout');render();
   }catch(e){console.warn('Layout nije mogao da se učita',e)}
 }
-loadGeneratedLayout();
+loadGeneratedLayout();;
