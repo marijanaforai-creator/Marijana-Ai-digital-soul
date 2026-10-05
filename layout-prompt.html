@@ -12,6 +12,16 @@
 </div></header>
 <main class="layout-studio">
 <section class="layout-hero"><div class="kicker">MARIJANA AI STUDIO</div><h1>Gotovi layout <em>po promptu</em></h1><p>Napiši šta želiš da napraviš. Sistem će pripremiti strukturu stranica, format, stil i editabilne elemente.</p></section>
+<section class="template-library">
+<div class="library-toolbar"><div><div class="kicker">GOTOVI ŠABLONI</div><h2>Izaberi layout kao u kreativnoj biblioteci</h2></div><div class="template-filters"><button class="template-filter active" data-cat="all">Svi</button><button class="template-filter" data-cat="social">Društvene mreže</button><button class="template-filter" data-cat="document">Dokumenti</button><button class="template-filter" data-cat="planner">Planeri</button><button class="template-filter" data-cat="business">Business</button><button class="template-filter" data-cat="presentation">Prezentacije</button></div></div>
+<div id="templateGrid" class="template-grid"></div>
+</section>
+<section class="effects-panel"><div><div class="kicker">STIL I EFEKTI</div><h2>Gradienti, overlay i pozadine</h2></div>
+<div class="effect-grid">
+<label>Gradient<select id="gradientPreset"><option value="none">Bez gradijenta</option><option value="sage">Sage → Ivory</option><option value="gold">Champagne → Ivory</option><option value="blackgold">Black → Gold</option><option value="plum">Plum → Rose</option><option value="azure">Azure → Ivory</option><option value="sunset">Peach → Gold</option></select></label>
+<label>Overlay<select id="overlayPreset"><option value="none">Bez overlay-a</option><option value="soft">Soft white</option><option value="dark">Soft black</option><option value="gold">Champagne gold</option><option value="sage">Sage tint</option></select></label>
+<label>Jačina overlay-a<input id="overlayOpacity" type="range" min="0" max="80" value="25"></label>
+</div></section>
 <section class="layout-builder">
 <div class="layout-form">
 <label>Šta želiš da napraviš?<textarea id="layoutPrompt" placeholder="Npr. Napravi A4 radnu svesku o finansijskoj pismenosti, 12 strana, ivory + sage green + gold, minimalistički stil, sa naslovnom stranom, tabelama, vežbama, checklistama i prostorom za beleške."></textarea></label>
@@ -21,7 +31,7 @@
 <label>Stranice<input id="layoutPages" type="number" min="1" max="100" value="8"></label>
 <label>Stil<select id="layoutStyle"><option>Minimal Luxury</option><option>Ivory + Sage + Gold</option><option>Black + Gold</option><option>Editorial</option><option>Business</option><option>Wellness</option></select></label>
 </div>
-<div class="layout-actions"><button id="generateLayout" class="btn primary" type="button">✦ Generiši layout</button><button id="clearLayout" class="btn" type="button">Obriši</button></div>
+<div class="layout-actions"><button id="applyEffects" class="btn" type="button">Primeni efekte</button><button id="generateLayout" class="btn primary" type="button">✦ Generiši layout</button><button id="clearLayout" class="btn" type="button">Obriši</button></div>
 <div id="layoutStatus" class="layout-status"></div>
 </div>
 <div class="layout-preview"><div class="preview-head"><strong>Pregled layouta</strong><span id="layoutMeta">—</span></div><div id="pagePreview" class="page-preview empty">Ovde će se pojaviti generisane stranice.</div></div>
