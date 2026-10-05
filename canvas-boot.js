@@ -18,13 +18,14 @@
       el.textContent=type==='frame'?'FRAME — ubaci sliku':type==='circle'?'KRUG':type==='image'?'SLIKA':'OBLIK';
       canvas.appendChild(el);
     }
+    // canvas.js je glavni kontroler za sve Canvas alate.
+    // Ovaj fallback više NE presreće data-add dugmad (posebno Mockup/Frame),
+    // jer bi time sprečio pravi Canvas workflow.
     document.addEventListener('click',function(e){
-      const b=e.target.closest('[data-add],#uploadTrigger');
+      const b=e.target.closest('#uploadTrigger');
       if(!b)return;
       e.preventDefault();
-      if(b.id==='uploadTrigger'){upload?.click();return;}
-      const type=b.dataset.add;
-      if(type==='image')upload?.click();else addFallback(type);
+      upload?.click();
     },true);
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
