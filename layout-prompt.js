@@ -1,36 +1,25 @@
-const templates={
-workbook:['Naslovna','Kako koristiti ovu radnu svesku','Uvod u temu','Lekcija / objašnjenje','Radna vežba','Tabela / analiza','Checklist','Prostor za beleške','Plan akcije','Završna strana'],
-planner:['Naslovna','Kako koristiti planer','Moji ciljevi','Prioriteti','Dnevni plan','Nedeljni pregled','Habit tracker','Budget / praćenje','Refleksija','Plan narednog perioda'],
-document:['Naslovna','Sadržaj','Uvod','Glavni deo','Detalji / sekcija','Tabela ili podaci','Zaključak','Napomene','Kontakt / izvori'],
-presentation:['Naslovni slajd','Problem / kontekst','Cilj','Ključna poruka','Podaci / dokaz','Rešenje','Proces','Ponuda','Sledeći korak','Završni slajd'],
-cv:['Ime i profesionalni naslov','Profil','Iskustvo','Ključne veštine','Projekti','Obrazovanje','Sertifikati','Jezici','Kontakt'],
-ebook:['Naslovna','Impresum / napomena','Sadržaj','Uvod','Poglavlje 1','Poglavlje 2','Poglavlje 3','Vežba / primer','Zaključak','O autoru'],
-guide:['Naslovna','Sadržaj','Uvod','Korak 1','Korak 2','Korak 3','Checklist','Najčešće greške','Plan akcije','Završna strana'],
-worksheet:['Naslovna / tema','Uputstvo','Pitanja','Vežba 1','Vežba 2','Tabela','Refleksija','Sledeći korak'],
-social:['Instagram objava','Story','Reel cover','Pinterest pin','LinkedIn vizual','Facebook objava','Email header','Promo poster']};
-const $=id=>document.getElementById(id);
-let generated=[];
-function makeStructure(){
- const type=$('layoutType').value, count=Math.max(1,Math.min(100,Number($('layoutPages').value)||8));
- const base=templates[type]||templates.workbook;
- generated=Array.from({length:count},(_,i)=>({number:i+1,title:base[i%base.length],description:describe(base[i%base.length],type)}));
- render();
- $('layoutStatus').textContent='Layout je pripremljen. Svaka stranica je zaseban editabilni korak koji možemo dalje povezati sa Canvas editorom.';
-}
-function describe(title,type){
- if(/Naslov|Ime/.test(title))return 'Glavna hijerarhija, naslov, podnaslov i vizuelni uvod.';
- if(/Tabela|tracker|podaci/.test(title))return 'Strukturisana mreža sa poljima za unos i pregled.';
- if(/vežb|Pitanja|Refleksija/.test(title))return 'Prostor za pitanja, odgovore i praktičan rad.';
- if(/Checklist/.test(title))return 'Lista sa kućicama i jasnim redosledom koraka.';
- if(type==='presentation')return 'Jedna glavna poruka po slajdu, sa jasnom vizuelnom hijerarhijom.';
- return 'Naslov, pomoćni tekst, sadržajni blokovi i prostor za uređivanje.';
-}
-function render(){
- $('layoutOutput').hidden=false;$('layoutMeta').textContent=generated.length+' stranica · '+$('layoutFormat').value+' · '+$('layoutStyle').value;
- $('pagePreview').classList.remove('empty');$('pagePreview').innerHTML=generated.slice(0,5).map(p=>'<div class="mini-page"><span class="num">'+String(p.number).padStart(2,'0')+'</span><strong>'+p.title+'</strong><small>'+p.description+'</small></div>').join('');
- $('pageCards').innerHTML=generated.map(p=>'<article class="page-card"><span class="num">'+String(p.number).padStart(2,'0')+'</span><h3>'+p.title+'</h3><p>'+p.description+'</p></article>').join('');
-}
-$('generateLayout').onclick=()=>{if(!$('layoutPrompt').value.trim()){ $('layoutStatus').textContent='Napiši šta želiš da napraviš.';return}makeStructure()};
+const templateCatalog=[
+{id:'ig-editorial',name:'Editorial Instagram',cat:'social',bg:'linear-gradient(135deg,#f6f2ea,#8ea386)',desc:'Naslov + fotografija + elegantan akcenat'},
+{id:'luxury-doc',name:'Luxury Document',cat:'document',bg:'linear-gradient(135deg,#171717,#c8a96b)',desc:'Premium naslovna i čiste sadržajne stranice'},
+{id:'sage-planner',name:'Sage Planner',cat:'planner',bg:'linear-gradient(135deg,#eaf1ea,#8ea386)',desc:'Planer sa prostorom za unos i praćenje'},
+{id:'business-deck',name:'Business Deck',cat:'business',bg:'linear-gradient(135deg,#eef1f3,#536675)',desc:'Moderan poslovni raspored'},
+{id:'pitch-deck',name:'Pitch Deck',cat:'presentation',bg:'linear-gradient(135deg,#252522,#8ea386)',desc:'Prezentacija sa jakom hijerarhijom'},
+{id:'wellness-workbook',name:'Wellness Workbook',cat:'document',bg:'linear-gradient(135deg,#f8f4ee,#d5e2d5)',desc:'Mekan editorial stil za radnu svesku'},
+{id:'gold-story',name:'Gold Story',cat:'social',bg:'linear-gradient(135deg,#111,#d4af37)',desc:'Story layout sa premium overlay-em'},
+{id:'cv-modern',name:'Modern CV',cat:'business',bg:'linear-gradient(135deg,#fff,#d9e2e5)',desc:'Čist CV sa jasnim sekcijama'}];
+const gradientPresets={none:'',sage:'linear-gradient(135deg,#8EA386,#F6F2EA)',gold:'linear-gradient(135deg,#C8A96B,#FFFDF5)',blackgold:'linear-gradient(135deg,#111111,#C8A96B)',plum:'linear-gradient(135deg,#4C275A,#F1BFCB)',azure:'linear-gradient(135deg,#5B8DB8,#F6F2EA)',sunset:'linear-gradient(135deg,#EFA47F,#C8A96B)'};
+const overlayPresets={none:'',soft:'#FFFFFF',dark:'#111111',gold:'#C8A96B',sage:'#8EA386'};
+const templates={workbook:['Naslovna','Kako koristiti ovu radnu svesku','Uvod u temu','Lekcija / objašnjenje','Radna vežba','Tabela / analiza','Checklist','Prostor za beleške','Plan akcije','Završna strana'],planner:['Naslovna','Kako koristiti planer','Moji ciljevi','Prioriteti','Dnevni plan','Nedeljni pregled','Habit tracker','Budget / praćenje','Refleksija','Plan narednog perioda'],document:['Naslovna','Sadržaj','Uvod','Glavni deo','Detalji / sekcija','Tabela ili podaci','Zaključak','Napomene','Kontakt / izvori'],presentation:['Naslovni slajd','Problem / kontekst','Cilj','Ključna poruka','Podaci / dokaz','Rešenje','Proces','Ponuda','Sledeći korak','Završni slajd'],cv:['Ime i profesionalni naslov','Profil','Iskustvo','Ključne veštine','Projekti','Obrazovanje','Sertifikati','Jezici','Kontakt'],ebook:['Naslovna','Impresum / napomena','Sadržaj','Uvod','Poglavlje 1','Poglavlje 2','Poglavlje 3','Vežba / primer','Zaključak','O autoru'],guide:['Naslovna','Sadržaj','Uvod','Korak 1','Korak 2','Korak 3','Checklist','Najčešće greške','Plan akcije','Završna strana'],worksheet:['Naslovna / tema','Uputstvo','Pitanja','Vežba 1','Vežba 2','Tabela','Refleksija','Sledeći korak'],social:['Instagram objava','Story','Reel cover','Pinterest pin','LinkedIn vizual','Facebook objava','Email header','Promo poster']};
+const $=id=>document.getElementById(id);let generated=[];
+function renderTemplates(cat='all'){const g=$('templateGrid');g.innerHTML=templateCatalog.filter(t=>cat==='all'||t.cat===cat).map(t=>'<article class="template-card" data-template="'+t.id+'"><div class="template-thumb" style="background:'+t.bg+'"><strong>'+t.name+'</strong></div><div class="template-card-body"><small>'+t.desc+'</small></div></article>').join('');g.querySelectorAll('.template-card').forEach(c=>c.onclick=()=>applyTemplate(c.dataset.template))}
+function applyTemplate(id){const t=templateCatalog.find(x=>x.id===id);$('layoutPrompt').value='Napravi '+t.name+' layout. '+t.desc+'. Koristi profesionalnu tipografiju, dobru hijerarhiju i editabilne elemente.';$('layoutType').value=t.cat==='planner'?'planner':t.cat==='presentation'?'presentation':t.cat==='social'?'social':t.cat==='business'?'document':'workbook';$('layoutPages').value=8;$('layoutStyle').value=t.name.includes('Sage')||t.name.includes('Wellness')?'Ivory + Sage + Gold':t.name.includes('Gold')||t.name.includes('Luxury')?'Black + Gold':t.cat==='business'?'Business':'Editorial';makeStructure()}
+function describe(t,type){if(/Naslov|Ime/.test(t))return 'Glavna hijerarhija, naslov, podnaslov i vizuelni uvod.';if(/Tabela|tracker|podaci/.test(t))return 'Strukturisana mreža sa poljima za unos i pregled.';if(/vežb|Pitanja|Refleksija/.test(t))return 'Prostor za pitanja, odgovore i praktičan rad.';if(/Checklist/.test(t))return 'Lista sa kućicama i jasnim redosledom koraka.';if(type==='presentation')return 'Jedna glavna poruka po slajdu, sa jasnom vizuelnom hijerarhijom.';return 'Naslov, pomoćni tekst, sadržajni blokovi i prostor za uređivanje.'}
+function makeStructure(){const type=$('layoutType').value,count=Math.max(1,Math.min(100,Number($('layoutPages').value)||8)),base=templates[type]||templates.workbook;generated=Array.from({length:count},(_,i)=>({number:i+1,title:base[i%base.length],description:describe(base[i%base.length],type)}));render();$('layoutStatus').textContent='Layout je pripremljen. Gradient i overlay mogu se preneti u Canvas.'}
+function render(){$('layoutOutput').hidden=false;$('layoutMeta').textContent=generated.length+' stranica · '+$('layoutFormat').value+' · '+$('layoutStyle').value;$('pagePreview').classList.remove('empty');$('pagePreview').innerHTML=generated.slice(0,5).map(p=>'<div class="mini-page"><span class="num">'+String(p.number).padStart(2,'0')+'</span><strong>'+p.title+'</strong><small>'+p.description+'</small></div>').join('');$('pageCards').innerHTML=generated.map(p=>'<article class="page-card"><span class="num">'+String(p.number).padStart(2,'0')+'</span><h3>'+p.title+'</h3><p>'+p.description+'</p></article>').join('')}
+function effects(){return {gradient:$('gradientPreset').value,gradientCss:gradientPresets[$('gradientPreset').value],overlay:$('overlayPreset').value,overlayColor:overlayPresets[$('overlayPreset').value],overlayOpacity:Number($('overlayOpacity').value)}}
+function saveAndOpen(){localStorage.setItem('marijanaGeneratedLayout',JSON.stringify({prompt:$('layoutPrompt').value,format:$('layoutFormat').value,style:$('layoutStyle').value,pages:generated,effects:effects()}));location.href='canvas.html'}
+$('generateLayout').onclick=()=>{if(!$('layoutPrompt').value.trim()){$('layoutStatus').textContent='Napiši šta želiš da napraviš.';return}makeStructure()};
 $('clearLayout').onclick=()=>{generated=[];$('layoutOutput').hidden=true;$('pagePreview').className='page-preview empty';$('pagePreview').textContent='Ovde će se pojaviti generisane stranice.';$('layoutStatus').textContent=''};
-$('downloadStructure').onclick=()=>{const blob=new Blob([JSON.stringify({prompt:$('layoutPrompt').value,format:$('layoutFormat').value,style:$('layoutStyle').value,pages:generated},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='marijana-layout.json';a.click();URL.revokeObjectURL(a.href)};
-$('openCanvas').onclick=()=>{localStorage.setItem('marijanaGeneratedLayout',JSON.stringify({prompt:$('layoutPrompt').value,format:$('layoutFormat').value,style:$('layoutStyle').value,pages:generated}));location.href='canvas.html'};
+$('downloadStructure').onclick=()=>{const blob=new Blob([JSON.stringify({prompt:$('layoutPrompt').value,format:$('layoutFormat').value,style:$('layoutStyle').value,pages:generated,effects:effects()},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='marijana-layout.json';a.click();URL.revokeObjectURL(a.href)};
+$('openCanvas').onclick=saveAndOpen;$('applyEffects').onclick=()=>{$('layoutStatus').textContent='Efekti su izabrani i biće preneti u Canvas.'};
+document.querySelectorAll('.template-filter').forEach(b=>b.onclick=()=>{document.querySelectorAll('.template-filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderTemplates(b.dataset.cat)});renderTemplates();
