@@ -94,6 +94,7 @@
       <button class="side-tool" id="openElements" type="button">✦ <span>Elementi</span></button>
       <div id="elementsPanel" class="elements-panel" hidden>
         <div class="elements-panel-title">Dodaci</div>
+        <input id="elementSearch" class="elements-search" type="search" placeholder="Pretraži elemente…">
         <div class="elements-category">
           <strong>Oblici</strong>
           <button data-element="line">╱ Linija</button><button data-element="rounded">▢ Zaobljeni blok</button><button data-element="pill">▬ Pill</button><button data-element="triangle">△ Trougao</button>
@@ -108,7 +109,15 @@
         </div>
         <div class="elements-category">
           <strong>Dekoracija</strong>
-          <button data-element="dotgrid">••• Mreža tačaka</button><button data-element="star">✦ Zvezda</button><button data-element="spark">✧ Spark</button>
+          <button data-element="dotgrid">••• Mreža tačaka</button><button data-element="star">✦ Zvezda</button><button data-element="spark">✧ Spark</button><button data-element="wave">〰 Talas</button><button data-element="blob">● Blob</button><button data-element="ribbon">▰ Traka</button>
+        </div>
+        <div class="elements-category">
+          <strong>Layout</strong>
+          <button data-element="photo-frame">▣ Foto okvir</button><button data-element="arrow">➜ Strelica</button><button data-element="callout">💬 Callout</button><button data-element="table">▦ Tabela</button><button data-element="chart">▥ Grafikon</button><button data-element="progress">▬ Progress</button>
+        </div>
+        <div class="elements-category">
+          <strong>Dokumenti</strong>
+          <button data-element="checkbox">☑ Checkbox</button><button data-element="form-field">▱ Polje forme</button><button data-element="header">Header</button><button data-element="footer">Footer</button><button data-element="page-number">01 Stranica</button><button data-element="brand-block">MF Brand</button>
         </div>
       </div>
       <button id="uploadTrigger" class="side-tool upload-tool" type="button">＋ <span>Upload sliku</span></button><input id="canvasUpload" class="sr-only-input" type="file" accept="image/png,image/jpeg,image/webp,image/gif">
