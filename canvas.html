@@ -256,5 +256,85 @@
 </main>
 <script src="canvas.js?v=20261005-3"></script>
 <script src="canvas-boot.js?v=20261005-4"></script>
+<script>
+/* DIRECT CANVAS CONTROLS */
+(function(){
+  function directCanvasControls(){
+    const root=document.querySelector('.left-sidebar');
+    if(!root || root.dataset.directControls==='1') return;
+    root.dataset.directControls='1';
+
+    root.addEventListener('click',function(ev){
+      const btn=ev.target.closest('.side-tool');
+      if(!btn || btn.classList.contains('link-tool')) return;
+
+      const add=btn.getAttribute('data-add');
+
+      if(add){
+        ev.preventDefault();
+        ev.stopPropagation();
+
+        if(add==='image'){
+          const input=document.getElementById('canvasUpload');
+          if(input) input.click();
+          return;
+        }
+
+        if(typeof window.addElement==='function'){
+          try{ window.addElement(add); return; }catch(err){ console.warn('Canvas addElement fallback',err); }
+        }
+
+        const page=document.getElementById('canvasElements');
+        if(!page) return;
+
+        const box=document.createElement('div');
+        box.className='canvas-element';
+        box.style.position='absolute';
+        box.style.left='80px';
+        box.style.top='80px';
+        box.style.width=add==='circle'?'140px':'220px';
+        box.style.height=add==='circle'?'140px':'120px';
+        box.style.background=add==='rect'?'#8EA386':'transparent';
+        box.style.border=add==='frame'?'3px solid #C8A96B':'1px solid #8EA386';
+        box.style.borderRadius=add==='circle'?'50%':'12px';
+        box.style.display='flex';
+        box.style.alignItems='center';
+        box.style.justifyContent='center';
+        box.style.fontFamily='Montserrat,Arial,sans-serif';
+        box.style.fontSize='16px';
+        box.style.color='#28222F';
+        box.textContent=add==='frame'?'FRAME':add==='circle'?'KRUG':add==='rect'?'OBLIK':'SLIKA';
+        page.appendChild(box);
+        return;
+      }
+
+      if(btn.id==='openElements'){
+        ev.preventDefault();
+        ev.stopPropagation();
+        const panel=document.getElementById('elementsPanel');
+        const typography=document.getElementById('typographyPanel');
+        if(panel) panel.hidden=!panel.hidden;
+        if(typography) typography.hidden=true;
+        return;
+      }
+
+      if(btn.id==='openTypography'){
+        ev.preventDefault();
+        ev.stopPropagation();
+        const panel=document.getElementById('typographyPanel');
+        const elements=document.getElementById('elementsPanel');
+        if(panel) panel.hidden=!panel.hidden;
+        if(elements) elements.hidden=true;
+      }
+    },true);
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',directCanvasControls,{once:true});
+  }else{
+    directCanvasControls();
+  }
+})();
+</script>
 </body>
 </html>
