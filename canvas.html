@@ -110,7 +110,7 @@
       <button class="side-tool" data-add="frame">▣ <span>Frame</span></button>
       <button class="side-tool" data-add="rect">□ <span>Oblik</span></button>
       <button class="side-tool" data-add="circle">○ <span>Krug</span></button>
-      <button class="side-tool" id="openElements" type="button">✦ <span>Elementi</span></button>
+      <button class="side-tool" id="openElements" type="button" onclick="var p=document.getElementById('elementsPanel'),t=document.getElementById('typographyPanel');if(p)p.hidden=!p.hidden;if(t)t.hidden=true;">✦ <span>Elementi</span></button>
       <div id="elementsPanel" class="elements-panel" hidden>
         <div class="elements-panel-title">Dodaci</div>
         <input id="elementSearch" class="elements-search" type="search" placeholder="Pretraži elemente…">
@@ -254,7 +254,7 @@
     </aside>
   </div>
 </main>
-<script src="canvas.js?v=20261005-5"></script>
+<script src="canvas.js?v=20261005-6"></script>
 <script src="canvas-boot.js?v=20261005-4"></script>
 <script>
 /* DIRECT CANVAS CONTROLS */
