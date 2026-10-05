@@ -22,7 +22,7 @@ function renderPage(){
   elementsEl.innerHTML='';
   current().elements.forEach(el=>{
     const node=document.createElement('div');
-    node.className='canvas-element '+(el.type==='text'?'text-element':el.type==='rect'?'shape':el.type==='circle'?'circle':el.type==='frame'?'frame-element':el.type==='mockup'?'mockup-element':'image-element');
+    node.className='canvas-element '+(el.designKind?'design-'+el.designKind:el.type==='text'?'text-element':el.type==='rect'?'shape':el.type==='circle'?'circle':el.type==='frame'?'frame-element':el.type==='mockup'?'mockup-element':'image-element');
     if(el.id===selectedId)node.classList.add('selected');
     node.dataset.id=el.id;
     node.dataset.locked=el.locked?'true':'false';
@@ -39,6 +39,11 @@ function renderPage(){
     }
     else if(el.type==='rect'||el.type==='circle'){node.style.background=el.color}
     else if(el.type==='mockup'){node.textContent='3D MOCKUP';node.style.background=el.color}
+    if(el.designKind==='arrow')node.textContent='➜';
+    if(el.designKind==='wave')node.textContent='〰';
+    if(el.designKind==='table')node.innerHTML='<span>Naslov</span><span>Vrednost</span><span>Status</span><span>1</span><span>Primer</span><span>OK</span><span>2</span><span>Primer</span><span>OK</span><span>3</span><span>Primer</span><span>OK</span>';
+    if(el.designKind==='chart')node.innerHTML='<i style="height:35%"></i><i style="height:65%"></i><i style="height:48%"></i><i style="height:82%"></i><i style="height:58%"></i>';
+
     node.addEventListener('pointerdown',startDrag);
     elementsEl.appendChild(node);
   });
@@ -155,13 +160,40 @@ function addDesignElement(kind){
   dotgrid:{type:'rect',name:'Mreža tačaka',w:220,h:160,color:'#F6F2EA'},
   star:{type:'text',name:'Zvezda',w:100,h:100,color:'#C8A96B',text:'✦',fontSize:70},
   spark:{type:'text',name:'Spark',w:100,h:100,color:'#C8A96B',text:'✧',fontSize:70},
-  triangle:{type:'text',name:'Trougao',w:100,h:100,color:'#8EA386',text:'△',fontSize:70}
+  triangle:{type:'text',name:'Trougao',w:100,h:100,color:'#8EA386',text:'△',fontSize:70},
+  wave:{type:'text',name:'Talas',w:260,h:80,color:'#8EA386',text:'〰',fontSize:70},
+  blob:{type:'rect',name:'Blob',w:220,h:170,color:'#E8EEE7'},
+  ribbon:{type:'text',name:'Traka',w:260,h:55,color:'#C8A96B',text:'ISTAKNUTO',fontSize:18},
+  'photo-frame':{type:'rect',name:'Foto okvir',w:300,h:220,color:'#F7F3FB',text:'＋ FOTO',fontSize:18},
+  arrow:{type:'text',name:'Strelica',w:180,h:90,color:'#7654A8',text:'➜',fontSize:64},
+  callout:{type:'text',name:'Callout',w:320,h:120,color:'#28222F',text:'Važna napomena',fontSize:20},
+  table:{type:'rect',name:'Tabela',w:360,h:220,color:'#FFFFFF'},
+  chart:{type:'rect',name:'Grafikon',w:360,h:220,color:'#FFFFFF'},
+  progress:{type:'rect',name:'Progress bar',w:320,h:28,color:'#ECE7DF'},
+  checkbox:{type:'text',name:'Checkbox',w:300,h:80,color:'#28222F',text:'☐ Zadatak',fontSize:20},
+  'form-field':{type:'text',name:'Polje forme',w:320,h:52,color:'#888888',text:'Unesite tekst…',fontSize:15},
+  header:{type:'text',name:'Header',w:500,h:60,color:'#28222F',text:'Zaglavlje dokumenta',fontSize:20},
+  footer:{type:'text',name:'Footer',w:500,h:50,color:'#28222F',text:'Podnožje dokumenta',fontSize:16},
+  'page-number':{type:'text',name:'Broj stranice',w:80,h:40,color:'#7654A8',text:'01',fontSize:20},
+  'brand-block':{type:'text',name:'MF Brand',w:300,h:80,color:'#FFFFFF',text:'MF  MARIJANA AI',fontSize:18}
  };
  const p=presets[kind]||presets.rounded;const n=current().elements.length;
- const el={id:nextId++,visible:true,locked:false,x:80+n*10,y:80+n*10,rotation:0,opacity:100,src:'',fontSize:48,text:'',...p};
+ const el={id:nextId++,visible:true,locked:false,x:80+n*10,y:80+n*10,rotation:0,opacity:100,src:'',fontSize:48,text:'',designKind:kind,...p};
  current().elements.push(el);selectedId=el.id;render();elementsPanel.hidden=true;
 }
 document.querySelectorAll('[data-element]').forEach(b=>b.addEventListener('click',()=>addDesignElement(b.dataset.element)));
+const elementSearch=document.getElementById('elementSearch');
+elementSearch?.addEventListener('input',()=>{
+  const q=elementSearch.value.toLowerCase().trim();
+  document.querySelectorAll('#elementsPanel .elements-category').forEach(cat=>{
+    let any=false;
+    cat.querySelectorAll('button[data-element]').forEach(btn=>{
+      const show=!q||btn.textContent.toLowerCase().includes(q);
+      btn.style.display=show?'':'none'; if(show)any=true;
+    });
+    cat.style.display=any?'':'none';
+  });
+});
 document.querySelectorAll('[data-add]').forEach(b=>b.addEventListener('click',()=>{ if(b.dataset.add==='image'){canvasUpload?.click();return;} addElement(b.dataset.add); }));
 const canvasUpload=document.getElementById('canvasUpload');
 function putImageIntoFrame(src){
