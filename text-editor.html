@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="sr-Latn-RS">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tekst & Uređivač — Marijana AI Studio</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="text-editor.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a class="logo" href="index.html">MARIJANA<span>AI DIGITAL SOUL</span></a>
+    <nav class="nav-links">
+      <a href="index.html">Početna</a>
+      <a href="canvas.html">Canvas Studio</a>
+      <a href="text-editor.html" aria-current="page">Tekst & Uređivač</a>
+      <a href="templates.html">Biblioteka šablona</a>
+      <a href="mockup.html">Mockup Studio</a>
+    </nav>
+    <a class="editor-home-btn" href="index.html">Marijana AI Studio</a>
+  </div>
+</header>
+
+<main class="text-editor-app">
+  <div class="editor-topbar">
+    <div>
+      <div class="editor-kicker">MARIJANA AI STUDIO</div>
+      <h1>Tekst & Uređivač</h1>
+      <p>Piši, uređuj i pripremi sadržaj za dokumente, vodiče, objave i digitalne proizvode.</p>
+    </div>
+    <div class="editor-actions">
+      <button id="newDocument" class="editor-btn">＋ Novi dokument</button>
+      <button id="saveDocument" class="editor-btn primary">Sačuvaj</button>
+      <button id="exportTxt" class="editor-btn">TXT</button>
+      <button id="exportHtml" class="editor-btn">HTML</button>
+    </div>
+  </div>
+
+  <div class="editor-shell">
+    <aside class="editor-left">
+      <section class="editor-card">
+        <div class="editor-card-title">Dokument</div>
+        <label>Naslov<input id="docTitle" type="text" value="Moj novi dokument"></label>
+        <label>Tip dokumenta<select id="docType">
+          <option value="document">Dokument</option>
+          <option value="guide">Vodič</option>
+          <option value="ebook">E-book</option>
+          <option value="workbook">Radna sveska</option>
+          <option value="planner">Planer</option>
+          <option value="blog">Blog tekst</option>
+          <option value="social">Društvene mreže</option>
+          <option value="email">Email</option>
+          <option value="copy">Prodajni tekst</option>
+        </select></label>
+      </section>
+
+      <section class="editor-card">
+        <div class="editor-card-title">Brze strukture</div>
+        <button class="structure-btn" data-insert="heading">Naslov + uvod</button>
+        <button class="structure-btn" data-insert="sections">Sekcije dokumenta</button>
+        <button class="structure-btn" data-insert="checklist">Kontrolna lista</button>
+        <button class="structure-btn" data-insert="quote">Citat / istaknuta poruka</button>
+        <button class="structure-btn" data-insert="cta">CTA završetak</button>
+      </section>
+
+      <section class="editor-card editor-stats">
+        <div class="editor-card-title">Statistika</div>
+        <div><strong id="wordCount">0</strong><span>reči</span></div>
+        <div><strong id="charCount">0</strong><span>karaktera</span></div>
+        <div><strong id="paragraphCount">0</strong><span>pasusa</span></div>
+        <small id="saveStatus">Nije sačuvano</small>
+      </section>
+    </aside>
+
+    <section class="editor-workspace">
+      <div class="editor-toolbar" role="toolbar" aria-label="Alati za uređivanje teksta">
+        <select id="blockFormat" title="Format">
+          <option value="p">Tekst</option>
+          <option value="h1">Naslov 1</option>
+          <option value="h2">Naslov 2</option>
+          <option value="h3">Naslov 3</option>
+          <option value="blockquote">Citat</option>
+        </select>
+        <select id="fontFamily" title="Font">
+          <option value="Cormorant Garamond">Cormorant Garamond</option>
+          <option value="Playfair Display">Playfair Display</option>
+          <option value="DM Sans">DM Sans</option>
+          <option value="Montserrat">Montserrat</option>
+          <option value="Georgia">Georgia</option>
+          <option value="Arial">Arial</option>
+        </select>
+        <select id="fontSize" title="Veličina">
+          <option value="2">Mala</option><option value="3" selected>Normalna</option><option value="4">Velika</option><option value="5">Vrlo velika</option><option value="6">Naslov</option>
+        </select>
+        <span class="toolbar-divider"></span>
+        <button data-cmd="bold" title="Podebljano"><b>B</b></button>
+        <button data-cmd="italic" title="Kurziv"><i>I</i></button>
+        <button data-cmd="underline" title="Podvučeno"><u>U</u></button>
+        <button data-cmd="strikeThrough" title="Precrtano"><s>S</s></button>
+        <span class="toolbar-divider"></span>
+        <button data-cmd="justifyLeft" title="Levo">≡</button>
+        <button data-cmd="justifyCenter" title="Centar">≣</button>
+        <button data-cmd="justifyRight" title="Desno">≡</button>
+        <button data-cmd="justifyFull" title="Obostrano">☰</button>
+        <span class="toolbar-divider"></span>
+        <button data-cmd="insertUnorderedList" title="Lista">• Lista</button>
+        <button data-cmd="insertOrderedList" title="Numerisana lista">1. Lista</button>
+        <button data-cmd="formatBlock" data-value="blockquote" title="Citat">❝</button>
+        <button id="insertLink" title="Link">↗ Link</button>
+        <button id="insertDivider" title="Razdelnik">—</button>
+        <span class="toolbar-divider"></span>
+        <button data-cmd="undo" title="Nazad">↶</button>
+        <button data-cmd="redo" title="Napred">↷</button>
+        <button id="clearFormat" title="Očisti formatiranje">Tx</button>
+      </div>
+
+      <div class="editor-paper-wrap">
+        <article id="editor" class="editor-paper" contenteditable="true" spellcheck="true" aria-label="Tekstualni editor">
+          <h1>Počni ovde</h1>
+          <p>Napiši svoju ideju, vodič, radnu svesku, blog tekst ili prodajnu stranicu.</p>
+          <h2>Prvi odeljak</h2>
+          <p>Ovo je prostor za pisanje. Selektuj tekst i koristi alatke iznad za uređivanje.</p>
+        </article>
+      </div>
+      <div class="editor-bottom">
+        <span id="editorHint">Automatsko čuvanje radi lokalno u ovom pregledaču.</span>
+        <button id="openCanvas" class="editor-btn">Otvori u Canvas Studio →</button>
+      </div>
+    </section>
+
+    <aside class="editor-right">
+      <section class="editor-card">
+        <div class="editor-card-title">Alati za sadržaj</div>
+        <button class="ai-tool" data-tool="improve">✨ Poboljšaj tekst</button>
+        <button class="ai-tool" data-tool="shorten">↘ Skrati tekst</button>
+        <button class="ai-tool" data-tool="expand">↗ Proširi tekst</button>
+        <button class="ai-tool" data-tool="formal">Aa Profesionalni ton</button>
+        <button class="ai-tool" data-tool="simple">Aa Jednostavniji ton</button>
+        <button class="ai-tool" data-tool="translate">🌐 Prevedi</button>
+      </section>
+      <section class="editor-card">
+        <div class="editor-card-title">Pretvori sadržaj</div>
+        <button class="convert-btn" data-convert="outline">Napravi strukturu</button>
+        <button class="convert-btn" data-convert="social">Pretvori u objavu</button>
+        <button class="convert-btn" data-convert="email">Pretvori u email</button>
+        <button class="convert-btn" data-convert="checklist">Pretvori u checklistu</button>
+      </section>
+      <section class="editor-card">
+        <div class="editor-card-title">Napomena</div>
+        <p class="editor-note">AI akcije su pripremljene kao modul interfejsa. Kada povežemo AI API, iste akcije mogu direktno obrađivati označeni tekst.</p>
+      </section>
+    </aside>
+  </div>
+</main>
+<script src="text-editor.js"></script>
+</body>
+</html>
