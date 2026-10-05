@@ -167,3 +167,17 @@
 
 /* Typography Studio — pairings i napredne kontrole */
 .pairing-group{display:block}.font-pairing{padding:8px 0;border-top:1px solid #eee8df}.font-pairing:first-of-type{border-top:0}.font-pairing span{display:block;font-size:15px;color:#28222F}.font-pairing small{display:block;margin:3px 0 6px;color:#8a8d86;font-size:9px}.font-pairing button{width:100%;border:1px solid #e2dbd0;background:#faf8f3;border-radius:6px;padding:6px;cursor:pointer;font-size:9px}.font-pairing button:hover{background:#e8eee7;border-color:#8ea386}.text-advanced-controls{margin-top:10px;padding-top:10px;border-top:1px solid #eee8df}.control-label{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#62655e;margin-bottom:6px}.text-control-row{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:6px}.text-control-row button{border:1px solid #e2dbd0;background:#faf8f3;border-radius:5px;padding:6px 3px;font-size:9px;cursor:pointer}.text-control-row button:hover{background:#e8eee7;border-color:#8ea386}.text-advanced-controls input[type=color]{height:30px}.
+/* Paper Frame — papir sa savijenim uglom */
+.paper-frame{background:#fffdf8!important;border:1px solid #e8e0d4;box-shadow:0 8px 22px rgba(38,34,47,.10);overflow:hidden;box-sizing:border-box}
+.paper-frame::after{content:"";position:absolute;width:82px;height:82px;background:#eee8df;z-index:2;box-shadow:inset 0 0 0 1px rgba(0,0,0,.035)}
+.paper-frame::before{content:"";position:absolute;width:0;height:0;z-index:3;border-style:solid}
+.paper-frame.top-left::after{top:0;left:0;clip-path:polygon(0 0,100% 0,0 100%)}
+.paper-frame.top-left::before{top:0;left:0;border-width:0 0 82px 82px;border-color:transparent transparent #fffdf8 transparent}
+.paper-frame.top-right::after{top:0;right:0;clip-path:polygon(0 0,100% 0,100% 100%)}
+.paper-frame.top-right::before{top:0;right:0;border-width:0 82px 82px 0;border-color:transparent #fffdf8 transparent transparent}
+.paper-frame.bottom-left::after{bottom:0;left:0;clip-path:polygon(0 0,0 100%,100% 100%)}
+.paper-frame.bottom-left::before{bottom:0;left:0;border-width:82px 0 0 82px;border-color:transparent transparent transparent #fffdf8}
+.paper-frame.bottom-right::after{bottom:0;right:0;clip-path:polygon(100% 0,0 100%,100% 100%)}
+.paper-frame.bottom-right::before{bottom:0;right:0;border-width:82px 82px 0 0;border-color:transparent #fffdf8 transparent transparent}
+.canvas-context-menu{position:fixed;z-index:9999;min-width:170px;padding:6px;background:#fffdf8;border:1px solid #ded5c8;border-radius:10px;box-shadow:0 14px 35px rgba(0,0,0,.16)}
+.canvas-context-menu button{display:block;width:100%;border:0;background:transparent;text-align:left;padding:9px 11px;border-radius:6px;font:500 12px Montserrat,sans-serif;color:#28222F;cursor:pointer}.canvas-context-menu button:hover{background:#e8eee7}.canvas-context-menu button.danger{color:#a33}.canvas-context-menu button.danger:hover{background:#f8e6e2}
