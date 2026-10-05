@@ -86,7 +86,24 @@
   <div class="canvas-layout">
     <aside class="canvas-sidebar left-sidebar">
       <button class="side-tool active" data-tool="select">↖ <span>Selektuj</span></button>
-      <button class="side-tool" data-add="text">T <span>Tekst</span></button>
+      <button class="side-tool" id="openTypography" type="button">T <span>Tekst & Fontovi</span></button>
+      <div id="typographyPanel" class="elements-panel typography-panel" hidden>
+        <div class="elements-panel-title">Tekst & Fontovi</div>
+        <input id="fontSearch" class="elements-search" type="search" placeholder="Pretraži font…">
+        <div class="font-group"><strong>Marijana preporuke</strong>
+          <button data-font="Cormorant Garamond">Cormorant Garamond</button><button data-font="Playfair Display">Playfair Display</button><button data-font="Montserrat">Montserrat</button><button data-font="DM Sans">DM Sans</button><button data-font="Libre Baskerville">Libre Baskerville</button><button data-font="Lora">Lora</button>
+        </div>
+        <div class="font-group"><strong>Editorial & Serif</strong>
+          <button data-font="Georgia">Georgia</button><button data-font="Times New Roman">Times New Roman</button><button data-font="Garamond">Garamond</button><button data-font="Bodoni 72">Bodoni</button>
+        </div>
+        <div class="font-group"><strong>Modern & Sans</strong>
+          <button data-font="Arial">Arial</button><button data-font="Helvetica">Helvetica</button><button data-font="Trebuchet MS">Trebuchet</button><button data-font="Verdana">Verdana</button>
+        </div>
+        <div class="font-group"><strong>Gotovi stilovi</strong>
+          <button data-text-style="hero">Hero naslov</button><button data-text-style="editorial">Editorial naslov</button><button data-text-style="subtitle">Podnaslov</button><button data-text-style="body">Body tekst</button><button data-text-style="quote">Elegantni citat</button><button data-text-style="caption">Mali caption</button><button data-text-style="cta">CTA tekst</button>
+        </div>
+        <button id="addTextFromTypography" class="tool-btn primary full" type="button">＋ Dodaj tekst</button>
+      </div>
       <button class="side-tool" data-add="image">▧ <span>Slika</span></button>
       <button class="side-tool" data-add="frame">▣ <span>Frame</span></button>
       <button class="side-tool" data-add="rect">□ <span>Oblik</span></button>
