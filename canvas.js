@@ -122,6 +122,7 @@ function renderInspector(){
   elText.value=el.text||'';elFontSize.value=el.fontSize||48;
   elFontFamily.value=el.fontFamily||'Cormorant Garamond';elFontWeight.value=el.fontWeight||500;elLetterSpacing.value=el.letterSpacing||0;elLineHeight.value=el.lineHeight||1.2;
   document.getElementById('textControl').hidden=el.type!=='text';document.getElementById('fontControl').hidden=el.type!=='text';
+  document.getElementById('fontControlsExtra').hidden=el.type!=='text';document.getElementById('fontControlsExtra2').hidden=el.type!=='text';
 }
 function findSelected(){return current().elements.find(e=>e.id===selectedId)}
 function updateSelected(field,value){const el=findSelected();if(!el||el.locked)return;snapshot();el[field]=value;render()}
@@ -322,7 +323,7 @@ async function renderCanvasToDataURL(){
     ctx.translate(el.x*sx+el.w*sx/2,el.y*sy+el.h*sy/2);
     ctx.rotate(el.rotation*Math.PI/180);
     if(el.type==='text'){
-      ctx.fillStyle=el.color;ctx.font='500 '+(el.fontSize*sx)+'px Cormorant Garamond, serif';
+      ctx.fillStyle=el.color;ctx.font=(el.fontWeight||500)+' '+(el.fontSize*sx)+'px '+(el.fontFamily||'Cormorant Garamond');
       ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(el.text,0,0);
     }else if((el.type==='image'||el.type==='frame')&&imageCache[el.id]){
       if(el.type==='frame'){
@@ -347,7 +348,7 @@ async function exportCanvas(){
   const imageCache={};
   await Promise.all(current().elements.filter(el=>(el.type==='image'||el.type==='frame')&&el.src).map(el=>new Promise(resolve=>{const img=new Image();img.onload=()=>{imageCache[el.id]=img;resolve()};img.onerror=resolve;img.src=el.src})));
   current().elements.forEach(el=>{ctx.save();ctx.globalAlpha=el.opacity/100;ctx.translate(el.x*sx+el.w*sx/2,el.y*sy+el.h*sy/2);ctx.rotate(el.rotation*Math.PI/180);
-    if(el.type==='text'){ctx.fillStyle=el.color;ctx.font='500 '+(el.fontSize*sx)+'px Cormorant Garamond, serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(el.text,0,0)}
+    if(el.type==='text'){ctx.fillStyle=el.color;ctx.font=(el.fontWeight||500)+' '+(el.fontSize*sx)+'px '+(el.fontFamily||'Cormorant Garamond');ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(el.text,0,0)}
     else if((el.type==='image'||el.type==='frame')&&imageCache[el.id]){if(el.type==='frame'){ctx.beginPath();if(el.frameShape==='circle')ctx.arc(0,0,Math.min(el.w*sx,el.h*sy)/2,0,Math.PI*2);else ctx.rect(-el.w*sx/2,-el.h*sy/2,el.w*sx,el.h*sy);ctx.clip();}ctx.drawImage(imageCache[el.id],-el.w*sx/2,-el.h*sy/2,el.w*sx,el.h*sy)}
     else{ctx.fillStyle=el.color;ctx.beginPath();if(el.type==='circle')ctx.arc(0,0,Math.min(el.w*sx,el.h*sy)/2,0,Math.PI*2);else ctx.rect(-el.w*sx/2,-el.h*sy/2,el.w*sx,el.h*sy);ctx.fill()}ctx.restore()});
   const a=document.createElement('a');a.download='marijana-canvas.png';a.href=c.toDataURL('image/png');a.click();
