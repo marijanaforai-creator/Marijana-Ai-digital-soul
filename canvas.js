@@ -175,7 +175,204 @@ function addDesignElement(kind){
   header:{type:'text',name:'Header',w:500,h:60,color:'#28222F',text:'Zaglavlje dokumenta',fontSize:20},
   footer:{type:'text',name:'Footer',w:500,h:50,color:'#28222F',text:'Podnožje dokumenta',fontSize:16},
   'page-number':{type:'text',name:'Broj stranice',w:80,h:40,color:'#7654A8',text:'01',fontSize:20},
-  'brand-block':{type:'text',name:'MF Brand',w:300,h:80,color:'#FFFFFF',text:'MF  MARIJANA AI',fontSize:18}
+  'brand-block':{type:'text',name:'MF Brand',w:300,h:80,color:'#FFFFFF',text:'MF  MARIJANA AI',fontSize:18},
+  instagram:{type:'text',name:'Instagram',w:90,h:90,color:'#28222F',text:'◎',fontSize:64},
+  facebook:{type:'text',name:'Facebook',w:90,h:90,color:'#28222F',text:'f',fontSize:64},
+  youtube:{type:'text',name:'YouTube',w:100,h:70,color:'#28222F',text:'▶',fontSize:54},
+  tiktok:{type:'text',name:'TikTok',w:90,h:90,color:'#28222F',text:'♪',fontSize:64},
+  linkedin:{type:'text',name:'LinkedIn',w:90,h:90,color:'#28222F',text:'in',fontSize:48},
+  pinterest:{type:'text',name:'Pinterest',w:90,h:90,color:'#28222F',text:'P',fontSize:60},
+  threads:{type:'text',name:'Threads',w:90,h:90,color:'#28222F',text:'@',fontSize:52},
+  'social-share':{type:'text',name:'Social Share',w:100,h:70,color:'#7654A8',text:'↗',fontSize:54},
+  'ad-megaphone':{type:'text',name:'Megafon',w:100,h:100,color:'#C8A96B',text:'📣',fontSize:58},
+  'ad-target':{type:'text',name:'Target',w:100,h:100,color:'#8EA386',text:'◎',fontSize:64},
+  'ad-click':{type:'text',name:'Klik',w:100,h:100,color:'#7654A8',text:'☝',fontSize:58},
+  'ad-sale':{type:'text',name:'Sale',w:110,h:70,color:'#C8A96B',text:'%',fontSize:58},
+  'ad-growth':{type:'text',name:'Rast',w:100,h:90,color:'#8EA386',text:'↗',fontSize:64},
+  'ad-campaign':{type:'text',name:'Kampanja',w:110,h:90,color:'#7654A8',text:'▣',fontSize:58},
+  bulb:{type:'text',name:'Sijalica',w:100,h:100,color:'#C8A96B',text:'💡',fontSize:58},
+  'idea-spark':{type:'text',name:'Ideja',w:100,h:100,color:'#C8A96B',text:'✦',fontSize:64},
+  'ai-star':{type:'text',name:'AI',w:100,h:100,color:'#7654A8',text:'✧',fontSize:64},
+  'magic-wand':{type:'text',name:'Magic',w:100,h:100,color:'#8EA386',text:'✦',fontSize:64},
+  paperclip:{type:'text',name:'Spajalica',w:90,h:90,color:'#7654A8',text:'📎',fontSize:54},
+  pen:{type:'text',name:'Olovka',w:90,h:90,color:'#28222F',text:'🖊',fontSize:54},
+  pencil:{type:'text',name:'Grafitna olovka',w:90,h:90,color:'#28222F',text:'✎',fontSize:58},
+  'notebook-icon':{type:'text',name:'Rokovnik',w:100,h:100,color:'#8EA386',text:'▤',fontSize:60},
+  'folder-icon':{type:'text',name:'Fascikla',w:100,h:100,color:'#C8A96B',text:'▰',fontSize:60},
+  'clipboard-icon':{type:'text',name:'Clipboard',w:100,h:100,color:'#7654A8',text:'▣',fontSize:58},
+  'calendar-icon':{type:'text',name:'Kalendar',w:100,h:100,color:'#8EA386',text:'□',fontSize:60},
+  stamp:{type:'text',name:'Pečat',w:100,h:100,color:'#C8A96B',text:'▣',fontSize:58},
+  brush:{type:'text',name:'Brush',w:110,h:100,color:'#7654A8',text:'🖌',fontSize:58},
+  money:{type:'text',name:'Novac',w:100,h:100,color:'#8EA386',text:'💰',fontSize:58},
+  cash:{type:'text',name:'Novčanica',w:120,h:80,color:'#8EA386',text:'💵',fontSize:52},
+  dinar:{type:'text',name:'Dinar RSD',w:120,h:80,color:'#7654A8',text:'RSD',fontSize:32},
+  euro:{type:'text',name:'Evro',w:100,h:80,color:'#7654A8',text:'€',fontSize:58},
+  dollar:{type:'text',name:'Dolar',w:100,h:80,color:'#8EA386',text:'
+ };
+ const p=presets[kind]||presets.rounded;const n=current().elements.length;
+ const el={id:nextId++,visible:true,locked:false,x:80+n*10,y:80+n*10,rotation:0,opacity:100,src:'',fontSize:48,text:'',designKind:kind,...p};
+ current().elements.push(el);selectedId=el.id;render();elementsPanel.hidden=true;
+}
+document.querySelectorAll('[data-element]').forEach(b=>b.addEventListener('click',()=>addDesignElement(b.dataset.element)));
+const elementSearch=document.getElementById('elementSearch');
+elementSearch?.addEventListener('input',()=>{
+  const q=elementSearch.value.toLowerCase().trim();
+  document.querySelectorAll('#elementsPanel .elements-category').forEach(cat=>{
+    let any=false;
+    cat.querySelectorAll('button[data-element]').forEach(btn=>{
+      const show=!q||btn.textContent.toLowerCase().includes(q);
+      btn.style.display=show?'':'none'; if(show)any=true;
+    });
+    cat.style.display=any?'':'none';
+  });
+});
+document.querySelectorAll('[data-add]').forEach(b=>b.addEventListener('click',()=>{ if(b.dataset.add==='image'){canvasUpload?.click();return;} addElement(b.dataset.add); }));
+const canvasUpload=document.getElementById('canvasUpload');
+function putImageIntoFrame(src){
+  const el=findSelected();
+  if(!el||!['rect','circle','frame'].includes(el.type))return false;
+  snapshot();
+  if(el.type==='rect'){el.type='frame';el.name='Frame';el.frameShape='rect';}
+  if(el.type==='circle'){el.type='frame';el.name='Frame';el.frameShape='circle';}
+  el.src=src;el.color='#FFFFFF';render();
+  requestAnimationFrame(()=>{const node=document.querySelector('.frame-element[data-id="'+el.id+'"] img.frame-content');if(node){node.classList.remove('frame-suck-in');void node.offsetWidth;node.classList.add('frame-suck-in')}});
+  return true;
+}
+
+// Drag & drop slike direktno na Oblik, Krug ili Frame — Canva princip.
+function bindFrameDropTargets(){
+  document.querySelectorAll('.canvas-element.shape,.canvas-element.circle,.canvas-element.frame-element').forEach(node=>{
+    node.addEventListener('dragover',e=>{e.preventDefault();node.classList.add('frame-suck-target');});
+    node.addEventListener('dragleave',()=>node.classList.remove('frame-suck-target'));
+    node.addEventListener('drop',e=>{
+      e.preventDefault();
+      node.classList.remove('frame-suck-target');
+      const file=e.dataTransfer.files&&e.dataTransfer.files[0];
+      if(!file||!file.type.startsWith('image/'))return;
+      const id=Number(node.dataset.id);
+      selectedId=id;
+      const reader=new FileReader();
+      reader.onload=()=>putImageIntoFrame(reader.result);
+      reader.readAsDataURL(file);
+    });
+  });
+}
+document.getElementById('uploadTrigger').addEventListener('click',()=>canvasUpload.click());
+canvasUpload.addEventListener('change',e=>{const file=e.target.files&&e.target.files[0];if(!file)return;if(!file.type.startsWith('image/')){alert('Molimo izaberi sliku.');return;}const r=new FileReader();r.onload=()=>{if(!putImageIntoFrame(r.result))addElement('image',r.result);};r.onerror=()=>alert('Slika nije mogla da se učita.');r.readAsDataURL(file);e.target.value='';});
+document.getElementById('pageFormat').addEventListener('change',render);
+document.getElementById('gridToggle').addEventListener('change',renderPage);
+document.getElementById('zoomIn').onclick=()=>{zoom=Math.min(1.5,zoom+.1);document.getElementById('zoomValue').textContent=Math.round(zoom*100)+'%';renderPage()};
+document.getElementById('zoomOut').onclick=()=>{zoom=Math.max(.5,zoom-.1);document.getElementById('zoomValue').textContent=Math.round(zoom*100)+'%';renderPage()};
+document.getElementById('undoBtn').onclick=()=>{if(!history.length)return;future.push(JSON.stringify(pages));restore(history.pop())};
+document.getElementById('redoBtn').onclick=()=>{if(!future.length)return;history.push(JSON.stringify(pages));restore(future.pop())};
+document.getElementById('centerSelected').onclick=()=>{const el=findSelected();if(!el)return;snapshot();el.x=(Number(page.dataset.baseW)-el.w)/2;el.y=(Number(page.dataset.baseH)-el.h)/2;render()};
+document.getElementById('duplicateEl').onclick=()=>{const el=findSelected();if(!el)return;snapshot();const copy=JSON.parse(JSON.stringify(el));copy.id=nextId++;copy.name=el.name+' kopija';copy.x+=20;copy.y+=20;current().elements.push(copy);selectedId=copy.id;render()};
+document.getElementById('deleteEl').onclick=()=>{if(selectedId==null)return;snapshot();current().elements=current().elements.filter(e=>e.id!==selectedId);selectedId=null;render()};
+document.getElementById('addPage').onclick=()=>{snapshot();pages.push({id:Date.now()+Math.random(),name:'Stranica '+(pages.length+1),elements:[]});activePage=pages.length-1;selectedId=null;render()};
+
+[['elName','name',v=>v],['elX','x',Number],['elY','y',Number],['elW','w',Number],['elH','h',Number],['elRotation','rotation',Number],['elOpacity','opacity',Number],['elColor','color',v=>v],['elText','text',v=>v],['elFontSize','fontSize',Number]].forEach(([id,field,fn])=>document.getElementById(id).addEventListener('change',e=>updateSelected(field,fn(e.target.value))));
+document.getElementById('elRotation').addEventListener('input',e=>{const el=findSelected();if(!el)return;el.rotation=Number(e.target.value);document.getElementById('elRotationValue').value=el.rotation+'°';renderPage()});
+document.getElementById('elOpacity').addEventListener('input',e=>{const el=findSelected();if(!el)return;el.opacity=Number(e.target.value);document.getElementById('elOpacityValue').value=el.opacity+'%';renderPage()});
+document.addEventListener('keydown',e=>{if(e.key==='Delete'&&selectedId!=null&&document.activeElement.tagName!=='INPUT')document.getElementById('deleteEl').click();if(e.key==='Escape'){selectedId=null;render()}});
+async function renderCanvasToDataURL(){
+  const f=formats[document.getElementById('pageFormat').value]||formats.square;
+  const w=f[0],h=f[1],c=document.createElement('canvas');c.width=w;c.height=h;
+  const ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);
+  const baseW=Number(page.dataset.baseW||600),baseH=Number(page.dataset.baseH||600),sx=w/baseW,sy=h/baseH;
+  const imageCache={};
+  await Promise.all(current().elements.filter(el=>(el.type==='image'||el.type==='frame')&&el.src).map(el=>new Promise(resolve=>{
+    const img=new Image();img.onload=()=>{imageCache[el.id]=img;resolve()};img.onerror=resolve;img.src=el.src;
+  })));
+  current().elements.forEach(el=>{
+    ctx.save();ctx.globalAlpha=el.opacity/100;
+    ctx.translate(el.x*sx+el.w*sx/2,el.y*sy+el.h*sy/2);
+    ctx.rotate(el.rotation*Math.PI/180);
+    if(el.type==='text'){
+      ctx.fillStyle=el.color;ctx.font='500 '+(el.fontSize*sx)+'px Cormorant Garamond, serif';
+      ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(el.text,0,0);
+    }else if((el.type==='image'||el.type==='frame')&&imageCache[el.id]){
+      if(el.type==='frame'){
+        ctx.beginPath();
+        if(el.frameShape==='circle')ctx.arc(0,0,Math.min(el.w*sx,el.h*sy)/2,0,Math.PI*2);else ctx.rect(-el.w*sx/2,-el.h*sy/2,el.w*sx,el.h*sy);
+        ctx.clip();
+      }
+      ctx.drawImage(imageCache[el.id],-el.w*sx/2,-el.h*sy/2,el.w*sx,el.h*sy);
+    }else{
+      ctx.fillStyle=el.color;ctx.beginPath();
+      if(el.type==='circle')ctx.arc(0,0,Math.min(el.w*sx,el.h*sy)/2,0,Math.PI*2);
+      else ctx.rect(-el.w*sx/2,-el.h*sy/2,el.w*sx,el.h*sy);
+      ctx.fill();
+    }
+    ctx.restore();
+  });
+  return c.toDataURL('image/png');
+}
+async function exportCanvas(){
+  const f=formats[document.getElementById('pageFormat').value]||formats.square,w=f[0],h=f[1],c=document.createElement('canvas');c.width=w;c.height=h;const ctx=c.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);
+  const baseW=Number(page.dataset.baseW||600),baseH=Number(page.dataset.baseH||600),sx=w/baseW,sy=h/baseH;
+  const imageCache={};
+  await Promise.all(current().elements.filter(el=>(el.type==='image'||el.type==='frame')&&el.src).map(el=>new Promise(resolve=>{const img=new Image();img.onload=()=>{imageCache[el.id]=img;resolve()};img.onerror=resolve;img.src=el.src})));
+  current().elements.forEach(el=>{ctx.save();ctx.globalAlpha=el.opacity/100;ctx.translate(el.x*sx+el.w*sx/2,el.y*sy+el.h*sy/2);ctx.rotate(el.rotation*Math.PI/180);
+    if(el.type==='text'){ctx.fillStyle=el.color;ctx.font='500 '+(el.fontSize*sx)+'px Cormorant Garamond, serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(el.text,0,0)}
+    else if((el.type==='image'||el.type==='frame')&&imageCache[el.id]){if(el.type==='frame'){ctx.beginPath();if(el.frameShape==='circle')ctx.arc(0,0,Math.min(el.w*sx,el.h*sy)/2,0,Math.PI*2);else ctx.rect(-el.w*sx/2,-el.h*sy/2,el.w*sx,el.h*sy);ctx.clip();}ctx.drawImage(imageCache[el.id],-el.w*sx/2,-el.h*sy/2,el.w*sx,el.h*sy)}
+    else{ctx.fillStyle=el.color;ctx.beginPath();if(el.type==='circle')ctx.arc(0,0,Math.min(el.w*sx,el.h*sy)/2,0,Math.PI*2);else ctx.rect(-el.w*sx/2,-el.h*sy/2,el.w*sx,el.h*sy);ctx.fill()}ctx.restore()});
+  const a=document.createElement('a');a.download='marijana-canvas.png';a.href=c.toDataURL('image/png');a.click();
+}
+document.getElementById('downloadCanvas').onclick=exportCanvas;
+document.getElementById('sendToMockup').onclick=async()=>{
+  const dataUrl=await renderCanvasToDataURL();
+  const scene=document.getElementById('quickMockupScene')?.value||'laptop';
+  try{
+    sessionStorage.setItem('marijanaMockupSource',dataUrl);
+    sessionStorage.setItem('marijanaMockupSourceName',current().name||'Canvas dizajn');
+    window.location.href=`mockup.html?from=canvas&scene=${encodeURIComponent(scene)}&layout=blank-white`;
+  }catch(err){
+    alert('Dizajn je prevelik za direktan prenos. Prvo izvezi PNG pa ga ubaci u 3D Mockup.');
+  }
+};
+render();
+
+// Učitaj layout generisan iz Layout po promptu.
+function loadGeneratedLayout(){
+  const raw=localStorage.getItem('marijanaGeneratedLayout'); if(!raw)return;
+  try{
+    const data=JSON.parse(raw); if(!data.pages?.length)return;
+    const accentMap={'Ivory + Sage + Gold':'#8EA386','Black + Gold':'#C8A96B','Editorial':'#252522','Business':'#536675','Wellness':'#8EA386','Minimal Luxury':'#C8A96B'};
+    const accent=accentMap[data.style]||'#8EA386';
+    const fx=data.effects||{};
+    const bg=fx.gradientCss||'#FFFFFF';
+    pages=data.pages.map((p,i)=>{
+      const elements=[
+        {id:nextId++,name:'Naslov',type:'text',visible:true,locked:false,x:70,y:60,w:460,h:70,rotation:0,opacity:100,color:'#252522',text:p.title,fontSize:42,src:''},
+        {id:nextId++,name:'Akcent',type:'rect',visible:true,locked:false,x:70,y:145,w:180,h:8,rotation:0,opacity:100,color:accent,text:'',fontSize:48,src:''},
+        {id:nextId++,name:'Sadržaj',type:'text',visible:true,locked:false,x:70,y:185,w:460,h:120,rotation:0,opacity:100,color:'#555555',text:p.description,fontSize:20,src:''}
+      ];
+      if(fx.overlayColor&&fx.overlay!=='none') elements.unshift({id:nextId++,name:'Overlay',type:'rect',visible:true,locked:false,x:0,y:0,w:560,h:560,rotation:0,opacity:Number(fx.overlayOpacity||25),color:fx.overlayColor,text:'',fontSize:48,src:''});
+      return {id:Date.now()+i,name:'Stranica '+p.number,elements,background:bg};
+    });
+    activePage=0;selectedId=null;localStorage.removeItem('marijanaGeneratedLayout');render();
+  }catch(e){console.warn('Layout nije mogao da se učita',e)}
+}
+loadGeneratedLayout();;,fontSize:58},
+  coin:{type:'text',name:'Novčić',w:90,h:90,color:'#C8A96B',text:'●',fontSize:68},
+  wallet:{type:'text',name:'Novčanik',w:110,h:90,color:'#7654A8',text:'▣',fontSize:58},
+  'card-icon':{type:'text',name:'Kartica',w:120,h:80,color:'#28222F',text:'▱',fontSize:60},
+  bank:{type:'text',name:'Banka',w:110,h:90,color:'#28222F',text:'▥',fontSize:58},
+  'chart-money':{type:'text',name:'Finansije',w:110,h:90,color:'#8EA386',text:'↗',fontSize:64},
+  'envelope-icon':{type:'text',name:'Koverta',w:110,h:90,color:'#28222F',text:'✉',fontSize:58},
+  email:{type:'text',name:'E-mail',w:110,h:90,color:'#7654A8',text:'✉',fontSize:58},
+  'email-send':{type:'text',name:'Pošalji email',w:110,h:90,color:'#8EA386',text:'➤',fontSize:58},
+  'email-inbox':{type:'text',name:'Inbox',w:110,h:90,color:'#7654A8',text:'▱',fontSize:58},
+  notification:{type:'text',name:'Notifikacija',w:100,h:100,color:'#C8A96B',text:'●',fontSize:64},
+  contact:{type:'text',name:'Kontakt',w:100,h:100,color:'#7654A8',text:'◎',fontSize:64},
+  'phone-icon':{type:'text',name:'Telefon',w:100,h:100,color:'#8EA386',text:'☎',fontSize:58},
+  message:{type:'text',name:'Poruka',w:110,h:90,color:'#7654A8',text:'▢',fontSize:58},
+  avatar:{type:'text',name:'Avatar',w:100,h:100,color:'#8EA386',text:'●',fontSize:64},
+  initials:{type:'text',name:'MF Inicijali',w:130,h:80,color:'#28222F',text:'MF',fontSize:42},
+  'name-tag':{type:'text',name:'Ime / Tag',w:180,h:60,color:'#8EA386',text:'IME / TAG',fontSize:18},
+  signature:{type:'text',name:'Potpis',w:200,h:70,color:'#28222F',text:'Marijana',fontSize:32},
+  'brand-icon':{type:'text',name:'Brand ikonica',w:100,h:100,color:'#C8A96B',text:'MF',fontSize:32},
+  'custom-icon':{type:'text',name:'Custom ikonica',w:100,h:100,color:'#7654A8',text:'＋',fontSize:52}
  };
  const p=presets[kind]||presets.rounded;const n=current().elements.length;
  const el={id:nextId++,visible:true,locked:false,x:80+n*10,y:80+n*10,rotation:0,opacity:100,src:'',fontSize:48,text:'',designKind:kind,...p};
