@@ -238,9 +238,26 @@ function addDesignElement(kind){
   cash:{type:'text',name:'Novčanica',w:120,h:80,color:'#8EA386',text:'💵',fontSize:52},
   dinar:{type:'text',name:'Dinar RSD',w:120,h:80,color:'#7654A8',text:'RSD',fontSize:32},
   euro:{type:'text',name:'Evro',w:100,h:80,color:'#7654A8',text:'€',fontSize:58},
-  dollar:{type:'text',name:'Dolar',w:100,h:80,color:'#8EA386',text:'
- };
- const p=presets[kind]||presets.rounded;const n=current().elements.length;
+;,fontSize:58},
+  coin:{type:'text',name:'Novčić',w:90,h:90,color:'#C8A96B',text:'●',fontSize:68},
+  wallet:{type:'text',name:'Novčanik',w:110,h:90,color:'#7654A8',text:'▣',fontSize:58},
+  'card-icon':{type:'text',name:'Kartica',w:120,h:80,color:'#28222F',text:'▱',fontSize:60},
+  bank:{type:'text',name:'Banka',w:110,h:90,color:'#28222F',text:'▥',fontSize:58},
+  'chart-money':{type:'text',name:'Finansije',w:110,h:90,color:'#8EA386',text:'↗',fontSize:64},
+  'envelope-icon':{type:'text',name:'Koverta',w:110,h:90,color:'#28222F',text:'✉',fontSize:58},
+  email:{type:'text',name:'E-mail',w:110,h:90,color:'#7654A8',text:'✉',fontSize:58},
+  'email-send':{type:'text',name:'Pošalji email',w:110,h:90,color:'#8EA386',text:'➤',fontSize:58},
+  'email-inbox':{type:'text',name:'Inbox',w:110,h:90,color:'#7654A8',text:'▱',fontSize:58},
+  notification:{type:'text',name:'Notifikacija',w:100,h:100,color:'#C8A96B',text:'●',fontSize:64},
+  contact:{type:'text',name:'Kontakt',w:100,h:100,color:'#7654A8',text:'◎',fontSize:64},
+  'phone-icon':{type:'text',name:'Telefon',w:100,h:100,color:'#8EA386',text:'☎',fontSize:58},
+  message:{type:'text',name:'Poruka',w:110,h:90,color:'#7654A8',text:'▢',fontSize:58},
+  avatar:{type:'text',name:'Avatar',w:100,h:100,color:'#8EA386',text:'●',fontSize:64},
+  initials:{type:'text',name:'MF Inicijali',w:130,h:80,color:'#28222F',text:'MF',fontSize:42},
+  'name-tag':{type:'text',name:'Ime / Tag',w:180,h:60,color:'#8EA386',text:'IME / TAG',fontSize:18},
+  signature:{type:'text',name:'Potpis',w:200,h:70,color:'#28222F',text:'Marijana',fontSize:32},
+  'brand-icon':{type:'text',name:'Brand ikonica',w:100,h:100,color:'#C8A96B',text:'MF',fontSize:32},
+  'custom-icon':{type:'text',name:'Custom ikonica',w:100,h:100,color:'#7654A8',text:'＋',fontSize:52} const p=presets[kind]||presets.rounded;const n=current().elements.length;
  const el={id:nextId++,visible:true,locked:false,x:80+n*10,y:80+n*10,rotation:0,opacity:100,src:'',fontSize:48,text:'',designKind:kind,...p};
  current().elements.push(el);selectedId=el.id;render();elementsPanel.hidden=true;
 }
@@ -592,4 +609,4 @@ function loadGeneratedLayout(){
     activePage=0;selectedId=null;localStorage.removeItem('marijanaGeneratedLayout');render();
   }catch(e){console.warn('Layout nije mogao da se učita',e)}
 }
-loadGeneratedLayout();;
+loadGeneratedLayout();
