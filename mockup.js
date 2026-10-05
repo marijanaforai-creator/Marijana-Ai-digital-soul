@@ -1513,7 +1513,22 @@ function loadTransferredCanvasDesign(){
     images=[{data,name}];
     activeImageIndex=0;
     selectImage(0);
-    statusText.textContent='Canvas dizajn je automatski prenet u 3D Mockup. Izaberi scenu i prilagodi perspektivu.';
+    // Animaciju namerno ponovo okidamo nakon prvog paint-a.
+    // Tako se Frame prvo postavi, pa tek onda dizajn vizuelno „usisava“.
+    requestAnimationFrame(()=>{
+      requestAnimationFrame(()=>{
+        const image=document.getElementById('previewImage');
+        const surface=document.querySelector('.device-screen');
+        if(image && surface && image.style.display!=='none'){
+          image.classList.remove('mockup-suck-in');
+          void image.offsetWidth;
+          image.classList.add('mockup-suck-in');
+          surface.classList.add('transfer-active');
+          window.setTimeout(()=>surface.classList.remove('transfer-active'),1200);
+        }
+      });
+    });
+    statusText.textContent='Canvas dizajn je automatski prenet u 3D Mockup. Dizajn se upravo ubacuje u Frame…';
   }
 
   sessionStorage.removeItem('marijanaMockupSource');
