@@ -462,8 +462,9 @@ document.getElementById('sendToMockup').onclick=async()=>{
     const directFrame=selected&&selected.type==='frame'&&selected.src?selected.src:'';
     const rawData=directFrame||await renderCanvasToDataURL();
     const dataUrl=await optimizeMockupDataUrl(rawData);
-    const quickScene=document.getElementById('quickMockupScene')?.value||'laptop';
-    const scene=directFrame?'frame':quickScene;
+    // Dugme Mockup iz Canvas-a uvek koristi pravi Frame kao početnu
+    // površinu za prenos dizajna. Ostale scene se biraju kasnije u Mockup Studiju.
+    const scene='frame';
     sessionStorage.setItem('marijanaMockupSource',dataUrl);
     sessionStorage.setItem('marijanaMockupSourceName',selected?.name||current().name||'Canvas dizajn');
     window.location.href=`mockup.html?from=canvas&scene=${encodeURIComponent(scene)}&layout=blank-white`;
