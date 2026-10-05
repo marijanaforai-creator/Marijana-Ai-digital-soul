@@ -295,7 +295,8 @@ elementSearch?.addEventListener('input',()=>{
     cat.style.display=any?'':'none';
   });
 });
-document.querySelectorAll('[data-add]').forEach(b=>b.addEventListener('click',()=>{ if(b.dataset.add==='image'){canvasUpload?.click();return;} addElement(b.dataset.add); }));\ndocument.querySelector('[data-tool="select"]')?.addEventListener('click',e=>{
+document.querySelectorAll('[data-add]').forEach(b=>b.addEventListener('click',()=>{ if(b.dataset.add==='image'){canvasUpload?.click();return;} addElement(b.dataset.add); }));
+document.querySelector('[data-tool="select"]')?.addEventListener('click',e=>{
   e.preventDefault();
   selectedId=null;
   document.querySelectorAll('.side-tool[data-tool]').forEach(x=>x.classList.remove('active'));
