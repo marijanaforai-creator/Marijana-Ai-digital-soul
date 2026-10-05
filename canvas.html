@@ -218,7 +218,19 @@
           <label>Opacity <output id="elOpacityValue">100%</output><input id="elOpacity" type="range" min="0" max="100" value="100"></label>
           <label>Boja<input id="elColor" type="color" value="#B9A3E3"></label>
           <label id="textControl">Tekst<input id="elText" type="text"></label>
-          <label id="fontControl">Veličina teksta<input id="elFontSize" type="number" min="8" max="180" value="48"></label>
+          <label id="fontControl">Font
+            <select id="elFontFamily">
+              <option>Cormorant Garamond</option><option>Playfair Display</option><option>Montserrat</option><option>DM Sans</option><option>Libre Baskerville</option><option>Lora</option><option>Georgia</option><option>Arial</option><option>Helvetica</option><option>Verdana</option>
+            </select>
+          </label>
+          <div id="fontControlsExtra" class="two-col" hidden>
+            <label>Veličina<input id="elFontSize" type="number" min="8" max="180" value="48"></label>
+            <label>Težina<select id="elFontWeight"><option value="400">Regular</option><option value="500">Medium</option><option value="600">Semibold</option><option value="700">Bold</option></select></label>
+          </div>
+          <div id="fontControlsExtra2" class="two-col" hidden>
+            <label>Razmak slova<input id="elLetterSpacing" type="number" step=".1" value="0"></label>
+            <label>Visina reda<input id="elLineHeight" type="number" step=".05" value="1.2"></label>
+          </div>
           <div class="inspector-buttons">
             <button id="duplicateEl" class="tool-btn" type="button">Dupliraj</button>
             <button id="deleteEl" class="tool-btn danger" type="button">Obriši</button>
