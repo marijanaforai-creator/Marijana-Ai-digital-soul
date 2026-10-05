@@ -22,7 +22,7 @@ function renderPage(){
   elementsEl.innerHTML='';
   current().elements.forEach(el=>{
     const node=document.createElement('div');
-    node.className='canvas-element '+(el.paperFold?'paper-frame '+el.paperFold:el.designKind?'design-'+el.designKind:el.type==='text'?'text-element':el.type==='rect'?'shape':el.type==='circle'?'circle':el.type==='frame'?'frame-element':el.type==='mockup'?'mockup-element':'image-element');
+    node.className='canvas-element '+((el.paperFold||el.paperStyle)?'paper-frame '+(el.paperFold||'')+' '+(el.paperStyle||''):(el.designKind?'design-'+el.designKind:el.type==='text'?'text-element':el.type==='rect'?'shape':el.type==='circle'?'circle':el.type==='frame'?'frame-element':el.type==='mockup'?'mockup-element':'image-element'));
     if(el.id===selectedId)node.classList.add('selected');
     node.dataset.id=el.id;
     node.dataset.locked=el.locked?'true':'false';
@@ -184,10 +184,17 @@ function addDesignElement(kind){
   blob:{type:'rect',name:'Blob',w:220,h:170,color:'#E8EEE7'},
   ribbon:{type:'text',name:'Traka',w:260,h:55,color:'#C8A96B',text:'ISTAKNUTO',fontSize:18},
   'photo-frame':{type:'rect',name:'Foto okvir',w:300,h:220,color:'#F7F3FB',text:'＋ FOTO',fontSize:18},
+  'paper-plain':{type:'rect',name:'Papir — klasični',w:360,h:460,color:'#FFFDF8',paperStyle:'plain'},
+  'paper-premium':{type:'rect',name:'Papir — premium krem',w:360,h:460,color:'#FBF5E8',paperStyle:'premium'},
+  'paper-recycled':{type:'rect',name:'Papir — reciklirani',w:360,h:460,color:'#E8E1D2',paperStyle:'recycled'},
   'paper-top-left':{type:'rect',name:'Papir — savijen gore levo',w:360,h:460,color:'#FFFDF8',paperFold:'top-left'},
   'paper-top-right':{type:'rect',name:'Papir — savijen gore desno',w:360,h:460,color:'#FFFDF8',paperFold:'top-right'},
   'paper-bottom-left':{type:'rect',name:'Papir — savijen dole levo',w:360,h:460,color:'#FFFDF8',paperFold:'bottom-left'},
   'paper-bottom-right':{type:'rect',name:'Papir — savijen dole desno',w:360,h:460,color:'#FFFDF8',paperFold:'bottom-right'},
+  'paper-top-fold':{type:'rect',name:'Papir — pregib gore',w:360,h:460,color:'#FFFDF8',paperFold:'top-edge'},
+  'paper-bottom-fold':{type:'rect',name:'Papir — pregib dole',w:360,h:460,color:'#FFFDF8',paperFold:'bottom-edge'},
+  'paper-torn-top':{type:'rect',name:'Papir — pocepana ivica gore',w:360,h:460,color:'#FFFDF8',paperStyle:'torn-top'},
+  'paper-torn-bottom':{type:'rect',name:'Papir — pocepana ivica dole',w:360,h:460,color:'#FFFDF8',paperStyle:'torn-bottom'},
 
   arrow:{type:'text',name:'Strelica',w:180,h:90,color:'#7654A8',text:'➜',fontSize:64},
   callout:{type:'text',name:'Callout',w:320,h:120,color:'#28222F',text:'Važna napomena',fontSize:20},
