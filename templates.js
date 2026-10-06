@@ -1,467 +1,675 @@
-const templates=[
-{id:'t1',name:'Phone Clean',cat:'device',label:'Telefon',type:'free',price:0,author:'Digital Soul',license:'Lična upotreba',bg:'#e8ded0',wide:false},
-{id:'t2',name:'Laptop Business',cat:'business',label:'Business',type:'premium',price:9,author:'Digital Soul',license:'Komercijalna upotreba',bg:'#dde4ea',wide:true},
-{id:'t3',name:'Planner Luxury',cat:'product',label:'Planner',type:'premium',price:12,author:'Digital Soul',license:'Komercijalna upotreba',bg:'#171717',wide:false},
-{id:'t4',name:'Fitness Campaign',cat:'wellness',label:'Fitness',type:'free',price:0,author:'Digital Soul',license:'Lična upotreba',bg:'#dce7de',wide:true},
-{id:'t5',name:'Hotel Premium',cat:'business',label:'Hotel',type:'premium',price:15,author:'Digital Soul',license:'Komercijalna upotreba',bg:'#e5ded2',wide:true},
-{id:'t6',name:'Restaurant Menu',cat:'business',label:'Restoran',type:'premium',price:12,author:'Digital Soul',license:'Komercijalna upotreba',bg:'#e1d5c5',wide:true},
-{id:'t7',name:'Yoga Calm',cat:'wellness',label:'Yoga',type:'free',price:0,author:'Digital Soul',license:'Lična upotreba',bg:'#dce7de',wide:true},
-{id:'t8',name:'Beauty Editorial',cat:'product',label:'Beauty',type:'premium',price:10,author:'Digital Soul',license:'Komercijalna upotreba',bg:'#e8dde0',wide:true},
-{id:'t9',name:'Social Story',cat:'social',label:'Social Media',type:'free',price:0,author:'Digital Soul',license:'Lična upotreba',bg:'#e1e7e3',wide:false},
-{id:'t10',name:'Office Pro',cat:'lifestyle',label:'Kancelarija',type:'premium',price:9,author:'Digital Soul',license:'Komercijalna upotreba',bg:'#d9ddd7',wide:true},
-{id:'t11',name:'Creator Desk',cat:'lifestyle',label:'Radni sto',type:'free',price:0,author:'Digital Soul',license:'Lična upotreba',bg:'#e4d8c8',wide:true},
-{id:'t12',name:'Packaging Studio',cat:'product',label:'Ambalaža',type:'premium',price:14,author:'Digital Soul',license:'Komercijalna upotreba',bg:'#d8c9b0',wide:false}
-];
-const industryPacks=[
- {id:'food-store',name:'Prehrambena prodavnica',desc:'Akcije, proizvodi nedelje, nova ponuda, sezonske kampanje',cat:'business'},
- {id:'local-producer',name:'Domaći proizvođač',desc:'Priča o proizvođaču, proizvod, porudžbine i lokalna promocija',cat:'product'},
- {id:'bakery',name:'Pekara',desc:'Svež proizvod, dnevna ponuda, akcije i jutarnje kampanje',cat:'business'},
- {id:'butcher',name:'Mesara',desc:'Ponuda, sveži proizvodi, vikend akcije i promocije',cat:'business'},
- {id:'honey',name:'Med i pčelarstvo',desc:'Proizvod, poreklo, edukacija i prodajna promocija',cat:'product'},
- {id:'dairy',name:'Sir i mlečni proizvodi',desc:'Novi proizvodi, degustacije, ponude i lokalna prodaja',cat:'product'},
- {id:'winter',name:'Zimnica i domaće prerađevine',desc:'Sezonska prodaja, poklon paketi i porudžbine',cat:'product'},
- {id:'farm',name:'Poljoprivredno gazdinstvo',desc:'Proizvodi sa gazdinstva, sezona, dostupnost i porudžbine',cat:'lifestyle'}
+const templates = [
+  {id:'t1',name:'Phone Clean',cat:'device',label:'Telefon',type:'free',price:0,author:'Digital Soul',license:'Lična upotreba',bg:'#e8ded0',wide:false},
+  {id:'t2',name:'Laptop Business',cat:'business',label:'Business',type:'premium',price:9,author:'Digital Soul',license:'Komercijalna upotreba',bg:'#dde4ea',wide:true},
+  {id:'t3',name:'Planner Luxury',cat:'product',label:'Planner',type:'premium',price:12,author:'Digital Soul',license:'Komercijalna upotreba',bg:'#171717',wide:false},
+  {id:'t4',name:'Fitness Campaign',cat:'wellness',label:'Fitness',type:'free',price:0,author:'Digital Soul',license:'Lična upotreba',bg:'#dce7de',wide:true},
+  {id:'t5',name:'Hotel Premium',cat:'business',label:'Hotel',type:'premium',price:15,author:'Digital Soul',license:'Komercijalna upotreba',bg:'#e5ded2',wide:true},
+  {id:'t6',name:'Restaurant Menu',cat:'business',label:'Restoran',type:'premium',price:12,author:'Digital Soul',license:'Komercijalna upotreba',bg:'#e1d5c5',wide:true},
+  {id:'t7',name:'Yoga Calm',cat:'wellness',label:'Yoga',type:'free',price:0,author:'Digital Soul',license:'Lična upotreba',bg:'#dce7de',wide:true},
+  {id:'t8',name:'Beauty Editorial',cat:'product',label:'Beauty',type:'premium',price:10,author:'Digital Soul',license:'Komercijalna upotreba',bg:'#e8dde0',wide:true},
+  {id:'t9',name:'Social Story',cat:'social',label:'Social Media',type:'free',price:0,author:'Digital Soul',license:'Lična upotreba',bg:'#e1e7e3',wide:false},
+  {id:'t10',name:'Office Pro',cat:'lifestyle',label:'Kancelarija',type:'premium',price:9,author:'Digital Soul',license:'Komercijalna upotreba',bg:'#d9ddd7',wide:true},
+  {id:'t11',name:'Creator Desk',cat:'lifestyle',label:'Radni sto',type:'free',price:0,author:'Digital Soul',license:'Lična upotreba',bg:'#e4d8c8',wide:true},
+  {id:'t12',name:'Packaging Studio',cat:'product',label:'Ambalaža',type:'premium',price:14,author:'Digital Soul',license:'Komercijalna upotreba',bg:'#d8c9b0',wide:false}
 ];
 
+const industryPacks = [
+  {id:'food-store',name:'Prehrambena prodavnica',desc:'Akcije, proizvodi nedelje, nova ponuda, sezonske kampanje',cat:'business'},
+  {id:'local-producer',name:'Domaći proizvođač',desc:'Priča o proizvođaču, proizvod, porudžbine i lokalna promocija',cat:'product'},
+  {id:'bakery',name:'Pekara',desc:'Svež proizvod, dnevna ponuda, akcije i jutarnje kampanje',cat:'business'},
+  {id:'butcher',name:'Mesara',desc:'Ponuda, sveži proizvodi, vikend akcije i promocije',cat:'business'},
+  {id:'honey',name:'Med i pčelarstvo',desc:'Proizvod, poreklo, edukacija i prodajna promocija',cat:'product'},
+  {id:'dairy',name:'Sir i mlečni proizvodi',desc:'Novi proizvodi, degustacije, ponude i lokalna prodaja',cat:'product'},
+  {id:'winter',name:'Zimnica i domaće prerađevine',desc:'Sezonska prodaja, poklon paketi i porudžbine',cat:'product'},
+  {id:'farm',name:'Poljoprivredno gazdinstvo',desc:'Proizvodi sa gazdinstva, sezona, dostupnost i porudžbine',cat:'lifestyle'}
+];
 
+const promoFormats = [
+  {id:'promo-card',name:'Promo kartica',size:'1200 × 1200'},
+  {id:'instagram-post',name:'Instagram objava',size:'1080 × 1350'},
+  {id:'instagram-story',name:'Instagram Story',size:'1080 × 1920'},
+  {id:'reel-cover',name:'Reel cover',size:'1080 × 1920'},
+  {id:'facebook',name:'Facebook vizual',size:'1200 × 1500'},
+  {id:'pinterest',name:'Pinterest Pin',size:'1000 × 1500'},
+  {id:'tiktok',name:'TikTok cover',size:'1080 × 1920'},
+  {id:'linkedin',name:'LinkedIn vizual',size:'1200 × 627'},
+  {id:'email-header',name:'Email header',size:'1200 × 600'},
+  {id:'web-banner',name:'Web banner',size:'1600 × 600'},
+  {id:'promo-poster',name:'Promo poster',size:'1080 × 1350'},
+  {id:'a4',name:'A4 poster',size:'2480 × 3508'},
+  {id:'a5',name:'A5 poster',size:'1748 × 2480'},
+  {id:'flyer',name:'Letak',size:'1748 × 2480'},
+  {id:'price-list',name:'Cenovnik',size:'1748 × 2480'},
+  {id:'sticker',name:'Promo nalepnica',size:'1200 × 1200'}
+];
 
-const productInputFields=['productName','productPrice','productBenefit','productProof','productLocation','productCta','productDescription'];
+const promoStyles = {
+  luxury:{bg:'#171717',text:'#f7f4ed',accent:'#c7a76c',font:'Georgia,serif'},
+  minimal:{bg:'#f7f4ed',text:'#20211f',accent:'#8ea386',font:'Arial,sans-serif'},
+  wellness:{bg:'#e8eee7',text:'#20211f',accent:'#8ea386',font:'Georgia,serif'},
+  business:{bg:'#e3e8eb',text:'#20211f',accent:'#536675',font:'Arial,sans-serif'},
+  bold:{bg:'#20211f',text:'#ffffff',accent:'#8ea386',font:'Arial,sans-serif'}
+};
+
+const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));
+const readJSON = (key, fallback) => {
+  try { const value = JSON.parse(localStorage.getItem(key) || 'null'); return value ?? fallback; }
+  catch { return fallback; }
+};
+const writeJSON = (key, value) => localStorage.setItem(key, JSON.stringify(value));
+const textValue = id => String(document.getElementById(id)?.value || '').trim();
+const productFields = ['productName','productPrice','productBenefit','productProof','productLocation','productCta','productDescription'];
+
+let category = 'all';
+let favorites = readJSON('digitalSoulTemplateFavorites', []);
+let savedTemplates = readJSON('digitalSoulMockupTemplates', []);
+let correctionHistory = readJSON('digitalSoulCorrectionHistory', []);
+let promoState = {style:'luxury',format:'promo-card',variant:0};
+let promoPackState = {channels:['instagram','story','facebook','pinterest','tiktok','linkedin','email','web'],results:[]};
+let ccoState = {plan:[]};
+let calendarItems = readJSON('digitalSoulContentCalendar', []);
+let calendarEditIndex = null;
+
+const grid = document.getElementById('libraryGrid');
+const details = document.getElementById('templateDetails');
+const search = document.getElementById('librarySearch');
+const count = document.getElementById('libraryCount');
+const empty = document.getElementById('libraryEmpty');
+const sort = document.getElementById('librarySort');
+
 function initProductInput(){
- const save=document.getElementById('saveProductInput');if(!save)return;
- const key='digitalSoulProductInput';const data=JSON.parse(localStorage.getItem(key)||'{}');
- productInputFields.forEach(id=>{const el=document.getElementById(id);if(el&&data[id])el.value=data[id]});
- save.onclick=()=>{const out={};productInputFields.forEach(id=>{const el=document.getElementById(id);if(el)out[id]=el.value.trim()});localStorage.setItem(key,JSON.stringify(out));const ok=document.getElementById('productSaved');ok.hidden=false;setTimeout(()=>ok.hidden=true,2200)};
+  const save = document.getElementById('saveProductInput');
+  if(!save) return;
+  const data = readJSON('digitalSoulProductInput', {});
+  productFields.forEach(id => { const el=document.getElementById(id); if(el && data[id] != null) el.value=data[id]; });
+  save.onclick = () => {
+    const out={};
+    productFields.forEach(id => out[id]=textValue(id));
+    writeJSON('digitalSoulProductInput',out);
+    const ok=document.getElementById('productSaved');
+    if(ok){ok.hidden=false;setTimeout(()=>ok.hidden=true,2200);}
+    refreshGeneratedAreas();
+  };
 }
-\n
+
+function productData(){
+  const p=readJSON('digitalSoulProductInput',{});
+  return {
+    name:p.productName||'Naziv proizvoda',
+    price:p.productPrice||'Cena',
+    benefit:p.productBenefit||'Glavna korist proizvoda',
+    proof:p.productProof||'Kvalitet i razlog za poverenje',
+    location:p.productLocation||'',
+    cta:p.productCta||'Saznaj više',
+    description:p.productDescription||''
+  };
+}
+
+const correctionActions = {
+  proofread: text => {
+    let x=cleanText(text);
+    x=x.replace(/\s+([,.!?;:])/g,'$1');
+    if(x && !/[.!?]$/.test(x)) x+='.';
+    return x.charAt(0).toUpperCase()+x.slice(1);
+  },
+  clarity: text => cleanText(text).replace(/\b(u\s+suštini|zapravo|generalno|bukvalno)\b/gi,'').replace(/\s{2,}/g,' ').trim(),
+  shorten: text => {
+    const parts=cleanText(text).split(/(?<=[.!?])\s+/).filter(Boolean);
+    return parts.slice(0,2).join(' ') || cleanText(text).slice(0,180);
+  },
+  expand: text => cleanText(text)+' '+productData().benefit+'. '+(productData().proof||'Jasno predstavljena vrednost olakšava odluku kupca.'),
+  professional: text => 'Jasna i profesionalna verzija: '+cleanText(text),
+  sales: text => cleanText(text)+' '+productData().benefit+'. '+productData().cta+'.',
+  cta: text => cleanText(text)+(/[.!?]$/.test(cleanText(text))?'':' .')+' '+productData().cta+'.',
+  seo: text => cleanText(text)+' Ključne teme: '+[productData().name,productData().benefit].filter(Boolean).join(', ')+'.'
+};
+
+function cleanText(text){return String(text||'').replace(/\s+/g,' ').trim();}
+
+function initCorrectionEngine(){
+  document.querySelectorAll('.correction-action').forEach(button=>{
+    button.onclick=()=>{
+      const input=textValue('correctionInput');
+      if(!input){showCorrection('Unesi tekst koji želiš da obradiš.','warning');return;}
+      const action=button.dataset.action;
+      let result=correctionActions[action]?correctionActions[action](input):input;
+      if(document.getElementById('correctionKeepStyle')?.checked) result=preserveStyle(input,result);
+      correctionHistory.unshift({action,result,created:new Date().toISOString()});
+      correctionHistory=correctionHistory.slice(0,20);
+      writeJSON('digitalSoulCorrectionHistory',correctionHistory);
+      showCorrection(result,'success');
+      renderQuality(result);
+    };
+  });
+  renderCorrectionHistory();
+}
+
+function preserveStyle(original,result){
+  if(!original) return result;
+  if(original===original.toUpperCase()) return result.toUpperCase();
+  if(/^[a-z]/.test(original.trim())) return result.charAt(0).toLowerCase()+result.slice(1);
+  return result;
+}
+
+function showCorrection(result,type){
+  const box=document.getElementById('correctionResult');
+  if(!box)return;
+  box.hidden=false;
+  box.className='correction-result '+type;
+  box.innerHTML='<strong>Rezultat</strong><textarea readonly>'+esc(result)+'</textarea><button type="button" class="btn" id="copyCorrection">Kopiraj</button>';
+  document.getElementById('copyCorrection').onclick=()=>copyText(result);
+}
+
+function renderCorrectionHistory(){
+  const box=document.getElementById('correctionHistory');
+  if(!box)return;
+  if(!correctionHistory.length){box.hidden=true;return;}
+  box.hidden=false;
+  box.innerHTML='<strong>Poslednje izmene</strong>'+correctionHistory.slice(0,5).map((x,i)=>'<div class="history-row"><span>'+esc(x.action)+'</span><button class="btn" data-history="'+i+'">Otvori</button></div>').join('');
+  box.querySelectorAll('[data-history]').forEach(b=>b.onclick=()=>showCorrection(correctionHistory[Number(b.dataset.history)].result,'success'));
+}
+
+function renderQuality(text){
+  const box=document.getElementById('qualityResult');
+  if(!box)return;
+  const value=cleanText(text);
+  const words=value?value.split(/\s+/).length:0;
+  const sentences=value?value.split(/[.!?]+/).filter(Boolean).length:0;
+  const hasCta=/poruči|kupi|saznaj|javi|kontakt|rezerv|prijav|klikni|pozovi/i.test(value);
+  const score=Math.min(100,Math.max(0,40+(words>=10?20:0)+(sentences>=2?15:0)+(hasCta?25:0)));
+  const advice=[];
+  if(words<10)advice.push('Dodaj malo više konteksta.');
+  if(!hasCta)advice.push('Dodaj jasan poziv na akciju.');
+  if(!sentences)advice.push('Dodaj glavnu poruku u punoj rečenici.');
+  box.hidden=false;
+  box.innerHTML='<div class="quality-score"><strong>'+score+'/100</strong><span>Kvalitet sadržaja</span></div><div class="quality-meta">Reči: '+words+' · Rečenice: '+sentences+' · CTA: '+(hasCta?'da':'ne')+'</div><ul>'+((advice.length?advice:['Sadržaj ima dobru osnovu za dalju obradu.']).map(x=>'<li>'+esc(x)+'</li>').join(''))+'</ul>';
+}
+
 const audienceProfiles={
- general:'Koristi jasnu i razumljivu komunikaciju bez pretpostavki o predznanju.',
+ general:'Jasna i razumljiva komunikacija bez pretpostavki o predznanju.',
  local:'Naglasak na lokaciji, dostupnosti, poverenju i praktičnim informacijama.',
- b2c:'Fokus na korist za pojedinca, jednostavnu ponudu i jasan sledeći korak.',
- b2b:'Fokus na poslovnu vrednost, rezultat, proces i relevantne informacije.',
- professionals:'Koristi precizniji terminološki i stručniji ton.',
- beginners:'Objasni jednostavno, korak po korak, bez nepotrebnog žargona.',
- returning:'Nadoveži se na postojeći odnos, prethodno iskustvo i sledeću vrednost.'
+ b2c:'Fokus na korist za pojedinca i jednostavan sledeći korak.',
+ b2b:'Fokus na poslovnu vrednost, rezultat i proces.',
+ professionals:'Precizniji terminološki i stručniji ton.',
+ beginners:'Jednostavno, korak po korak, bez nepotrebnog žargona.',
+ returning:'Nadoveži se na postojeći odnos i prethodno iskustvo.'
 };
 const platformProfiles={
  Instagram:'Vizuelno, kratko, jak početak i jasan CTA.',
- Facebook:'Kontekstualnije, razgovorno i pogodno za detaljniji opis.',
- Pinterest:'Opisno, korisno i fokusirano na temu, pretragu i dugoročnu vrednost.',
- LinkedIn:'Profesionalno, konkretno i usmereno na poslovnu vrednost.',
+ Facebook:'Razgovorno i pogodno za detaljniji opis.',
+ Pinterest:'Opisno, korisno i fokusirano na pretragu i dugoročnu vrednost.',
+ LinkedIn:'Profesionalno i konkretno, usmereno na poslovnu vrednost.',
  TikTok:'Brz hook, kratke scene i prirodan govor.',
  Email:'Jasan subject, uvod, vrednost i jedan primarni CTA.',
  Web:'Informativno, strukturisano i prilagođeno skeniranju.'
 };
 const formatProfiles={
- Objavа:'Strukturirana objava sa hookom, glavnom porukom i CTA-om.',
- 'Story':'Kratke sekvence sa jednom porukom po ekranu.',
+ Objava:'Hook → glavna poruka → benefit → CTA.',
+ Story:'Jedna poruka po ekranu.',
  'Reel / TikTok':'Hook → problem/tema → benefit → CTA.',
- Pin:'Naslov + koristan opis + ključna tema + CTA.',
+ Pin:'Naslov → koristan opis → ključna tema → CTA.',
  Email:'Subject → uvod → vrednost → CTA.',
  Oglas:'Hook → ponuda/benefit → dokaz → CTA.',
  Blog:'Naslov → uvod → podnaslovi → vrednost → zaključak.'
 };
+
 function initAudienceEngine(){
- const apply=document.getElementById('applyAudience');if(!apply)return;
- apply.onclick=()=>{
-  const a=document.getElementById('audienceType').value,p=document.getElementById('contentPlatform').value,f=document.getElementById('contentFormat').value;
-  localStorage.setItem('digitalSoulAudienceSettings',JSON.stringify({audience:a,platform:p,format:f}));
-  const box=document.getElementById('audienceGuidance');box.hidden=false;
-  box.innerHTML='<strong>Prilagođavanje:</strong><br>'+audienceProfiles[a]+'<br><br><strong>'+p+':</strong> '+platformProfiles[p]+'<br><strong>'+f+':</strong> '+(formatProfiles[f]||'Prilagodi strukturu izabranom formatu.');
- };
-}
-\nconst purposeBriefs={
- 'Reklama':{hook:'Pažnja / problem / potreba',headline:'Jasna glavna poruka ponude',benefit:'Zašto je ponuda korisna kupcu',proof:'Dokaz, kvalitet ili razlog za poverenje',cta:'Pozovi kupca na sledeći korak'},
- 'Prodaja':{hook:'Ponuda koja privlači pažnju',headline:'Šta se prodaje i zašto sada',benefit:'Ključna korist proizvoda',proof:'Cena, dostupnost ili konkretna vrednost',cta:'Poruči / kupi / javi se'},
- 'Akcija':{hook:'Akcija / ograničena ponuda',headline:'Šta je sniženo ili posebno',benefit:'Ušteda ili dodatna vrednost',proof:'Period važenja ili dostupnost',cta:'Iskoristi ponudu'},
- 'Novi proizvod':{hook:'Predstavljanje noviteta',headline:'Novi proizvod u fokusu',benefit:'Glavna karakteristika i korist',proof:'Poreklo, kvalitet ili posebnost',cta:'Saznaj više / poruči'},
- 'Brend':{hook:'Priča koja gradi prepoznatljivost',headline:'Ko smo i po čemu smo posebni',benefit:'Vrednost za kupca',proof:'Priča, poreklo, iskustvo ili standard',cta:'Upoznaj brend'},
- 'Edukacija':{hook:'Korisna činjenica ili pitanje',headline:'Šta kupac treba da zna',benefit:'Praktična korist informacije',proof:'Činjenica ili izvor koji podržava poruku',cta:'Saznaj više'},
- 'Sezona':{hook:'Sezonska potreba',headline:'Ponuda za aktuelni period',benefit:'Zašto je sada pravi trenutak',proof:'Dostupnost / sezonski detalj',cta:'Poruči na vreme'},
- 'Lokalna promocija':{hook:'Poziv lokalnoj zajednici',headline:'Ponuda dostupna u vašem kraju',benefit:'Blizina, svežina ili lokalna vrednost',proof:'Lokacija / radno vreme / dostupnost',cta:'Poseti nas / javi se'}
-};
-function renderContentBrief(ind,purpose){
- const brief=purposeBriefs[purpose]||purposeBriefs.Reklama, box=document.getElementById('contentBrief');if(!box)return;
- box.hidden=false;box.innerHTML='<h3>Content Brief · '+ind.name+'</h3><div class="brief-grid">'+[['Hook',brief.hook],['Naslov',brief.headline],['Benefit',brief.benefit],['Dokaz',brief.proof],['CTA',brief.cta],['Kanali','Instagram · Facebook · Pinterest · Story / Reel']].map(x=>'<div class="brief-item"><strong>'+x[0]+'</strong>'+x[1]+'</div>').join('')+'</div>';
-}
-\nconst campaignPurposes=['Reklama','Prodaja','Akcija','Novi proizvod','Brend','Edukacija','Sezona','Lokalna promocija'];
-const campaignFormats=['Instagram objava','Story / Reel','Facebook objava','Pinterest pin','Promo poster','Banner'];
-const ci=document.getElementById('campaignIndustry'),cp=document.getElementById('campaignPurpose'),cf=document.getElementById('campaignFormats'),cr=document.getElementById('campaignResult');
-function initCampaignBuilder(){
- if(!ci)return;
- ci.innerHTML=industryPacks.map(p=>'<option value="'+p.id+'">'+p.name+'</option>').join('');
- cp.innerHTML=campaignPurposes.map(p=>'<option>'+p+'</option>').join('');
- cf.innerHTML=campaignFormats.map((p,i)=>'<button type="button" class="campaign-format '+(i<3?'active':'')+'">'+p+'</button>').join('');
- cf.querySelectorAll('.campaign-format').forEach(b=>b.onclick=()=>b.classList.toggle('active'));
- document.getElementById('buildCampaign').onclick=()=>{
-   const ind=industryPacks.find(p=>p.id===ci.value)||industryPacks[0];
-   const selected=[...cf.querySelectorAll('.campaign-format.active')].map(x=>x.textContent);
-   if(!selected.length){cr.hidden=false;cr.innerHTML='<strong>Izaberi bar jedan format.</strong>';return}
-   cr.hidden=false;
-   renderContentBrief(ind,cp.value); cr.innerHTML='<strong>'+ind.name+' · '+cp.value+'</strong><div>Pripremljen paket za '+selected.length+' formata:</div><ul>'+selected.map(x=>'<li>'+x+'</li>').join('')+'</ul><div style="margin-top:12px"><button id="openCampaignMockup" class="btn" type="button">Nastavi u Mockup Studio</button></div>';
-   document.getElementById('openCampaignMockup').onclick=()=>location.href='mockup.html';
- };
-}
-\nlet category='all',favorites=JSON.parse(localStorage.getItem('digitalSoulTemplateFavorites')||'[]'),saved=JSON.parse(localStorage.getItem('digitalSoulMockupTemplates')||'[]');
-const grid=document.getElementById('libraryGrid'),details=document.getElementById('templateDetails'),search=document.getElementById('librarySearch'),count=document.getElementById('libraryCount'),empty=document.getElementById('libraryEmpty'),sort=document.getElementById('librarySort');
-function renderIndustryPacks(){
- const wrap=document.getElementById('industryPacks'); if(!wrap)return;
- wrap.innerHTML='';
- industryPacks.forEach(p=>{const el=document.createElement('button');el.className='industry-pack';el.type='button';el.innerHTML='<strong>'+p.name+'</strong><small>'+p.desc+'</small>';el.onclick=()=>{category=p.cat;const promoFormats=[
-{id:'promo-card',name:'Promo kartica',size:'1200 × 1200',group:'digital'},
-{id:'instagram-post',name:'Instagram objava',size:'1080 × 1350',group:'digital'},
-{id:'instagram-story',name:'Instagram Story',size:'1080 × 1920',group:'digital'},
-{id:'reel-cover',name:'Reel cover',size:'1080 × 1920',group:'digital'},
-{id:'facebook',name:'Facebook vizual',size:'1200 × 1500',group:'digital'},
-{id:'pinterest',name:'Pinterest Pin',size:'1000 × 1500',group:'digital'},
-{id:'tiktok',name:'TikTok cover',size:'1080 × 1920',group:'digital'},
-{id:'linkedin',name:'LinkedIn vizual',size:'1200 × 627',group:'digital'},
-{id:'email-header',name:'Email header',size:'1200 × 600',group:'digital'},
-{id:'web-banner',name:'Web banner',size:'1600 × 600',group:'digital'},
-{id:'promo-poster',name:'Promo poster',size:'1080 × 1350',group:'print'},
-{id:'a4',name:'A4 poster',size:'2480 × 3508',group:'print'},
-{id:'a5',name:'A5 poster',size:'1748 × 2480',group:'print'},
-{id:'flyer',name:'Letak',size:'1748 × 2480',group:'print'},
-{id:'price-list',name:'Cenovnik',size:'1748 × 2480',group:'print'},
-{id:'sticker',name:'Promo nalepnica',size:'1200 × 1200',group:'print'}
-];
-const promoBadges=['Akcija','Novo','-20%','Ograničena ponuda','Bestseller','Domaće','Ručno rađeno','Lokalno','Premium','Besplatna dostava','Novo u ponudi','Poslednji komadi','Sezonski proizvod','Poklon'];
-const promoStyles={
-luxury:{bg:'#171717',text:'#f7f4ed',accent:'#c7a76c',font:'Georgia,serif'},
-minimal:{bg:'#f7f4ed',text:'#20211f',accent:'#8ea386',font:'Arial,sans-serif'},
-wellness:{bg:'#e8eee7',text:'#20211f',accent:'#8ea386',font:'Georgia,serif'},
-business:{bg:'#e3e8eb',text:'#20211f',accent:'#536675',font:'Arial,sans-serif'},
-bold:{bg:'#20211f',text:'#ffffff',accent:'#8ea386',font:'Arial,sans-serif'}
-};
-let promoState={style:'luxury',format:'promo-card',variant:0};
-function promoData(){
- const product=JSON.parse(localStorage.getItem('digitalSoulProductInput')||'{}');
- const offer=JSON.parse(localStorage.getItem('digitalSoulOffer')||'{}');
- return {
- name:product.productName||'Naziv proizvoda',
- price:offer.offerPrice||product.productPrice||'Cena',
- oldPrice:offer.offerOldPrice||'',
- discount:offer.offerDiscount||'',
- deadline:offer.offerDeadline||'',
- code:offer.offerCode||'',
- message:offer.offerMessage||product.productBenefit||product.productDescription||'Glavna korist proizvoda',
- cta:product.productCta||'Saznaj više'
- };
-}
-function initVisualPromoEngine(){
- const fs=document.getElementById('promoFormat');if(!fs)return;
- fs.innerHTML=promoFormats.map(x=>'<option value="'+x.id+'">'+x.name+' · '+x.size+'</option>').join('');
- fs.value='promo-card';
- const style=document.getElementById('promoStyle');
- style.onchange=()=>{promoState.style=style.value;renderPromo()};
- fs.onchange=()=>{promoState.format=fs.value;renderPromo()};
- document.getElementById('promoBrand').onchange=renderPromo;
- document.getElementById('buildPromo').onclick=()=>{promoState.variant=0;renderPromo()};
- document.getElementById('makeFivePromos').onclick=()=>{promoState.variant=0;renderPromoVariants()};
- document.getElementById('visualOnly').onclick=()=>{promoState.style=promoState.style==='luxury'?'minimal':promoState.style==='minimal'?'wellness':'luxury';style.value=promoState.style;renderPromo()};
- document.getElementById('textOnly').onclick=()=>{promoState.variant++;renderPromo()};
- document.getElementById('priceOnly').onclick=()=>{promoState.variant++;renderPromo()};
- document.getElementById('ctaOnly').onclick=()=>{promoState.variant++;renderPromo()};
- document.getElementById('downloadPromoPack').onclick=()=>downloadPromoPack();
- document.getElementById('createWholePromo').onclick=()=>{renderPromoVariants(true)};
- renderPromo();
-}
-function promoCopy(d,v){
- const headlines=[
- d.message,
- d.name+' — sada dostupno',
- 'Posebna ponuda za '+d.name,
- 'Vreme je za '+d.name,
- 'Otkrij '+d.name
- ];
- const ctas=[d.cta,'Poruči danas','Saznaj više','Javi se za detalje','Iskoristi ponudu'];
- return {headline:headlines[v%headlines.length],cta:ctas[v%ctas.length]};
-}
-function renderPromo(){
- const box=document.getElementById('promoPreview');if(!box)return;
- const d=promoData(),p=promoCopy(d,promoState.variant),s=promoStyles[promoState.style],fmt=promoFormats.find(x=>x.id===promoState.format)||promoFormats[0];
- box.hidden=false;
- box.innerHTML='<div class="promo-canvas promo-'+promoState.style+'" style="--promo-bg:'+s.bg+';--promo-text:'+s.text+';--promo-accent:'+s.accent+';--promo-font:'+s.font+'"><div class="promo-brand">'+(document.getElementById('promoBrand').value==='Bez brenda'?'':document.getElementById('promoBrand').value)+'</div><div class="promo-badge">'+(d.discount||'PROMO')+'</div><div class="promo-copy"><div class="promo-format-label">'+fmt.name+'</div><h3>'+p.headline+'</h3><p>'+d.message+'</p><div class="promo-prices">'+(d.oldPrice?'<del>'+d.oldPrice+'</del> ':'')+'<strong>'+d.price+'</strong></div><div class="promo-meta">'+(d.deadline?'Rok: '+d.deadline+' · ':'')+(d.code?'Kod: '+d.code:'')+'</div><button type="button">'+p.cta+'</button></div></div><div class="promo-spec"><strong>'+fmt.name+'</strong><span>'+fmt.size+'</span><span>Stil: '+promoState.style+'</span></div>';
-}
-function renderPromoVariants(full=false){
- const wrap=document.getElementById('promoVariants');if(!wrap)return;
- const d=promoData();wrap.hidden=false;
- wrap.innerHTML='';
- const variants=Array.from({length:5},(_,i)=>({style:Object.keys(promoStyles)[i%5],variant:i}));
- variants.forEach((v,i)=>{
-  const p=promoCopy(d,v.variant),s=promoStyles[v.style];
-  const el=document.createElement('article');el.className='promo-variant';
-  el.innerHTML='<div class="promo-mini" style="background:'+s.bg+';color:'+s.text+';font-family:'+s.font+'"><small style="color:'+s.accent+'">'+(d.discount||'PROMO')+'</small><strong>'+p.headline+'</strong><span>'+(d.price||'Cena')+'</span><em>'+p.cta+'</em></div><div class="promo-variant-info">Varijanta '+(i+1)+' · '+v.style+'</div>';
-  el.onclick=()=>{promoState.style=v.style;promoState.variant=v.variant;document.getElementById('promoStyle').value=v.style;renderPromo()};
-  wrap.appendChild(el);
- });
- if(full) document.getElementById('promoPreview').scrollIntoView({behavior:'smooth',block:'center'});
-}
-function downloadPromoPack(){
- const d=promoData(),fmt=promoFormats.find(x=>x.id===promoState.format)||promoFormats[0];
- const text=[fmt.name,fmt.size,'',d.name,d.message,d.oldPrice?'Stara cena: '+d.oldPrice:'',d.price?'Cena: '+d.price:'',d.discount?'Popust: '+d.discount:'',d.deadline?'Rok: '+d.deadline:'',d.code?'Promo kod: '+d.code:'',d.cta?'CTA: '+d.cta:''].filter(Boolean).join('\n');
- const blob=new Blob([text],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
- a.href=url;a.download='digital-soul-promo-'+fmt.id+'.txt';a.click();URL.revokeObjectURL(url);
+  const apply=document.getElementById('applyAudience');
+  if(!apply)return;
+  const saved=readJSON('digitalSoulAudienceSettings',{});
+  if(saved.audience)document.getElementById('audienceType').value=saved.audience;
+  if(saved.platform)document.getElementById('contentPlatform').value=saved.platform;
+  if(saved.format)document.getElementById('contentFormat').value=saved.format;
+  apply.onclick=()=>{
+    const a=textValue('audienceType')||document.getElementById('audienceType').value;
+    const p=document.getElementById('contentPlatform').value;
+    const f=document.getElementById('contentFormat').value;
+    writeJSON('digitalSoulAudienceSettings',{audience:a,platform:p,format:f});
+    const box=document.getElementById('audienceGuidance');
+    if(box){box.hidden=false;box.innerHTML='<strong>Prilagođavanje:</strong><br>'+esc(audienceProfiles[a]||'Prilagodi komunikaciju publici.')+'<br><br><strong>'+esc(p)+':</strong> '+esc(platformProfiles[p]||'Prilagodi sadržaj platformi.')+'<br><strong>'+esc(f)+':</strong> '+esc(formatProfiles[f]||'Prilagodi strukturu formatu.');}
+  };
 }
 
-const promoPackChannels=[
- {id:'instagram',name:'Instagram objava',format:'Objava'},
- {id:'story',name:'Story / Reel',format:'Story'},
- {id:'facebook',name:'Facebook',format:'Objava'},
- {id:'pinterest',name:'Pinterest',format:'Pin'},
- {id:'tiktok',name:'TikTok',format:'Reel / TikTok'},
- {id:'linkedin',name:'LinkedIn',format:'Objava'},
- {id:'email',name:'Email',format:'Email'},
- {id:'web',name:'Web',format:'Blog'}
-];
-let promoPackState={channels:promoPackChannels.map(x=>x.id),results:[]};
-function getPromoPackData(){
- const product=JSON.parse(localStorage.getItem('digitalSoulProductInput')||'{}');
- const offer=JSON.parse(localStorage.getItem('digitalSoulOffer')||'{}');
- const audience=JSON.parse(localStorage.getItem('digitalSoulAudienceSettings')||'{}');
- const campaign=JSON.parse(localStorage.getItem('digitalSoulLastCampaign')||'{}');
- return {
-  name:product.productName||'Naziv proizvoda',
-  benefit:product.productBenefit||'Glavna korist proizvoda',
-  proof:product.productProof||'Kvalitet i razlog za poverenje',
-  location:product.productLocation||'',
-  cta:product.productCta||'Saznaj više',
-  description:product.productDescription||'',
-  price:offer.offerPrice||product.productPrice||'Cena',
-  oldPrice:offer.offerOldPrice||'',
-  discount:offer.offerDiscount||'',
-  deadline:offer.offerDeadline||'',
-  code:offer.offerCode||'',
-  offerMessage:offer.offerMessage||'',
-  audience:audience.audience||'general',
-  goal:campaign.goal||document.getElementById('packGoal')?.value||'Prodaja'
- };
+const channelNames={
+  Instagram:'Instagram objava',Story:'Story / Reel',Facebook:'Facebook',Pinterest:'Pinterest',LinkedIn:'LinkedIn',Email:'Email',Oglas:'Oglas','Video scenario':'Video scenario'
+};
+
+function baseContent(){
+  const p=productData();
+  const offer=readJSON('digitalSoulOffer',{});
+  return {p,offer};
 }
-function initPromoPackOrchestrator(){
- const wrap=document.getElementById('packChannels');if(!wrap)return;
- const saved=JSON.parse(localStorage.getItem('digitalSoulPromoPackDraft')||'null');
- const name=document.getElementById('packName');
- if(saved){name.value=saved.name||'';promoPackState.channels=saved.channels||promoPackState.channels}
- wrap.innerHTML=promoPackChannels.map(x=>'<button type="button" class="pack-channel '+(promoPackState.channels.includes(x.id)?'active':'')+'" data-id="'+x.id+'">'+x.name+'</button>').join('');
- wrap.querySelectorAll('.pack-channel').forEach(b=>b.onclick=()=>{
-  const id=b.dataset.id;
-  promoPackState.channels=promoPackState.channels.includes(id)?promoPackState.channels.filter(x=>x!==id):[...promoPackState.channels,id];
-  b.classList.toggle('active',promoPackState.channels.includes(id));
- });
- document.getElementById('buildPack').onclick=buildPromoPack;
- document.getElementById('refreshPack').onclick=()=>buildPromoPack(true);
- document.getElementById('copyPack').onclick=copyPromoPack;
- document.getElementById('savePack').onclick=savePromoPack;
- document.getElementById('openPackMockup').onclick=()=>location.href='mockup.html';
- renderSavedPromoPacks();
+
+function makeChannelContent(channel){
+  const {p,offer}=baseContent();
+  const price=offer.offerPrice||p.price;
+  const headline=offer.offerMessage||p.benefit;
+  if(channel==='Instagram')return {title:headline,body:headline+'. '+p.benefit+'. '+(p.proof? p.proof+'. ':'')+'Cena: '+price+'. '+p.cta+'.'};
+  if(channel==='Story / Reel')return {title:'Hook: '+headline,body:'0–3s: '+headline+'\n3–7s: '+p.benefit+'\n7–12s: '+p.proof+'\n12–15s: '+p.cta};
+  if(channel==='Facebook')return {title:headline,body:p.name+'\n\n'+p.description+'\n\n'+p.benefit+'. '+p.proof+'.\nCena: '+price+'.\n\n'+p.cta};
+  if(channel==='Pinterest')return {title:p.name+' | '+p.benefit,body:p.name+' — '+p.benefit+'. '+p.proof+'. '+p.cta+'.'};
+  if(channel==='LinkedIn')return {title:headline,body:p.name+' donosi: '+p.benefit+'. '+p.proof+'. '+p.cta+'.'};
+  if(channel==='Email')return {title:'Subject: '+headline,body:'Zdravo,\n\n'+p.description+'\n\n'+p.benefit+'. '+p.proof+'.\n\nCena: '+price+'.\n\n'+p.cta};
+  if(channel==='Oglas')return {title:headline,body:headline+'\n\n'+p.benefit+'.\nCena: '+price+'.\n\n'+p.cta};
+  return {title:'Video scenario: '+headline,body:'Scena 1 — Hook: '+headline+'\nScena 2 — Benefit: '+p.benefit+'\nScena 3 — Dokaz: '+p.proof+'\nScena 4 — CTA: '+p.cta};
 }
-function makeChannelCopy(channel,d){
- const base=d.offerMessage||d.benefit;
- const headline=d.discount?d.name+' — '+d.discount+'':'Ponuda: '+d.name;
- const price=d.oldPrice?d.oldPrice+' → '+d.price:d.price;
- if(channel==='instagram')return {title:headline,body:base+' '+d.name+'. '+d.benefit+'.'+(d.proof?' '+d.proof+'.':'')+' '+d.cta+'.',meta:'Cena: '+price+(d.deadline?' · '+d.deadline:'')};
- if(channel==='story')return {title:'STORY / REEL HOOK',body:headline+'\n\n'+d.benefit+'\n\nCena: '+price+'\n\n'+d.cta,meta:d.code?'Kod: '+d.code:''};
- if(channel==='facebook')return {title:headline,body:base+'\n\n'+d.description+'\n\n'+d.proof+'\nCena: '+price+(d.deadline?'\nRok: '+d.deadline:'')+'\n\n'+d.cta,meta:d.location};
- if(channel==='pinterest')return {title:d.name+' | '+(d.benefit||'Ponuda'),body:base+' '+d.proof+'. '+d.benefit+'. '+d.cta+'.',meta:'Ključne teme: '+d.name+', ponuda, proizvod, '+(d.location||'lokalna kupovina')};
- if(channel==='tiktok')return {title:'Hook: '+headline,body:'0–3s: '+headline+'\n3–7s: '+d.benefit+'\n7–12s: '+base+'\n12–15s: '+d.cta,meta:'CTA: '+d.cta};
- if(channel==='linkedin')return {title:headline,body:d.name+' donosi: '+d.benefit+'.\n\n'+d.proof+'.\n\n'+(d.offerMessage||'Ponuda je dostupna sada.')+'\n\n'+d.cta,meta:'Cilj: '+d.goal};
- if(channel==='email')return {title:'Subject: '+headline,body:'Zdravo,\n\n'+base+'\n\n'+d.benefit+'. '+d.proof+'.\n\nCena: '+price+(d.deadline?'\nRok: '+d.deadline:'')+(d.code?'\nKod: '+d.code:'')+'\n\n'+d.cta,meta:'Email kampanja'};
- return {title:headline,body:d.name+'\n\n'+base+'\n\nKorist: '+d.benefit+'\nKvalitet: '+d.proof+'\nCena: '+price+'\n\n'+d.cta,meta:'Web sadržaj'};
+
+function initRepurposeEngine(){
+  document.querySelectorAll('.repurpose-action').forEach(button=>{
+    button.onclick=()=>{
+      const input=cleanText(textValue('correctionInput'))||productData().description||productData().benefit;
+      if(!input){showRepurpose('Unesi sadržaj ili podatke o proizvodu.');return;}
+      const channel=button.dataset.channel;
+      const result=makeChannelContent(channel);
+      result.body=input+'\n\n'+result.body;
+      const box=document.getElementById('repurposeResult');
+      if(!box)return;
+      box.hidden=false;
+      box.innerHTML='<article><strong>'+esc(channelNames[channel]||channel)+'</strong><h3>'+esc(result.title)+'</h3><textarea readonly>'+esc(result.body)+'</textarea><button class="btn" id="copyRepurpose">Kopiraj</button></article>';
+      document.getElementById('copyRepurpose').onclick=()=>copyText(result.title+'\n\n'+result.body);
+    };
+  });
 }
-function buildPromoPack(regenerate=false){
- const result=document.getElementById('packResult'),warnings=document.getElementById('packWarnings');
- if(!promoPackState.channels.length){warnings.hidden=false;warnings.innerHTML='<strong>Izaberi najmanje jedan kanal.</strong>';return}
- const d=getPromoPackData();
- const missing=[];if(d.name==='Naziv proizvoda')missing.push('naziv proizvoda');if(d.price==='Cena')missing.push('cena');if(d.cta==='Saznaj više')missing.push('CTA');
- warnings.hidden=!missing.length;warnings.innerHTML=missing.length?'<strong>Preporuka:</strong> dopuni: '+missing.join(', ')+'. Paket može biti generisan i bez ovih podataka.':'';
- promoPackState.results=promoPackState.channels.map((id,i)=>({id,channel:promoPackChannels.find(x=>x.id===id).name,...makeChannelCopy(id,d),variant:regenerate?Date.now()+i:i}));
- result.hidden=false;
- result.innerHTML='<div class="pack-summary"><strong>'+d.name+'</strong><span>'+d.goal+'</span><span>'+promoPackState.results.length+' kanala</span></div><div class="pack-cards">'+promoPackState.results.map((x,i)=>'<article class="pack-card"><div class="pack-card-head"><strong>'+x.channel+'</strong><button type="button" class="btn pack-copy" data-index="'+i+'">Kopiraj</button></div><h4>'+x.title+'</h4><textarea readonly>'+x.body+'</textarea><small>'+x.meta+'</small></article>').join('')+'</div>';
- result.querySelectorAll('.pack-copy').forEach(b=>b.onclick=()=>{const x=promoPackState.results[Number(b.dataset.index)];navigator.clipboard?.writeText(x.title+'\n\n'+x.body);b.textContent='Kopirano ✓';setTimeout(()=>b.textContent='Kopiraj',1500)});
+function showRepurpose(msg){
+  const box=document.getElementById('repurposeResult');if(box){box.hidden=false;box.textContent=msg;}
 }
-function copyPromoPack(){
- if(!promoPackState.results.length)buildPromoPack();
- const text=promoPackState.results.map(x=>'## '+x.channel+'\n'+x.title+'\n\n'+x.body+'\n'+x.meta).join('\n\n');
- navigator.clipboard?.writeText(text);
+
+function generateContent(){
+  const p=productData();
+  const style=document.getElementById('contentStyle')?.value||'professional';
+  const styleMap={professional:'Jasno i profesionalno',sales:'Prodajno i direktno',natural:'Prirodno i razgovorno',emotional:'Toplo i emotivno',short:'Kratko i konkretno',seo:'SEO orijentisano'};
+  const prefix=style==='sales'?'Zašto da izabereš '+p.name+': ':style==='emotional'?'Priča iza vrednosti koju dobijaš: ':style==='short'?'': 'Predstavljamo '+p.name+'. ';
+  const result=prefix+p.benefit+'. '+p.proof+'. '+(p.location?'Dostupno: '+p.location+'. ':'')+p.cta+'.';
+  const channels=['Instagram','Facebook','Pinterest','LinkedIn','Email'];
+  const box=document.getElementById('generatedContent');
+  if(!box)return;
+  box.hidden=false;
+  box.innerHTML='<div class="generated-head"><strong>'+esc(styleMap[style]||style)+'</strong><button class="btn" id="copyGenerated">Kopiraj sve</button></div>'+channels.map(c=>{const x=makeChannelContent(c);return '<article><h3>'+esc(channelNames[c])+'</h3><textarea readonly>'+esc(result+'\n\n'+x.body)+'</textarea></article>';}).join('');
+  document.getElementById('copyGenerated').onclick=()=>copyText(result);
+  renderQuality(result);
 }
-function savePromoPack(){
- if(!promoPackState.results.length)buildPromoPack();
- const name=document.getElementById('packName').value.trim()||'Promo paket '+new Date().toLocaleDateString('sr-RS');
- const packs=JSON.parse(localStorage.getItem('digitalSoulPromoPacks')||'[]');
- packs.unshift({id:Date.now(),name,goal:document.getElementById('packGoal').value,channels:promoPackState.channels,results:promoPackState.results,created:new Date().toISOString()});
- localStorage.setItem('digitalSoulPromoPacks',JSON.stringify(packs.slice(0,20)));
- localStorage.setItem('digitalSoulPromoPackDraft',JSON.stringify({name,channels:promoPackState.channels}));
- renderSavedPromoPacks();
+
+function initOfferEngine(){
+  const build=document.getElementById('buildOffer');
+  if(!build)return;
+  const saved=readJSON('digitalSoulOffer',{});
+  ['offerPrice','offerOldPrice','offerDiscount','offerDeadline','offerCode','offerMessage'].forEach(id=>{const el=document.getElementById(id);if(el&&saved[id]!=null)el.value=saved[id]});
+  build.onclick=()=>{
+    const offer={
+      offerType:document.getElementById('offerType').value,
+      offerPrice:textValue('offerPrice'),offerOldPrice:textValue('offerOldPrice'),offerDiscount:textValue('offerDiscount'),
+      offerDeadline:textValue('offerDeadline'),offerCode:textValue('offerCode'),offerMessage:textValue('offerMessage')
+    };
+    const price=parseFloat((offer.offerPrice||'').replace(',','.').replace(/[^\d.]/g,''));
+    const old=parseFloat((offer.offerOldPrice||'').replace(',','.').replace(/[^\d.]/g,''));
+    if(!offer.offerDiscount && price && old && old>price)offer.offerDiscount=Math.round((1-price/old)*100)+'%';
+    writeJSON('digitalSoulOffer',offer);
+    const preview=document.getElementById('offerPreview');
+    if(preview){preview.hidden=false;preview.innerHTML='<strong>'+esc(offer.offerType)+'</strong><h3>'+esc(offer.offerMessage||'Posebna ponuda')+'</h3><div class="offer-price">'+esc(offer.offerPrice||'Cena')+'</div>'+(offer.offerOldPrice?'<del>'+esc(offer.offerOldPrice)+'</del> ':'')+(offer.offerDiscount?'<span>'+esc(offer.offerDiscount)+'</span> ':'')+(offer.offerDeadline?'<small>Rok: '+esc(offer.offerDeadline)+'</small>':'')+(offer.offerCode?'<small>Promo kod: '+esc(offer.offerCode)+'</small>':'');}
+    const result=document.getElementById('offerResult');
+    if(result){result.hidden=false;result.innerHTML='<strong>Ponuda je sačuvana.</strong> Možeš je sada koristiti u Campaign Builder-u i Promo Pack-u.';}
+    refreshGeneratedAreas();
+  };
 }
-function renderSavedPromoPacks(){
- const wrap=document.getElementById('savedPacks');if(!wrap)return;
- const packs=JSON.parse(localStorage.getItem('digitalSoulPromoPacks')||'[]');
- if(!packs.length){wrap.innerHTML='<div class="saved-pack-empty">Još nema sačuvanih promo paketa.</div>';return}
- wrap.innerHTML=packs.map((p,i)=>'<article class="saved-pack"><strong>'+p.name+'</strong><small>'+p.channels.length+' kanala · '+new Date(p.created).toLocaleDateString('sr-RS')+'</small><div><button class="btn load-pack" data-index="'+i+'">Otvori</button><button class="btn delete-pack" data-index="'+i+'">Obriši</button></div></article>').join('');
- wrap.querySelectorAll('.load-pack').forEach(b=>b.onclick=()=>{const p=packs[Number(b.dataset.index)];document.getElementById('packName').value=p.name;document.getElementById('packGoal').value=p.goal;promoPackState.channels=p.channels;promoPackState.results=p.results;initPromoPackOrchestrator();initCco();initContentCalendar();document.getElementById('packResult').hidden=false;document.getElementById('packResult').innerHTML='<div class="pack-summary"><strong>'+p.name+'</strong><span>'+p.goal+'</span><span>'+p.results.length+' kanala</span></div><div class="pack-cards">'+p.results.map(x=>'<article class="pack-card"><div class="pack-card-head"><strong>'+x.channel+'</strong></div><h4>'+x.title+'</h4><textarea readonly>'+x.body+'</textarea><small>'+x.meta+'</small></article>').join('')+'</div>'});
- wrap.querySelectorAll('.delete-pack').forEach(b=>b.onclick=()=>{packs.splice(Number(b.dataset.index),1);localStorage.setItem('digitalSoulPromoPacks',JSON.stringify(packs));renderSavedPromoPacks()});
+
+function initCampaignBuilder2(){
+  const box=document.getElementById('campaign2Channels');
+  const build=document.getElementById('buildCampaign2');
+  if(!box||!build)return;
+  const channels=['Instagram','Facebook','Pinterest','TikTok','LinkedIn','Email','Web'];
+  box.innerHTML=channels.map((x,i)=>'<button type="button" class="campaign2-channel '+(i<3?'active':'')+'" data-channel="'+x+'">'+x+'</button>').join('');
+  box.querySelectorAll('.campaign2-channel').forEach(b=>b.onclick=()=>b.classList.toggle('active'));
+  build.onclick=()=>{
+    const p=productData();
+    const selected=[...box.querySelectorAll('.active')].map(x=>x.dataset.channel);
+    if(!selected.length){showBox('campaign2Result','Izaberi bar jedan kanal.');return;}
+    const goal=document.getElementById('campaign2Goal').value;
+    const audience=document.getElementById('campaign2Audience').value;
+    const offer=document.getElementById('campaign2Offer').value;
+    const cta=textValue('campaign2Cta')||p.cta;
+    const result=document.getElementById('campaign2Result');
+    result.hidden=false;
+    result.innerHTML='<div class="campaign-summary"><strong>'+esc(p.name)+'</strong><span>'+esc(goal)+'</span><span>'+esc(audience)+'</span><span>'+selected.length+' kanala</span></div><div class="campaign-channel-list">'+selected.map(ch=>'<article><strong>'+esc(ch)+'</strong><p>'+esc(p.benefit)+' · '+esc(offer)+' · CTA: '+esc(cta)+'</p></article>').join('')+'</div><button class="btn" id="campaign2Mockup">Nastavi u Mockup Studio</button>';
+    document.getElementById('campaign2Mockup').onclick=()=>location.href='mockup.html';
+    writeJSON('digitalSoulLastCampaign',{goal,audience,offer,cta,channels:selected});
+  };
 }
-\n
+
+const campaignPurposes=['Reklama','Prodaja','Akcija','Novi proizvod','Brend','Edukacija','Sezona','Lokalna promocija'];
+const campaignFormats=['Instagram objava','Story / Reel','Facebook objava','Pinterest pin','Promo poster','Banner'];
+
+function initCampaignBuilder(){
+  const ci=document.getElementById('campaignIndustry');
+  const cp=document.getElementById('campaignPurpose');
+  const cf=document.getElementById('campaignFormats');
+  const build=document.getElementById('buildCampaign');
+  if(!ci||!cp||!cf||!build)return;
+  ci.innerHTML=industryPacks.map(p=>'<option value="'+p.id+'">'+esc(p.name)+'</option>').join('');
+  cp.innerHTML=campaignPurposes.map(p=>'<option>'+esc(p)+'</option>').join('');
+  cf.innerHTML=campaignFormats.map((p,i)=>'<button type="button" class="campaign-format '+(i<3?'active':'')+'">'+esc(p)+'</button>').join('');
+  cf.querySelectorAll('.campaign-format').forEach(b=>b.onclick=()=>b.classList.toggle('active'));
+  build.onclick=()=>{
+    const ind=industryPacks.find(p=>p.id===ci.value)||industryPacks[0];
+    const selected=[...cf.querySelectorAll('.active')].map(x=>x.textContent);
+    const purpose=cp.value;
+    const result=document.getElementById('campaignResult');
+    if(!selected.length){result.hidden=false;result.textContent='Izaberi bar jedan format.';return;}
+    result.hidden=false;
+    result.innerHTML='<strong>'+esc(ind.name)+' · '+esc(purpose)+'</strong><p>Pripremljen paket za '+selected.length+' formata.</p><ul>'+selected.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul><button class="btn" id="openCampaignMockup">Nastavi u Mockup Studio</button>';
+    document.getElementById('openCampaignMockup').onclick=()=>location.href='mockup.html';
+    const brief=document.getElementById('contentBrief');
+    if(brief){brief.hidden=false;brief.innerHTML='<h3>Content Brief · '+esc(ind.name)+'</h3><div class="brief-grid">'+[['Hook','Privuci pažnju'],['Naslov','Jasna glavna poruka'],['Benefit','Objasni korist'],['Dokaz','Pokaži razlog za poverenje'],['CTA','Usmeri sledeći korak'],['Kanali',selected.join(' · ')]].map(x=>'<div class="brief-item"><strong>'+x[0]+'</strong>'+esc(x[1])+'</div>').join('')+'</div>';}
+  };
+}
+
+function initIndustryPacks(){
+  const wrap=document.getElementById('industryPacks');if(!wrap)return;
+  wrap.innerHTML=industryPacks.map(p=>'<button type="button" class="industry-pack" data-cat="'+p.cat+'"><strong>'+esc(p.name)+'</strong><small>'+esc(p.desc)+'</small></button>').join('');
+  wrap.querySelectorAll('.industry-pack').forEach(b=>b.onclick=()=>{
+    category=b.dataset.cat;
+    document.querySelectorAll('.category').forEach(x=>x.classList.toggle('active',x.dataset.category===category));
+    search.value='';
+    renderLibrary();
+    document.getElementById('libraryGrid')?.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+}
+
+function renderLibrary(){
+  if(!grid)return;
+  let q=search.value.toLowerCase().trim();
+  let list;
+  if(category==='mine'){
+    list=savedTemplates.map((t,i)=>({id:'saved-'+i,name:t.name||('Sačuvan šablon '+(i+1)),cat:'mine',label:'Moji šabloni',type:'saved',price:0,bg:t.bg||'#eee',wide:false,saved:t}));
+  }else{
+    list=templates.filter(t=>(category==='all'||t.cat===category)&&(!q||[t.name,t.label,t.cat].join(' ').toLowerCase().includes(q)));
+  }
+  if(sort?.value==='az')list.sort((a,b)=>a.name.localeCompare(b.name,'sr'));
+  if(sort?.value==='new')list=list.slice().reverse();
+  if(count)count.textContent=list.length+' šablona';
+  grid.innerHTML='';
+  if(empty)empty.hidden=list.length>0;
+  list.forEach(t=>{
+    const el=document.createElement('article');el.className='template-card';
+    el.innerHTML='<div class="template-preview '+(t.wide?'wide':'')+'" style="background:'+t.bg+'"></div><div class="template-info"><strong class="template-name">'+esc(t.name)+'</strong><small>'+esc(t.label)+'</small><div class="template-actions"><button class="btn use">Koristi šablon</button><button class="btn fav">'+(favorites.includes(t.id)?'♥':'♡')+'</button></div></div>';
+    el.querySelector('.fav').onclick=e=>{e.stopPropagation();favorites=favorites.includes(t.id)?favorites.filter(x=>x!==t.id):[...favorites,t.id];writeJSON('digitalSoulTemplateFavorites',favorites);renderLibrary();};
+    el.querySelector('.use').onclick=()=>{location.href='mockup.html'+(t.saved?'':'?template='+encodeURIComponent(t.id));};
+    el.querySelector('.template-name').onclick=()=>showTemplateDetails(t);
+    grid.appendChild(el);
+  });
+}
+
+function showTemplateDetails(t){
+  if(!details)return;
+  details.hidden=false;
+  details.innerHTML='<div class="template-details-preview '+(t.wide?'wide':'')+'" style="background:'+t.bg+'"></div><div class="template-details-info"><div class="kicker">TEMPLATE</div><h2>'+esc(t.name)+'</h2><p>Gotov šablon za '+esc(t.label)+'. Prilagodi sadržaj, boje, poziciju i format u Mockup Studio.</p><div class="template-tags"><span class="template-tag">'+esc(t.label)+'</span><span class="template-tag">'+(t.type==='premium'?'Premium':'Besplatno')+'</span><span class="template-tag">'+(t.price?'€'+t.price:'0 €')+'</span><span class="template-tag">'+esc(t.license||'Prilagodljiv')+'</span></div><div class="template-details-actions"><button id="detailUse" class="btn">Koristi ovaj šablon</button><button id="detailFav" class="btn">'+(favorites.includes(t.id)?'♥ U favoritima':'♡ Dodaj u favorite')+'</button><button id="detailClose" class="btn template-details-close">Zatvori</button></div></div>';
+  details.querySelector('#detailUse').onclick=()=>location.href='mockup.html'+(t.saved?'':'?template='+encodeURIComponent(t.id));
+  details.querySelector('#detailFav').onclick=()=>{favorites=favorites.includes(t.id)?favorites.filter(x=>x!==t.id):[...favorites,t.id];writeJSON('digitalSoulTemplateFavorites',favorites);showTemplateDetails(t);renderLibrary();};
+  details.querySelector('#detailClose').onclick=()=>details.hidden=true;
+  details.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function initLibrary(){
+  document.querySelectorAll('.category').forEach(b=>b.onclick=()=>{
+    category=b.dataset.category;
+    document.querySelectorAll('.category').forEach(x=>x.classList.toggle('active',x.dataset.category===category));
+    renderLibrary();
+  });
+  search?.addEventListener('input',renderLibrary);
+  sort?.addEventListener('change',renderLibrary);
+  document.getElementById('libraryFavorites')?.addEventListener('click',()=>{
+    category=category==='mine'?'all':'mine';
+    document.querySelectorAll('.category').forEach(x=>x.classList.toggle('active',x.dataset.category===category));
+    renderLibrary();
+  });
+  renderLibrary();
+}
+
 const ccoChannels=['Instagram','Facebook','Pinterest','TikTok','LinkedIn','Email','Web'];
 const ccoContent=[
- {type:'Hook',purpose:'Privuci pažnju',format:'Objava'},
- {type:'Problem → rešenje',purpose:'Pokaži potrebu',format:'Objava'},
- {type:'Edukacija',purpose:'Izgradi poverenje',format:'Carousel / Pin'},
- {type:'Benefit',purpose:'Objasni vrednost',format:'Reel'},
- {type:'Dokaz',purpose:'Podrži odluku',format:'Objava'},
- {type:'Story',purpose:'Poveži se sa publikom',format:'Story'},
- {type:'Ponuda',purpose:'Pokreni akciju',format:'Promo'},
- {type:'FAQ',purpose:'Ukloni prepreku',format:'Objava'},
- {type:'Behind the scenes',purpose:'Humanizuj brend',format:'Reel'},
- {type:'CTA',purpose:'Usmeri sledeći korak',format:'Objava'},
- {type:'Reminder',purpose:'Podseti publiku',format:'Story'},
- {type:'Recap',purpose:'Zaokruži kampanju',format:'Objava'}
+  ['Hook','Privuci pažnju','Objava'],
+  ['Problem → rešenje','Pokaži potrebu','Objava'],
+  ['Edukacija','Izgradi poverenje','Carousel / Pin'],
+  ['Benefit','Objasni vrednost','Reel'],
+  ['Dokaz','Podrži odluku','Objava'],
+  ['Story','Poveži se sa publikom','Story'],
+  ['Ponuda','Pokreni akciju','Promo'],
+  ['FAQ','Ukloni prepreku','Objava'],
+  ['Behind the scenes','Humanizuj brend','Reel'],
+  ['CTA','Usmeri sledeći korak','Objava'],
+  ['Reminder','Podseti publiku','Story'],
+  ['Recap','Zaokruži kampanju','Objava']
 ];
-let ccoState={extra:[],plan:[]};
+
 function initCco(){
- const box=document.getElementById('ccoChannels');if(!box)return;
- box.innerHTML=ccoChannels.map(x=>'<button type="button" class="cco-channel" data-channel="'+x+'">'+x+'</button>').join('');
- box.querySelectorAll('.cco-channel').forEach(b=>b.onclick=()=>{b.classList.toggle('active')});
- document.getElementById('buildCco').onclick=()=>buildCco(false);
- document.getElementById('regenCco').onclick=()=>buildCco(true);
- document.getElementById('saveCco').onclick=saveCco;
- document.getElementById('copyCco').onclick=copyCco;
- renderSavedCco();
+  const box=document.getElementById('ccoChannels');
+  if(!box)return;
+  box.innerHTML=ccoChannels.map(x=>'<button type="button" class="cco-channel" data-channel="'+x+'">'+x+'</button>').join('');
+  box.querySelectorAll('.cco-channel').forEach(b=>b.onclick=()=>b.classList.toggle('active'));
+  document.getElementById('buildCco')?.addEventListener('click',()=>buildCco(false));
+  document.getElementById('regenCco')?.addEventListener('click',()=>buildCco(true));
+  document.getElementById('saveCco')?.addEventListener('click',saveCco);
+  document.getElementById('copyCco')?.addEventListener('click',copyCco);
+  renderSavedCco();
 }
-function ccoData(){
- const p=JSON.parse(localStorage.getItem('digitalSoulProductInput')||'{}');
- const o=JSON.parse(localStorage.getItem('digitalSoulOffer')||'{}');
- return {name:p.productName||'Proizvod',benefit:p.productBenefit||'glavna korist',price:o.offerPrice||p.productPrice||'cena',cta:p.productCta||'Saznaj više'};
-}
-function ccoType(day,intensity,days){
- const base=ccoContent[(day-1)%ccoContent.length];
- if(intensity==='sales' && day%3===0)return {type:'Ponuda',purpose:'Prodajna poruka',format:'Promo'};
- if(intensity==='education' && day%3===1)return {type:'Edukacija',purpose:'Obrazovanje publike',format:'Carousel / Pin'};
- if(intensity==='brand' && day%3===2)return {type:'Story',purpose:'Brend priča',format:'Story'};
- return base;
-}
+
 function buildCco(regen){
- const days=Number(document.getElementById('ccoDays').value),goal=document.getElementById('ccoGoal').value,intensity=document.getElementById('ccoIntensity').value,primary=document.getElementById('ccoPrimary').value;
- const selected=[primary,...[...document.querySelectorAll('.cco-channel.active')].map(x=>x.dataset.channel).filter(x=>x!==primary)];
- const d=ccoData();
- ccoState.plan=Array.from({length:days},(_,i)=>{
-  const day=i+1,t=ccoType(day,intensity,days),channel=selected[(i+(regen?1:0))%selected.length];
-  const action=t.type==='Ponuda'?'Koristi Offer Engine + Visual Promo Engine':t.type==='Edukacija'?'Koristi Content Generator':'Generiši sadržaj za '+channel;
-  return {day,channel,type:t.type,purpose:t.purpose,format:t.format,action,topic:d.name+' — '+d.benefit,cta:d.cta};
- });
- renderCco(goal,primary);
+  const days=Number(document.getElementById('ccoDays')?.value||7);
+  const goal=document.getElementById('ccoGoal')?.value||'Prodaja';
+  const intensity=document.getElementById('ccoIntensity')?.value||'balanced';
+  const primary=document.getElementById('ccoPrimary')?.value||'Instagram';
+  const extras=[...document.querySelectorAll('.cco-channel.active')].map(x=>x.dataset.channel).filter(x=>x!==primary);
+  const channels=[primary,...extras];
+  const p=productData();
+  ccoState.plan=Array.from({length:days},(_,i)=>{
+    let type=ccoContent[(i+(regen?1:0))%ccoContent.length];
+    if(intensity==='sales'&&i%3===2)type=['Ponuda','Pokreni akciju','Promo'];
+    if(intensity==='education'&&i%3===0)type=['Edukacija','Obrazuj publiku','Carousel / Pin'];
+    if(intensity==='brand'&&i%3===1)type=['Story','Brend priča','Story'];
+    const channel=channels[i%channels.length];
+    return {day:i+1,channel,type:type[0],purpose:type[1],format:type[2],topic:p.name+' — '+p.benefit,cta:p.cta};
+  });
+  const box=document.getElementById('ccoResult');if(!box)return;
+  box.hidden=false;
+  box.innerHTML='<div class="cco-summary"><strong>'+esc(p.name)+'</strong><span>'+esc(goal)+'</span><span>'+days+' dana</span><span>Primarni: '+esc(primary)+'</span></div><div class="cco-timeline">'+ccoState.plan.map(x=>'<article class="cco-day"><div class="cco-day-num">DAN '+x.day+'</div><div><strong>'+esc(x.type)+'</strong><small>'+esc(x.channel)+' · '+esc(x.format)+'</small><p>'+esc(x.topic)+'</p><em>'+esc(x.purpose)+'</em><div class="cco-next">CTA: '+esc(x.cta)+'</div></div></article>').join('')+'</div>';
 }
-function renderCco(goal,primary){
- const box=document.getElementById('ccoResult');box.hidden=false;
- box.innerHTML='<div class="cco-summary"><strong>'+ccoData().name+'</strong><span>'+goal+'</span><span>'+ccoState.plan.length+' dana</span><span>Primarni: '+primary+'</span></div><div class="cco-timeline">'+ccoState.plan.map(x=>'<article class="cco-day"><div class="cco-day-num">DAN '+x.day+'</div><div><strong>'+x.type+'</strong><small>'+x.channel+' · '+x.format+'</small><p>'+x.topic+'</p><em>'+x.purpose+'</em><div class="cco-next">'+x.action+'</div></div></article>').join('')+'</div>';
-}
-function copyCco(){
- if(!ccoState.plan.length)buildCco(false);
- navigator.clipboard?.writeText(ccoState.plan.map(x=>'Dan '+x.day+' | '+x.channel+' | '+x.type+' | '+x.topic+' | '+x.action).join('\n'));
-}
+
 function saveCco(){
- if(!ccoState.plan.length)buildCco(false);
- const plans=JSON.parse(localStorage.getItem('digitalSoulContentCampaignPlans')||'[]');
- plans.unshift({id:Date.now(),name:ccoData().name+' kampanja',goal:document.getElementById('ccoGoal').value,days:ccoState.plan.length,plan:ccoState.plan,created:new Date().toISOString()});
- localStorage.setItem('digitalSoulContentCampaignPlans',JSON.stringify(plans.slice(0,20)));renderSavedCco();
+  if(!ccoState.plan.length)buildCco(false);
+  const plans=readJSON('digitalSoulContentCampaignPlans',[]);
+  plans.unshift({id:Date.now(),name:productData().name+' kampanja',goal:document.getElementById('ccoGoal')?.value||'Prodaja',days:ccoState.plan.length,plan:ccoState.plan,created:new Date().toISOString()});
+  writeJSON('digitalSoulContentCampaignPlans',plans.slice(0,20));
+  renderSavedCco();
 }
 function renderSavedCco(){
- const box=document.getElementById('ccoSavedList');if(!box)return;
- const plans=JSON.parse(localStorage.getItem('digitalSoulContentCampaignPlans')||'[]');
- box.innerHTML=plans.length?plans.map((p,i)=>'<article class="cco-saved-item"><strong>'+p.name+'</strong><small>'+p.days+' dana · '+new Date(p.created).toLocaleDateString('sr-RS')+'</small><button class="btn cco-open" data-i="'+i+'">Otvori</button><button class="btn cco-delete" data-i="'+i+'">Obriši</button></article>').join(''):'<span class="cco-empty">Još nema sačuvanih planova.</span>';
- box.querySelectorAll('.cco-open').forEach(b=>b.onclick=()=>{const p=plans[Number(b.dataset.i)];ccoState.plan=p.plan;document.getElementById('ccoResult').hidden=false;renderCco(p.goal,'Sačuvano')});
- box.querySelectorAll('.cco-delete').forEach(b=>b.onclick=()=>{plans.splice(Number(b.dataset.i),1);localStorage.setItem('digitalSoulContentCampaignPlans',JSON.stringify(plans));renderSavedCco()});
+  const box=document.getElementById('ccoSavedList');if(!box)return;
+  const plans=readJSON('digitalSoulContentCampaignPlans',[]);
+  box.innerHTML=plans.length?plans.map((p,i)=>'<article class="cco-saved-item"><strong>'+esc(p.name)+'</strong><small>'+p.days+' dana · '+new Date(p.created).toLocaleDateString('sr-RS')+'</small><button class="btn cco-open" data-i="'+i+'">Otvori</button><button class="btn cco-delete" data-i="'+i+'">Obriši</button></article>').join(''):'<span class="cco-empty">Još nema sačuvanih planova.</span>';
+  box.querySelectorAll('.cco-open').forEach(b=>b.onclick=()=>{const p=plans[Number(b.dataset.i)];ccoState.plan=p.plan||[];const result=document.getElementById('ccoResult');if(result){result.hidden=false;result.innerHTML='<div class="cco-summary"><strong>'+esc(p.name)+'</strong><span>'+esc(p.goal)+'</span><span>'+p.days+' dana</span></div><div class="cco-timeline">'+ccoState.plan.map(x=>'<article class="cco-day"><div class="cco-day-num">DAN '+x.day+'</div><div><strong>'+esc(x.type)+'</strong><small>'+esc(x.channel)+' · '+esc(x.format)+'</small><p>'+esc(x.topic)+'</p><em>'+esc(x.purpose)+'</em></div></article>').join('')+'</div>';}}});
+  box.querySelectorAll('.cco-delete').forEach(b=>b.onclick=()=>{plans.splice(Number(b.dataset.i),1);writeJSON('digitalSoulContentCampaignPlans',plans);renderSavedCco();});
 }
+function copyCco(){if(!ccoState.plan.length)buildCco(false);copyText(ccoState.plan.map(x=>'Dan '+x.day+' | '+x.channel+' | '+x.type+' | '+x.topic+' | CTA: '+x.cta).join('\n'));}
 
-
-const calendarStatuses=['Ideja','U izradi','Spremno','Zakazano','Objavljeno'];
-let calendarItems=[];
-let calendarEditIndex=null;
-function calendarToday(){return new Date().toISOString().slice(0,10)}
 function initContentCalendar(){
- const saved=JSON.parse(localStorage.getItem('digitalSoulContentCalendar')||'[]');
- calendarItems=Array.isArray(saved)?saved:[];
- document.getElementById('calendarView').onchange=renderCalendar;
- document.getElementById('calendarFilter').onchange=renderCalendar;
- document.getElementById('calendarAdd').onclick=()=>openCalendarEditor();
- document.getElementById('calendarImportPlan').onclick=importLatestCalendarPlan;
- document.getElementById('calSave').onclick=saveCalendarItem;
- document.getElementById('calCancel').onclick=closeCalendarEditor;
- renderCalendar();
+  calendarItems=readJSON('digitalSoulContentCalendar',[]);
+  document.getElementById('calendarView')?.addEventListener('change',renderCalendar);
+  document.getElementById('calendarFilter')?.addEventListener('change',renderCalendar);
+  document.getElementById('calendarAdd')?.addEventListener('click',()=>openCalendarEditor());
+  document.getElementById('calendarImportPlan')?.addEventListener('click',importLatestCalendarPlan);
+  document.getElementById('calSave')?.addEventListener('click',saveCalendarItem);
+  document.getElementById('calCancel')?.addEventListener('click',closeCalendarEditor);
+  renderCalendar();
 }
-function persistCalendar(){localStorage.setItem('digitalSoulContentCalendar',JSON.stringify(calendarItems))}
+const calendarStatuses=['Ideja','U izradi','Spremno','Zakazano','Objavljeno'];
+function saveCalendar(){writeJSON('digitalSoulContentCalendar',calendarItems);}
 function openCalendarEditor(index=null){
- calendarEditIndex=index;
- const e=document.getElementById('calendarEditor');e.hidden=false;
- const x=index===null?{title:'',date:calendarToday(),channel:'Instagram',status:'Ideja',note:''}:calendarItems[index];
- document.getElementById('calTitle').value=x.title||'';document.getElementById('calDate').value=x.date||calendarToday();document.getElementById('calChannel').value=x.channel||'Instagram';document.getElementById('calStatus').value=x.status||'Ideja';document.getElementById('calNote').value=x.note||'';
- e.scrollIntoView({behavior:'smooth',block:'center'});
+  calendarEditIndex=index;
+  const editor=document.getElementById('calendarEditor');if(!editor)return;
+  const item=index==null?{title:'',date:new Date().toISOString().slice(0,10),channel:'Instagram',status:'Ideja',note:''}:calendarItems[index];
+  document.getElementById('calTitle').value=item.title||'';
+  document.getElementById('calDate').value=item.date||new Date().toISOString().slice(0,10);
+  document.getElementById('calChannel').value=item.channel||'Instagram';
+  document.getElementById('calStatus').value=item.status||'Ideja';
+  document.getElementById('calNote').value=item.note||'';
+  editor.hidden=false;
+  editor.scrollIntoView({behavior:'smooth',block:'center'});
 }
-function closeCalendarEditor(){document.getElementById('calendarEditor').hidden=true;calendarEditIndex=null}
+function closeCalendarEditor(){const x=document.getElementById('calendarEditor');if(x)x.hidden=true;calendarEditIndex=null;}
 function saveCalendarItem(){
- const item={title:document.getElementById('calTitle').value.trim()||'Novi sadržaj',date:document.getElementById('calDate').value||calendarToday(),channel:document.getElementById('calChannel').value,status:document.getElementById('calStatus').value,note:document.getElementById('calNote').value.trim()};
- if(calendarEditIndex===null)calendarItems.push({...item,id:Date.now()});else calendarItems[calendarEditIndex]={...calendarItems[calendarEditIndex],...item};
- persistCalendar();closeCalendarEditor();renderCalendar();
+  const item={title:textValue('calTitle')||'Novi sadržaj',date:textValue('calDate')||new Date().toISOString().slice(0,10),channel:document.getElementById('calChannel').value,status:document.getElementById('calStatus').value,note:textValue('calNote')};
+  if(calendarEditIndex==null)calendarItems.push({...item,id:Date.now()});else calendarItems[calendarEditIndex]={...calendarItems[calendarEditIndex],...item};
+  saveCalendar();closeCalendarEditor();renderCalendar();
 }
 function importLatestCalendarPlan(){
- const plans=JSON.parse(localStorage.getItem('digitalSoulContentCampaignPlans')||'[]');
- if(!plans.length){alert('Nema sačuvanog kampanjskog plana.');return}
- const p=plans[0],start=new Date();
- const imported=p.plan.map((x,i)=>{const d=new Date(start);d.setDate(start.getDate()+i);return{id:Date.now()+i,title:x.type+' — '+x.topic,date:d.toISOString().slice(0,10),channel:x.channel,status:'Ideja',note:x.action}});
- calendarItems=[...calendarItems,...imported];persistCalendar();renderCalendar();
-}
-function filteredCalendar(){
- const f=document.getElementById('calendarFilter').value;
- return calendarItems.filter(x=>f==='all'||x.status===f).sort((a,b)=>a.date.localeCompare(b.date));
+  const plans=readJSON('digitalSoulContentCampaignPlans',[]);
+  if(!plans.length){showBox('calendarBoard','Nema sačuvanog kampanjskog plana.');return;}
+  const start=new Date();
+  const imported=(plans[0].plan||[]).map((x,i)=>{const d=new Date(start);d.setDate(start.getDate()+i);return{id:Date.now()+i,title:x.type+' — '+x.topic,date:d.toISOString().slice(0,10),channel:x.channel,status:'Ideja',note:x.purpose+' · CTA: '+x.cta};});
+  calendarItems=[...calendarItems,...imported];saveCalendar();renderCalendar();
 }
 function renderCalendar(){
- const board=document.getElementById('calendarBoard');if(!board)return;
- const items=filteredCalendar(),view=document.getElementById('calendarView').value;
- const counts={};calendarStatuses.forEach(s=>counts[s]=calendarItems.filter(x=>x.status===s).length);
- document.getElementById('calendarStats').innerHTML=calendarStatuses.map(s=>'<div class="calendar-stat"><strong>'+counts[s]+'</strong><span>'+s+'</span></div>').join('');
- if(!items.length){board.innerHTML='<div class="calendar-empty">Nema sadržaja za izabrani filter. Dodaj sadržaj ili uvezi kampanjski plan.</div>';return}
- if(view==='list'){board.innerHTML='<div class="calendar-list">'+items.map((x)=>calendarCard(x,calendarItems.indexOf(x))).join('')+'</div>'}
- else if(view==='month'){renderCalendarGrid(board,items,true)}
- else {renderCalendarGrid(board,items,false)}
- board.querySelectorAll('.calendar-edit').forEach(b=>b.onclick=()=>openCalendarEditor(Number(b.dataset.i)));
- board.querySelectorAll('.calendar-delete').forEach(b=>b.onclick=()=>{calendarItems.splice(Number(b.dataset.i),1);persistCalendar();renderCalendar()});
- board.querySelectorAll('.calendar-status').forEach(s=>s.onchange=()=>{calendarItems[Number(s.dataset.i)].status=s.value;persistCalendar();renderCalendar()});
-}
-function calendarCard(x,i){
- return '<article class="calendar-card"><div class="calendar-card-top"><small>'+x.date+'</small><span class="calendar-channel">'+x.channel+'</span></div><strong>'+x.title+'</strong><p>'+x.note+'</p><select class="calendar-status" data-i="'+i+'">'+calendarStatuses.map(s=>'<option '+(x.status===s?'selected':'')+'>'+s+'</option>').join('')+'</select><button class="btn calendar-edit" data-i="'+i+'">Uredi</button><button class="btn calendar-delete" data-i="'+i+'">Obriši</button></article>'
-}
-function renderCalendarGrid(board,items,month){
- const grouped={};items.forEach(x=>(grouped[x.date]??=[]).push(x));
- const dates=Object.keys(grouped);
- board.innerHTML='<div class="calendar-grid">'+dates.map(d=>'<div class="calendar-day"><div class="calendar-day-head"><strong>'+new Date(d+'T12:00:00').toLocaleDateString('sr-RS',{weekday:'short',day:'numeric',month:'short'})+'</strong><span>'+grouped[d].length+'</span></div>'+grouped[d].map(x=>calendarCard(x,calendarItems.indexOf(x))).join('')+'</div>').join('')+'</div>';
+  const board=document.getElementById('calendarBoard');if(!board)return;
+  const filter=document.getElementById('calendarFilter')?.value||'all';
+  const items=calendarItems.filter(x=>filter==='all'||x.status===filter).sort((a,b)=>a.date.localeCompare(b.date));
+  const stats=document.getElementById('calendarStats');
+  if(stats)stats.innerHTML=calendarStatuses.map(s=>'<div class="calendar-stat"><strong>'+calendarItems.filter(x=>x.status===s).length+'</strong><span>'+s+'</span></div>').join('');
+  if(!items.length){board.innerHTML='<div class="calendar-empty">Nema sadržaja za izabrani filter. Dodaj sadržaj ili uvezi kampanjski plan.</div>';return;}
+  board.innerHTML='<div class="calendar-list">'+items.map(x=>{const i=calendarItems.indexOf(x);return '<article class="calendar-card"><div class="calendar-card-top"><small>'+esc(x.date)+'</small><span class="calendar-channel">'+esc(x.channel)+'</span></div><strong>'+esc(x.title)+'</strong><p>'+esc(x.note)+'</p><select class="calendar-status" data-i="'+i+'">'+calendarStatuses.map(s=>'<option '+(x.status===s?'selected':'')+'>'+s+'</option>').join('')+'</select><button class="btn calendar-edit" data-i="'+i+'">Uredi</button><button class="btn calendar-delete" data-i="'+i+'">Obriši</button></article>';}).join('')+'</div>';
+  board.querySelectorAll('.calendar-edit').forEach(b=>b.onclick=()=>openCalendarEditor(Number(b.dataset.i)));
+  board.querySelectorAll('.calendar-delete').forEach(b=>b.onclick=()=>{calendarItems.splice(Number(b.dataset.i),1);saveCalendar();renderCalendar();});
+  board.querySelectorAll('.calendar-status').forEach(s=>s.onchange=()=>{calendarItems[Number(s.dataset.i)].status=s.value;saveCalendar();renderCalendar();});
 }
 
-document.querySelectorAll('.category').forEach(x=>x.classList.toggle('active',x.dataset.category===category));search.value=p.name.split(' ')[0];render();renderIndustryPacks();document.getElementById('libraryGrid').scrollIntoView({behavior:'smooth',block:'start'})};wrap.appendChild(el)})
+function initVisualPromoEngine(){
+  const fs=document.getElementById('promoFormat');if(!fs)return;
+  fs.innerHTML=promoFormats.map(x=>'<option value="'+x.id+'">'+esc(x.name)+' · '+esc(x.size)+'</option>').join('');
+  fs.value=promoState.format;
+  document.getElementById('promoStyle').onchange=e=>{promoState.style=e.target.value;renderPromo();};
+  fs.onchange=e=>{promoState.format=e.target.value;renderPromo();};
+  document.getElementById('promoBrand').onchange=renderPromo;
+  document.getElementById('buildPromo').onclick=()=>{promoState.variant=0;renderPromo();};
+  document.getElementById('makeFivePromos').onclick=()=>renderPromoVariants();
+  document.getElementById('visualOnly').onclick=()=>{const keys=Object.keys(promoStyles),i=keys.indexOf(promoState.style);promoState.style=keys[(i+1)%keys.length];document.getElementById('promoStyle').value=promoState.style;renderPromo();};
+  document.getElementById('textOnly').onclick=()=>{promoState.variant++;renderPromo();};
+  document.getElementById('priceOnly').onclick=()=>{promoState.variant++;renderPromo();};
+  document.getElementById('ctaOnly').onclick=()=>{promoState.variant++;renderPromo();};
+  document.getElementById('downloadPromoPack').onclick=downloadPromoPack;
+  document.getElementById('createWholePromo').onclick=()=>renderPromoVariants(true);
+  renderPromo();
 }
-function render(){
-let q=(search.value||'').toLowerCase().trim(), list;
-if(category==='mine'){
- list=saved.map((t,i)=>({id:'saved-'+i,name:t.name||('Sačuvan šablon '+(i+1)),cat:'mine',label:'Moji šabloni',bg:t.bg||'#eee',wide:false,saved:t}));
-}else{
- list=templates.filter(t=>(category==='all'||category===t.cat)&&(!q||[t.name,t.label,t.cat].join(' ').toLowerCase().includes(q)));
+function promoData(){
+  const p=productData(),o=readJSON('digitalSoulOffer',{});
+  return {name:p.name,price:o.offerPrice||p.price,oldPrice:o.offerOldPrice||'',discount:o.offerDiscount||'',deadline:o.offerDeadline||'',code:o.offerCode||'',message:o.offerMessage||p.benefit,cta:p.cta};
 }
-if(sort.value==='az')list.sort((a,b)=>a.name.localeCompare(b.name));else if(sort.value==='new')list.reverse();
-count.textContent=list.length+' šablona';grid.innerHTML='';empty.hidden=!!list.length;
-list.forEach(t=>{
- const el=document.createElement('article');el.className='template-card';
- el.innerHTML='<div class="template-preview '+(t.wide?'wide':'')+'" style="background:'+t.bg+'"></div><div class="template-info"><strong>'+t.name+'</strong><small>'+t.label+'</small><div class="template-actions"><button class="btn use">Koristi šablon</button><button class="btn fav">'+(favorites.includes(t.id)?'♥':'♡')+'</button></div></div>';
- el.querySelector('.fav').onclick=()=>{favorites=favorites.includes(t.id)?favorites.filter(x=>x!==t.id):[...favorites,t.id];localStorage.setItem('digitalSoulTemplateFavorites',JSON.stringify(favorites));render()};
- el.querySelector('.use').onclick=()=>location.href='mockup.html'+(t.saved?'':'?template='+encodeURIComponent(t.id));
-el.querySelector('.template-info strong').onclick=()=>showDetails(t);
- grid.appendChild(el)
-})}
-function showDetails(t){
- if(!details)return;
- details.hidden=false;
- details.innerHTML='<div class="template-details-preview '+(t.wide?'wide':'')+'" style="background:'+t.bg+'"></div><div class="template-details-info"><div class="kicker">TEMPLATE</div><h2>'+t.name+'</h2><p>Gotov šablon za '+t.label+'. Prilagodi boje, sadržaj, poziciju i format u Mockup Studio.</p><div class="template-tags"><span class="template-tag">'+t.label+'</span><span class="template-tag">'+(t.type==='premium'?'Premium':'Besplatno')+'</span><span class="template-tag">'+(t.price?'€'+t.price:'0 €')+'</span><span class="template-tag">'+(t.license||'Prilagodljiv')+'</span></div><div class="template-details-actions"><button id="detailUse" class="btn">Koristi ovaj šablon</button><button id="detailFav" class="btn">'+(favorites.includes(t.id)?'♥ U favoritima':'♡ Dodaj u favorite')+'</button><button id="detailClose" class="btn template-details-close">Zatvori</button></div></div>';
- details.querySelector('#detailUse').onclick=()=>location.href='mockup.html'+(t.saved?'':'?template='+encodeURIComponent(t.id));
- details.querySelector('#detailFav').onclick=()=>{favorites=favorites.includes(t.id)?favorites.filter(x=>x!==t.id):[...favorites,t.id];localStorage.setItem('digitalSoulTemplateFavorites',JSON.stringify(favorites));showDetails(t);render()};
- details.querySelector('#detailClose').onclick=()=>{details.hidden=true};
- details.scrollIntoView({behavior:'smooth',block:'start'});
+function promoCopy(d,v){
+  const headlines=[d.message,d.name+' — sada dostupno','Posebna ponuda za '+d.name,'Vreme je za '+d.name,'Otkrij '+d.name];
+  const ctas=[d.cta,'Poruči danas','Saznaj više','Javi se za detalje','Iskoristi ponudu'];
+  return {headline:headlines[v%headlines.length],cta:ctas[v%ctas.length]};
 }
-document.querySelectorAll('.category').forEach(b=>b.onclick=()=>{category=b.dataset.category;document.querySelectorAll('.category').forEach(x=>x.classList.remove('active'));b.classList.add('active');render()});
-search.oninput=render;sort.onchange=render;initCampaignBuilder();initProductInput();initCorrectionEngine();initRepurposeEngine();initAudienceEngine();initCampaignBuilder2();initOfferEngine();initVisualPromoEngine();initPromoPackOrchestrator();document.getElementById('generateContent')?.addEventListener('click',generateContent);document.getElementById('libraryFavorites').onclick=()=>{category=category==='mine'?'all':'mine';document.querySelectorAll('.category').forEach(x=>x.classList.toggle('active',x.dataset.category===category));render()};render();
+function renderPromo(){
+  const box=document.getElementById('promoPreview');if(!box)return;
+  const d=promoData(),copy=promoCopy(d,promoState.variant),style=promoStyles[promoState.style],fmt=promoFormats.find(x=>x.id===promoState.format)||promoFormats[0];
+  box.hidden=false;
+  box.innerHTML='<div class="promo-canvas" style="background:'+style.bg+';color:'+style.text+';font-family:'+style.font+'"><div class="promo-brand">'+esc(document.getElementById('promoBrand').value==='Bez brenda'?'':document.getElementById('promoBrand').value)+'</div><div class="promo-badge" style="color:'+style.accent+'">'+esc(d.discount||'PROMO')+'</div><div class="promo-copy"><div class="promo-format-label" style="color:'+style.accent+'">'+esc(fmt.name)+'</div><h3>'+esc(copy.headline)+'</h3><p>'+esc(d.message)+'</p><div class="promo-prices">'+(d.oldPrice?'<del>'+esc(d.oldPrice)+'</del> ':'')+'<strong>'+esc(d.price)+'</strong></div><div class="promo-meta">'+(d.deadline?'Rok: '+esc(d.deadline)+' · ':'')+(d.code?'Kod: '+esc(d.code):'')+'</div><button type="button">'+esc(copy.cta)+'</button></div></div><div class="promo-spec"><strong>'+esc(fmt.name)+'</strong><span>'+esc(fmt.size)+'</span><span>Stil: '+esc(promoState.style)+'</span></div>';
+}
+function renderPromoVariants(full){
+  const wrap=document.getElementById('promoVariants');if(!wrap)return;
+  const d=promoData();wrap.hidden=false;
+  wrap.innerHTML=Object.keys(promoStyles).map((style,i)=>{const c=promoCopy(d,i),s=promoStyles[style];return '<article class="promo-variant"><div class="promo-mini" style="background:'+s.bg+';color:'+s.text+';font-family:'+s.font+'"><small style="color:'+s.accent+'">'+esc(d.discount||'PROMO')+'</small><strong>'+esc(c.headline)+'</strong><span>'+esc(d.price)+'</span><em>'+esc(c.cta)+'</em></div><div class="promo-variant-info">Varijanta '+(i+1)+' · '+esc(style)+'</div></article>';}).join('');
+  wrap.querySelectorAll('.promo-variant').forEach((el,i)=>el.onclick=()=>{promoState.style=Object.keys(promoStyles)[i];promoState.variant=i;document.getElementById('promoStyle').value=promoState.style;renderPromo();});
+  if(full)document.getElementById('promoPreview')?.scrollIntoView({behavior:'smooth',block:'center'});
+}
+function downloadPromoPack(){
+  const d=promoData(),fmt=promoFormats.find(x=>x.id===promoState.format)||promoFormats[0];
+  downloadText('digital-soul-promo-'+fmt.id+'.txt',[fmt.name,fmt.size,'',d.name,d.message,d.oldPrice?'Stara cena: '+d.oldPrice:'',d.price?'Cena: '+d.price:'',d.discount?'Popust: '+d.discount:'',d.deadline?'Rok: '+d.deadline:'',d.code?'Promo kod: '+d.code:'',d.cta?'CTA: '+d.cta:''].filter(Boolean).join('\n'));
+}
+
+const packChannels=[
+  {id:'instagram',name:'Instagram objava',channel:'Instagram'},
+  {id:'story',name:'Story / Reel',channel:'Story / Reel'},
+  {id:'facebook',name:'Facebook',channel:'Facebook'},
+  {id:'pinterest',name:'Pinterest',channel:'Pinterest'},
+  {id:'tiktok',name:'TikTok',channel:'Video scenario'},
+  {id:'linkedin',name:'LinkedIn',channel:'LinkedIn'},
+  {id:'email',name:'Email',channel:'Email'},
+  {id:'web',name:'Web',channel:'Oglas'}
+];
+
+function initPromoPackOrchestrator(){
+  const wrap=document.getElementById('packChannels');if(!wrap)return;
+  const draft=readJSON('digitalSoulPromoPackDraft',{});
+  if(draft.channels)promoPackState.channels=draft.channels;
+  if(draft.name)document.getElementById('packName').value=draft.name;
+  wrap.innerHTML=packChannels.map(x=>'<button type="button" class="pack-channel '+(promoPackState.channels.includes(x.id)?'active':'')+'" data-id="'+x.id+'">'+esc(x.name)+'</button>').join('');
+  wrap.querySelectorAll('.pack-channel').forEach(b=>b.onclick=()=>{const id=b.dataset.id;promoPackState.channels=promoPackState.channels.includes(id)?promoPackState.channels.filter(x=>x!==id):[...promoPackState.channels,id];b.classList.toggle('active',promoPackState.channels.includes(id));});
+  document.getElementById('buildPack').onclick=()=>buildPromoPack(false);
+  document.getElementById('refreshPack').onclick=()=>buildPromoPack(true);
+  document.getElementById('copyPack').onclick=copyPromoPack;
+  document.getElementById('savePack').onclick=savePromoPack;
+  document.getElementById('openPackMockup').onclick=()=>location.href='mockup.html';
+  renderSavedPromoPacks();
+}
+function buildPromoPack(regenerate){
+  if(!promoPackState.channels.length){showBox('packWarnings','Izaberi najmanje jedan kanal.');return;}
+  const p=productData(),o=readJSON('digitalSoulOffer',{});
+  const channels=promoPackState.channels.map(id=>packChannels.find(x=>x.id===id)).filter(Boolean);
+  promoPackState.results=channels.map((x,i)=>{const content=makeChannelContent(x.channel);if(regenerate)content.body+='\\n\\nVarijanta '+(i+1)+' generisana ponovo.';return {id:x.id,channel:x.name,title:content.title,body:content.body,meta:p.name+' · '+(o.offerPrice||p.price)};});
+  const result=document.getElementById('packResult');if(!result)return;
+  result.hidden=false;
+  result.innerHTML='<div class="pack-summary"><strong>'+esc(p.name)+'</strong><span>'+esc(document.getElementById('packGoal').value)+'</span><span>'+promoPackState.results.length+' kanala</span></div><div class="pack-cards">'+promoPackState.results.map((x,i)=>'<article class="pack-card"><div class="pack-card-head"><strong>'+esc(x.channel)+'</strong><button class="btn pack-copy" data-i="'+i+'">Kopiraj</button></div><h4>'+esc(x.title)+'</h4><textarea readonly>'+esc(x.body)+'</textarea><small>'+esc(x.meta)+'</small></article>').join('')+'</div>';
+  result.querySelectorAll('.pack-copy').forEach(b=>b.onclick=()=>copyText(promoPackState.results[Number(b.dataset.i)].title+'\n\n'+promoPackState.results[Number(b.dataset.i)].body));
+}
+function copyPromoPack(){if(!promoPackState.results.length)buildPromoPack(false);copyText(promoPackState.results.map(x=>'## '+x.channel+'\n'+x.title+'\n\n'+x.body).join('\n\n'));}
+function savePromoPack(){
+  if(!promoPackState.results.length)buildPromoPack(false);
+  const packs=readJSON('digitalSoulPromoPacks',[]);
+  const name=textValue('packName')||'Promo paket '+new Date().toLocaleDateString('sr-RS');
+  packs.unshift({id:Date.now(),name,goal:document.getElementById('packGoal').value,channels:promoPackState.channels,results:promoPackState.results,created:new Date().toISOString()});
+  writeJSON('digitalSoulPromoPacks',packs.slice(0,20));
+  writeJSON('digitalSoulPromoPackDraft',{name,channels:promoPackState.channels});
+  renderSavedPromoPacks();
+}
+function renderSavedPromoPacks(){
+  const box=document.getElementById('savedPacks');if(!box)return;
+  const packs=readJSON('digitalSoulPromoPacks',[]);
+  box.innerHTML=packs.length?packs.map((p,i)=>'<article class="saved-pack"><strong>'+esc(p.name)+'</strong><small>'+p.channels.length+' kanala · '+new Date(p.created).toLocaleDateString('sr-RS')+'</small><div><button class="btn load-pack" data-i="'+i+'">Otvori</button><button class="btn delete-pack" data-i="'+i+'">Obriši</button></div></article>').join(''):'<div class="saved-pack-empty">Još nema sačuvanih promo paketa.</div>';
+  box.querySelectorAll('.load-pack').forEach(b=>b.onclick=()=>{const p=packs[Number(b.dataset.i)];document.getElementById('packName').value=p.name;document.getElementById('packGoal').value=p.goal;promoPackState.channels=p.channels;promoPackState.results=p.results;buildPromoPack(false);});
+  box.querySelectorAll('.delete-pack').forEach(b=>b.onclick=()=>{packs.splice(Number(b.dataset.i),1);writeJSON('digitalSoulPromoPacks',packs);renderSavedPromoPacks();});
+}
+
+function refreshGeneratedAreas(){
+  const correction=textValue('correctionInput');
+  if(correction)renderQuality(correction);
+  if(document.getElementById('promoPreview')&&!document.getElementById('promoPreview').hidden)renderPromo();
+}
+
+function showBox(id,message){
+  const box=document.getElementById(id);if(!box)return;box.hidden=false;box.textContent=message;
+}
+function copyText(text){
+  if(navigator.clipboard?.writeText)navigator.clipboard.writeText(String(text)).catch(()=>downloadText('digital-soul-copy.txt',String(text)));
+  else downloadText('digital-soul-copy.txt',String(text));
+}
+function downloadText(filename,text){
+  const blob=new Blob([String(text)],{type:'text/plain;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  initLibrary();
+  initIndustryPacks();
+  initProductInput();
+  initCorrectionEngine();
+  initRepurposeEngine();
+  initAudienceEngine();
+  initCampaignBuilder();
+  initCampaignBuilder2();
+  initOfferEngine();
+  initCco();
+  initContentCalendar();
+  initVisualPromoEngine();
+  initPromoPackOrchestrator();
+  document.getElementById('generateContent')?.addEventListener('click',generateContent);
+  renderQuality(textValue('correctionInput'));
+});
