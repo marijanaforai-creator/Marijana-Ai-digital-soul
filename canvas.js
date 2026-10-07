@@ -488,6 +488,35 @@ document.getElementById('sendToMockup').onclick=async()=>{
     if(btn)btn.disabled=false;
   }
 };
+const scanCanvasText=localStorage.getItem('marijanaScanToCanvas');
+if(scanCanvasText){
+  const el={
+    id:nextId++,
+    name:'OCR tekst',
+    type:'text',
+    frameShape:'',
+    visible:true,
+    locked:false,
+    x:70,y:70,w:460,h:180,rotation:0,opacity:100,
+    color:'#252522',
+    text:scanCanvasText,
+    fontSize:22,
+    fontFamily:'DM Sans',
+    fontWeight:500,
+    letterSpacing:0,
+    lineHeight:1.35,
+    textAlign:'left',
+    textTransform:'none',
+    fontStyle:'normal',
+    textDecoration:'none',
+    textShadow:false,
+    highlightColor:'',
+    src:''
+  };
+  current().elements.push(el);
+  selectedId=el.id;
+  localStorage.removeItem('marijanaScanToCanvas');
+}
 render();
 
 // Učitaj layout generisan iz Layout po promptu.
