@@ -35,7 +35,15 @@ function createNewDocument(){openNewDocumentModal()}
 $('#save').onclick=()=>saveCurrentDocument(true);$('#newDoc').onclick=createNewDocument;$('#newDoc2')?.addEventListener('click',createNewDocument);
 document.querySelectorAll('[data-close-new-doc]').forEach(b=>b.addEventListener('click',closeNewDocumentModal));
 document.querySelectorAll('[data-new-format]').forEach(b=>b.addEventListener('click',()=>applyDocumentFormat(b.dataset.newFormat,b.dataset.formatType)));
-document.getElementById('newDocumentModal')?.addEventListener('click',e=>{if(e.target.classList.contains('new-doc-backdrop'))closeNewDocumentModal()});const saved=localStorage.getItem('marijanaWorkspaceText');if(saved)editor.innerHTML=saved;stats();renderDocumentList();$('#generateCopy').onclick=()=>{const p=$('#copyPrompt').value.trim();$('#copyResult').textContent=p?'PREDLOG COPYJA
+document.getElementById('newDocumentModal')?.addEventListener('click',e=>{if(e.target.classList.contains('new-doc-backdrop'))closeNewDocumentModal()});const scanImport=localStorage.getItem('marijanaScanToEditor');
+if(scanImport){
+  editor.innerHTML='';
+  const p=document.createElement('p');
+  p.textContent=scanImport;
+  editor.appendChild(p);
+  localStorage.removeItem('marijanaScanToEditor');
+}
+const saved=localStorage.getItem('marijanaWorkspaceText');if(saved)editor.innerHTML=saved;stats();renderDocumentList();$('#generateCopy').onclick=()=>{const p=$('#copyPrompt').value.trim();$('#copyResult').textContent=p?'PREDLOG COPYJA
 
 '+p+'
 
