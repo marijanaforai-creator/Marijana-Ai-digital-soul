@@ -4,6 +4,7 @@ from typing import Optional
 
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 import urllib.request
+import urllib.error
 import json
 
 app = FastAPI(title="Marijana AI Digital Soul OCR API", version="0.2.0")
