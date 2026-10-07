@@ -97,7 +97,7 @@ $('#editor').onclick=()=>{
 
 $('#canvas').onclick=()=>{
   localStorage.setItem('marijanaScanToCanvas',result.innerText);
-  location.href='index.html';
+  location.href='../canvas.html';
 };
 
 document.querySelectorAll('.mode').forEach(button=>{
