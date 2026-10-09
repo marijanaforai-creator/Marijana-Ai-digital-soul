@@ -17,11 +17,10 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         text: text.trim(),
         model_id: process.env.ELEVENLABS_MODEL_ID || "eleven_v4",
+        language_code: "sr",
         voice_settings: {
           stability: 0.72,
-          similarity_boost: 0.9,
-          style: 0.2,
-          use_speaker_boost: true
+          similarity_boost: 0.9
         }
       })
     });
