@@ -40,6 +40,18 @@ textarea{width:100%;min-height:210px;resize:vertical;border:1px solid #ddd5c7;bo
 </div>
 <div class="label">Finalna skripta</div>
 <textarea id="finalText" placeholder="Ovde će biti tekst koji će se poslati tvom glasu."></textarea>
+<div class="effects" style="margin-top:12px">
+  <div class="label">Precizne pauze u skripti</div>
+  <p class="note">Postavi kursor u tekst i umetni pauzu. Oznake se ne čitaju naglas — prilikom generisanja se pretvaraju u stvarnu tišinu.</p>
+  <div class="row" style="align-items:center">
+    <select id="pauseDuration" aria-label="Trajanje pauze" style="padding:10px;border:1px solid #ddd5c7;border-radius:10px;background:white">
+      <option value="1">1 sekunda</option><option value="2">2 sekunde</option><option value="3">3 sekunde</option><option value="4" selected>4 sekunde</option><option value="5">5 sekundi</option><option value="10">10 sekundi</option>
+    </select>
+    <button class="btn soft" id="insertPause">＋ Umetni pauzu</button>
+    <button class="btn ghost" id="autoPauses">✨ Predloži pauze</button>
+  </div>
+  <p class="note">Primer oznake: [PAUZA: 4s]. Možeš da je menjaš ili obrišeš kao običan tekst.</p>
+</div>
 </section>
 <section class="card">
 <h2>Produkcija</h2><p class="sub">Prva verzija je fokusirana na tvoj glas i čist workflow.</p>
@@ -51,8 +63,9 @@ textarea{width:100%;min-height:210px;resize:vertical;border:1px solid #ddd5c7;bo
 </div>
 <div class="label">Audio</div>
 <div class="row">
-<button class="btn gold" id="generateBtn">🎙️ Govori mojim glasom</button>
+<button class="btn gold" id="generateBtn">🎙️ Generiši i obradi</button>
 <button class="btn ghost" id="stopBtn" disabled>■ Zaustavi</button>
+<button class="btn soft" id="downloadAudio" disabled>⬇️ Preuzmi gotov audio</button>
 </div>
 <audio id="player" class="player" controls></audio>
 <div class="label">Pozadinska muzika</div>
@@ -65,7 +78,7 @@ textarea{width:100%;min-height:210px;resize:vertical;border:1px solid #ddd5c7;bo
   <div class="effect-row"><label for="decay">Dužina prostora <span id="decayValue">2.2 s</span></label><input id="decay" type="range" min="0.5" max="4" step="0.1" value="2.2"></div>
   <div class="effect-row"><label for="voiceLevel">Jačina glasa <span id="voiceValue">100%</span></label><input id="voiceLevel" type="range" min="60" max="120" value="100"></div>
   <div class="effect-row"><label for="musicLevel">Jačina muzike <span id="musicValue">20%</span></label><input id="musicLevel" type="range" min="5" max="35" value="20"></div>
-  <p class="note">Efekti se primenjuju uživo tokom preslušavanja. Za prvi test echo i reverb su blagi kako bi govor ostao razumljiv. Trenutna verzija je pregled miksa; izvoz obrađenog miksa dodajemo u sledećoj fazi.</p>
+  <p class="note">Efekti se primenjuju uživo i u obrađenom izvozu glasa. U ovoj fazi izvoz sadrži glas, efekte i precizne pauze; pozadinsku muziku dodajemo naknadno.</p>
 </div>
 <div id="status" class="status"></div>
 <p class="note">API ključevi se ne stavljaju u ovaj frontend. Backend koristi server-side secrets. Za produkcijski kvalitet tvog glasa preporučujemo profesionalni voice clone; originalni snimci glasa ostaju pod tvojom kontrolom.</p>
@@ -75,65 +88,98 @@ textarea{width:100%;min-height:210px;resize:vertical;border:1px solid #ddd5c7;bo
 <script>
 const $=id=>document.getElementById(id);
 let lastContinuation="";
-let audioCtx=null, voiceSource=null, voiceGain=null, dryGain=null, convolver=null, reverbGain=null, delayNode=null, feedbackGain=null, echoGain=null, musicAudio=null, musicSource=null, musicGain=null, masterGain=null, compressor=null, impulseDuration=0;
-function makeImpulse(duration){
- if(!audioCtx||!convolver)return;
- const rate=audioCtx.sampleRate, length=Math.max(1,Math.floor(rate*duration));
- const buffer=audioCtx.createBuffer(2,length,rate);
- for(let ch=0;ch<2;ch++){const data=buffer.getChannelData(ch);for(let i=0;i<length;i++){const fade=Math.pow(1-i/length,2.5);data[i]=(Math.random()*2-1)*fade;}}
- convolver.buffer=buffer;impulseDuration=duration;
+let audioCtx=null, voiceSource=null, voiceGain=null, dryGain=null, convolver=null, reverbGain=null, delayNode=null, feedbackGain=null, echoGain=null, musicAudio=null, musicSource=null, musicGain=null, masterGain=null, compressor=null;
+let finalAudioUrl=null, generatedAudioUrl=null;
+function makeImpulseFor(ctx,duration){
+ const rate=ctx.sampleRate,length=Math.max(1,Math.floor(rate*duration)),buffer=ctx.createBuffer(2,length,rate);
+ for(let ch=0;ch<2;ch++){const data=buffer.getChannelData(ch);for(let i=0;i<length;i++)data[i]=(Math.random()*2-1)*Math.pow(1-i/length,2.5);}
+ return buffer;
 }
 function setupAudioGraph(){
  if(audioCtx)return;
  const Ctx=window.AudioContext||window.webkitAudioContext;
  if(!Ctx)throw new Error("Ovaj pregledač ne podržava audio efekte. Probaj najnoviji Chrome.");
- audioCtx=new Ctx();
- voiceSource=audioCtx.createMediaElementSource($("player"));
- dryGain=audioCtx.createGain();convolver=audioCtx.createConvolver();reverbGain=audioCtx.createGain();
- delayNode=audioCtx.createDelay(2);feedbackGain=audioCtx.createGain();echoGain=audioCtx.createGain();
+ audioCtx=new Ctx();voiceSource=audioCtx.createMediaElementSource($("player"));
+ dryGain=audioCtx.createGain();convolver=audioCtx.createConvolver();reverbGain=audioCtx.createGain();delayNode=audioCtx.createDelay(2);feedbackGain=audioCtx.createGain();echoGain=audioCtx.createGain();
  voiceGain=audioCtx.createGain();masterGain=audioCtx.createGain();compressor=audioCtx.createDynamicsCompressor();
  compressor.threshold.value=-8;compressor.knee.value=12;compressor.ratio.value=3;compressor.attack.value=.004;compressor.release.value=.25;
- voiceSource.connect(dryGain);dryGain.connect(voiceGain);
- voiceSource.connect(convolver);convolver.connect(reverbGain);reverbGain.connect(voiceGain);
- voiceSource.connect(delayNode);delayNode.connect(echoGain);echoGain.connect(voiceGain);
- delayNode.connect(feedbackGain);feedbackGain.connect(delayNode);
+ voiceSource.connect(dryGain);dryGain.connect(voiceGain);voiceSource.connect(convolver);convolver.connect(reverbGain);reverbGain.connect(voiceGain);
+ voiceSource.connect(delayNode);delayNode.connect(echoGain);echoGain.connect(voiceGain);delayNode.connect(feedbackGain);feedbackGain.connect(delayNode);
  voiceGain.connect(compressor);compressor.connect(masterGain);masterGain.connect(audioCtx.destination);
- delayNode.delayTime.value=.42;
- makeImpulse(Number($("decay").value));
- if(musicAudio)connectMusic();
- updateEffects();
+ delayNode.delayTime.value=.42;convolver.buffer=makeImpulseFor(audioCtx,Number($("decay").value));updateEffects();
 }
-function connectMusic(){
- if(!audioCtx||!musicAudio||musicSource)return;
- musicSource=audioCtx.createMediaElementSource(musicAudio);
- musicGain=audioCtx.createGain();musicSource.connect(musicGain);musicGain.connect(compressor);
- updateEffects();
-}
+function connectMusic(){if(!audioCtx||!musicAudio||musicSource)return;musicSource=audioCtx.createMediaElementSource(musicAudio);musicGain=audioCtx.createGain();musicSource.connect(musicGain);musicGain.connect(compressor);updateEffects();}
 function updateEffects(){
- if(!audioCtx)return;
- const rev=Number($("reverbMix").value)/100, ech=Number($("echoMix").value)/100;
- reverbGain.gain.setTargetAtTime(rev*.55,audioCtx.currentTime,.04);
- echoGain.gain.setTargetAtTime(ech*.48,audioCtx.currentTime,.04);
- feedbackGain.gain.setTargetAtTime(Math.min(.52,ech*1.35),audioCtx.currentTime,.04);
- voiceGain.gain.setTargetAtTime(Number($("voiceLevel").value)/100,audioCtx.currentTime,.04);
- masterGain.gain.setTargetAtTime(.88,audioCtx.currentTime,.04);
- if(musicGain)musicGain.gain.setTargetAtTime(Number($("musicLevel").value)/100,audioCtx.currentTime,.04);
+ if(!audioCtx)return;const rev=Number($("reverbMix").value)/100,ech=Number($("echoMix").value)/100;
+ reverbGain.gain.setTargetAtTime(rev*.55,audioCtx.currentTime,.04);echoGain.gain.setTargetAtTime(ech*.48,audioCtx.currentTime,.04);
+ feedbackGain.gain.setTargetAtTime(Math.min(.52,ech*1.35),audioCtx.currentTime,.04);voiceGain.gain.setTargetAtTime(Number($("voiceLevel").value)/100,audioCtx.currentTime,.04);
+ masterGain.gain.setTargetAtTime(.88,audioCtx.currentTime,.04);if(musicGain)musicGain.gain.setTargetAtTime(Number($("musicLevel").value)/100,audioCtx.currentTime,.04);
 }
 function updateLabels(){
- $("reverbValue").textContent=$("reverbMix").value+"%";
- $("echoValue").textContent=$("echoMix").value+"%";
- $("decayValue").textContent=Number($("decay").value).toFixed(1)+" s";
- $("voiceValue").textContent=$("voiceLevel").value+"%";
- $("musicValue").textContent=$("musicLevel").value+"%";
+ $("reverbValue").textContent=$("reverbMix").value+"%";$("echoValue").textContent=$("echoMix").value+"%";
+ $("decayValue").textContent=Number($("decay").value).toFixed(1)+" s";$("voiceValue").textContent=$("voiceLevel").value+"%";$("musicValue").textContent=$("musicLevel").value+"%";
 }
 ["reverbMix","echoMix","voiceLevel","musicLevel"].forEach(id=>$(id).addEventListener("input",()=>{updateLabels();updateEffects()}));
-$("decay").addEventListener("input",()=>{updateLabels();if(audioCtx&&convolver)makeImpulse(Number($("decay").value))});
-updateLabels();
+$("decay").addEventListener("input",()=>{updateLabels();if(audioCtx&&convolver)convolver.buffer=makeImpulseFor(audioCtx,Number($("decay").value))});updateLabels();
+
+$("insertPause").onclick=()=>{
+ const ta=$("finalText"),tag="[PAUZA: "+$("pauseDuration").value+"s]",start=ta.selectionStart,end=ta.selectionEnd;
+ ta.value=ta.value.slice(0,start)+tag+ta.value.slice(end);ta.focus();ta.selectionStart=ta.selectionEnd=start+tag.length;
+ $("status").textContent="Pauza od "+$("pauseDuration").value+" sekunde je dodata.";
+};
+$("autoPauses").onclick=()=>{
+ const ta=$("finalText");let t=ta.value.trim();if(!t){$("status").textContent="Prvo unesi tekst u finalnu skriptu.";return}
+ t=t.replace(/([.!?])\s+(?=[A-ZČĆŽŠĐА-Я])/g,'$1\n[PAUZA: 3s]\n');
+ ta.value=t;$("status").textContent="Predlog pauza je dodat posle većine rečenica. Pregledaj tekst i prilagodi oznake.";
+};
+function splitPauseScript(text){
+ const parts=[];const re=/\[\s*PAUZA\s*:\s*(\d+(?:\.\d+)?)\s*s\s*\]/gi;let last=0,m;
+ while((m=re.exec(text))!==null){const spoken=text.slice(last,m.index).trim();if(spoken)parts.push({type:"speech",text:spoken});parts.push({type:"silence",seconds:Math.max(.25,Math.min(60,Number(m[1])))});last=re.lastIndex;}
+ const tail=text.slice(last).trim();if(tail)parts.push({type:"speech",text:tail});
+ return parts.filter((p,i)=>p.type!=="silence"||i>0&&i<parts.length-1);
+}
+function audioBufferToWav(buffer){
+ const channels=buffer.numberOfChannels,length=buffer.length,rate=buffer.sampleRate,bits=16,block=channels*bits/8,dataSize=length*block;
+ const ab=new ArrayBuffer(44+dataSize),v=new DataView(ab);
+ const write=(o,str)=>{for(let i=0;i<str.length;i++)v.setUint8(o+i,str.charCodeAt(i));};
+ write(0,"RIFF");v.setUint32(4,36+dataSize,true);write(8,"WAVE");write(12,"fmt ");v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,channels,true);v.setUint32(24,rate,true);v.setUint32(28,rate*block,true);v.setUint16(32,block,true);v.setUint16(34,bits,true);write(36,"data");v.setUint32(40,dataSize,true);
+ const data=Array.from({length:channels},(_,c)=>buffer.getChannelData(c));let off=44;
+ for(let i=0;i<length;i++)for(let c=0;c<channels;c++){let x=Math.max(-1,Math.min(1,data[c][i]));v.setInt16(off,x<0?x*32768:x*32767,true);off+=2;}
+ return new Blob([ab],{type:"audio/wav"});
+}
+async function fetchSpeech(text){
+ const r=await fetch("/api/meditation-voice",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text,style:$("style").value,pauses:$("pauses").value,speed:Number($("speed").value)})});
+ if(!r.ok){const d=await r.json().catch(()=>({}));throw new Error(d.error||"Audio nije generisan");}
+ const bytes=await r.arrayBuffer();const Ctx=window.AudioContext||window.webkitAudioContext;const ctx=new Ctx();
+ try{return await ctx.decodeAudioData(bytes.slice(0));}finally{await ctx.close();}
+}
+async function renderProcessed(parts){
+ const rate=44100, buffers=[];let total=0;
+ for(let i=0;i<parts.length;i++){
+   const p=parts[i];
+   if(p.type==="silence"){buffers.push(p);total+=p.seconds;continue}
+   $("status").textContent="Generišem glas: segment "+(buffers.filter(x=>x.type==="speech").length+1)+"…";
+   const buf=await fetchSpeech(p.text);buffers.push({type:"speech",buffer:buf});total+=buf.duration;
+ }
+ if(!buffers.some(x=>x.type==="speech"))throw new Error("Nema teksta za izgovor.");
+ const tail=Number($("decay").value)+1.5, length=Math.ceil((total+tail)*rate),offline=new OfflineAudioContext(2,length,rate);
+ const dry=offline.createGain(),conv=offline.createConvolver(),rev=offline.createGain(),delay=offline.createDelay(2),echo=offline.createGain(),feedback=offline.createGain(),voice=offline.createGain(),comp=offline.createDynamicsCompressor(),master=offline.createGain();
+ dry.gain.value=1;rev.gain.value=Number($("reverbMix").value)/100*.55;echo.gain.value=Number($("echoMix").value)/100*.48;feedback.gain.value=Math.min(.52,Number($("echoMix").value)/100*1.35);delay.delayTime.value=.42;
+ voice.gain.value=Number($("voiceLevel").value)/100;master.gain.value=.88;comp.threshold.value=-8;comp.knee.value=12;comp.ratio.value=3;comp.attack.value=.004;comp.release.value=.25;
+ conv.buffer=makeImpulseFor(offline,Number($("decay").value));
+ dry.connect(voice);conv.connect(rev);rev.connect(voice);delay.connect(echo);echo.connect(voice);delay.connect(feedback);feedback.connect(delay);voice.connect(comp);comp.connect(master);master.connect(offline.destination);
+ let t=0;
+ for(const p of buffers){
+  if(p.type==="silence"){t+=p.seconds;continue}
+  const src=offline.createBufferSource();src.buffer=p.buffer;
+  src.connect(dry);src.connect(conv);src.connect(delay);src.start(t);t+=p.buffer.duration;
+ }
+ $("status").textContent="Obrađujem zvuk i precizne pauze…";
+ const rendered=await offline.startRendering();return audioBufferToWav(rendered);
+}
 $("continueBtn").onclick=async()=>{
- const text=$("source").value.trim();if(!text)return;
- $("status").textContent="AI priprema nastavak…";$("continueBtn").disabled=true;
- try{const r=await fetch("/api/meditation-continue",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text,style:$("style").value})});
- const d=await r.json();if(!r.ok)throw new Error(d.error||"Greška");
+ const text=$("source").value.trim();if(!text)return;$("status").textContent="AI priprema nastavak…";$("continueBtn").disabled=true;
+ try{const r=await fetch("/api/meditation-continue",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text,style:$("style").value})});const d=await r.json();if(!r.ok)throw new Error(d.error||"Greška");
  lastContinuation=d.continuation||"";$("continuation").textContent=lastContinuation;$("appendBtn").disabled=!lastContinuation;$("rewriteBtn").disabled=!lastContinuation;$("status").textContent="Nastavak je spreman.";
  }catch(e){$("status").textContent=e.message}finally{$("continueBtn").disabled=false}
 };
@@ -141,28 +187,28 @@ $("appendBtn").onclick=()=>{$("finalText").value=[$("source").value.trim(),lastC
 $("rewriteBtn").onclick=async()=>{$("source").value=$("source").value.trim()+"\n\n"+lastContinuation;$("continueBtn").click()};
 $("clearBtn").onclick=()=>{["source","finalText"].forEach(id=>$(id).value="");$("continuation").textContent="Ovde će se pojaviti nastavak. Tvoj originalni tekst ostaje odvojen i ne menja se.";lastContinuation="";$("appendBtn").disabled=true;$("rewriteBtn").disabled=true};
 $("generateBtn").onclick=async()=>{
- const text=$("finalText").value.trim()||[$("source").value.trim(),lastContinuation].filter(Boolean).join("\n\n");if(!text){$("status").textContent="Prvo napiši ili generiši skriptu.";return}
- $("status").textContent="Generišem audio u tvom glasu…";$("generateBtn").disabled=true;
- try{const r=await fetch("/api/meditation-voice",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text,style:$("style").value,pauses:$("pauses").value,speed:Number($("speed").value)})});
- if(!r.ok){const d=await r.json().catch(()=>({}));throw new Error(d.error||"Audio nije generisan");}
- const blob=await r.blob();const url=URL.createObjectURL(blob);$("player").pause();$("player").src=url;$("player").load();
- await setupAudioGraph();await audioCtx.resume();await $("player").play();
- $("previewMix").disabled=!musicAudio;$("stopBtn").disabled=false;$("status").textContent="Audio je spreman. Efekte možeš menjati tokom preslušavanja.";
- }catch(e){$("status").textContent=e.message||"Greška pri generisanju zvuka."}finally{$("generateBtn").disabled=false}
+ const text=$("finalText").value.trim()||[$("source").value.trim(),lastContinuation].filter(Boolean).join("\n\n");
+ if(!text){$("status").textContent="Prvo napiši ili generiši skriptu.";return}
+ $("generateBtn").disabled=true;$("downloadAudio").disabled=true;$("status").textContent="Pripremam skriptu…";
+ try{
+  const parts=splitPauseScript(text);if(!parts.some(p=>p.type==="speech"))throw new Error("Nema teksta za izgovor.");
+  const wav=await renderProcessed(parts);if(finalAudioUrl)URL.revokeObjectURL(finalAudioUrl);finalAudioUrl=URL.createObjectURL(wav);
+  if(generatedAudioUrl)URL.revokeObjectURL(generatedAudioUrl);generatedAudioUrl=finalAudioUrl;
+  $("player").pause();$("player").src=finalAudioUrl;$("player").load();$("downloadAudio").disabled=false;
+  $("previewMix").disabled=true;$("stopBtn").disabled=false;$("status").textContent="Gotov audio je spreman: glas, efekti i precizne pauze. Muziku dodajemo u sledećoj fazi.";
+  $("player").play().catch(()=>{});
+ }catch(e){$("status").textContent=e.message||"Greška pri obradi zvuka."}finally{$("generateBtn").disabled=false}
+};
+$("downloadAudio").onclick=()=>{
+ if(!finalAudioUrl)return;const a=document.createElement("a");a.href=finalAudioUrl;a.download="meditation-studio-final.wav";document.body.appendChild(a);a.click();a.remove();$("status").textContent="Preuzimanje WAV audio fajla je pokrenuto.";
 };
 $("music").onchange=()=>{
  const file=$("music").files&&$("music").files[0];if(!file)return;
  if(musicAudio){musicAudio.pause();musicAudio.src="";musicAudio=null;musicSource=null;musicGain=null;}
  musicAudio=new Audio(URL.createObjectURL(file));musicAudio.loop=true;musicAudio.preload="auto";
- if(audioCtx)connectMusic();
- $("previewMix").disabled=!$("player").src;$("status").textContent="Muzika je učitana. Generiši govor, pa klikni „Preslušaj miks“.";
+ if(audioCtx)connectMusic();$("previewMix").disabled=!$("player").src;$("status").textContent="Muzika je učitana. Integraciju muzike u finalni izvoz dodajemo u sledećoj fazi.";
 };
-$("previewMix").onclick=async()=>{
- if(!$("player").src){$("status").textContent="Prvo generiši govor, pa preslušaj miks.";return}
- if(!musicAudio){$("status").textContent="Prvo izaberi audio fajl za pozadinsku muziku.";return}
- try{setupAudioGraph();connectMusic();await audioCtx.resume();$("player").currentTime=0;musicAudio.currentTime=0;await Promise.all([$("player").play(),musicAudio.play()]);$("stopBtn").disabled=false;$("status").textContent="Preslušavaš miks. Podešavaj efekte dok zvuk svira."}
- catch(e){$("status").textContent="Nije moguće pokrenuti miks: "+e.message}
-};
+$("previewMix").onclick=async()=>{$("status").textContent="Muzika će biti uključena u finalni miks u sledećoj fazi."};
 $("stopBtn").onclick=()=>{$("player").pause();if(musicAudio)musicAudio.pause();$("stopBtn").disabled=true;$("status").textContent="Reprodukcija je zaustavljena."};
 $("player").addEventListener("ended",()=>{if(musicAudio)musicAudio.pause();$("stopBtn").disabled=true});
 </script>
