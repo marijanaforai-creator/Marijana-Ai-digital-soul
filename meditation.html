@@ -61,6 +61,7 @@ textarea{width:100%;min-height:210px;resize:vertical;border:1px solid #ddd5c7;bo
 <div class="field"><label>Brzina</label><input id="speed" type="range" min=".75" max="1.15" step=".01" value=".9"></div>
 <div class="field"><label>Pauze</label><select id="pauses"><option value="natural">Prirodne</option><option value="long">Duže</option><option value="short">Kraće</option></select></div>
 </div>
+<div class="row" style="margin-top:12px"><button class="btn soft" id="productionPreset">✨ Primeni produkcijski preset</button></div>
 <div class="label">Audio</div>
 <div class="row">
 <button class="btn gold" id="generateBtn">🎙️ Generiši i obradi</button>
@@ -130,6 +131,12 @@ function updateLabels(){
 }
 ["reverbMix","echoMix","voiceLevel","musicLevel"].forEach(id=>$(id).addEventListener("input",()=>{updateLabels();updateEffects()}));
 $("decay").addEventListener("input",()=>{updateLabels();if(audioCtx&&convolver)convolver.buffer=makeImpulseFor(audioCtx,Number($("decay").value))});updateLabels();
+$("productionPreset").onclick=()=>{
+ $("style").value="Mirna meditacija";$("speed").value=".9";$("pauses").value="natural";
+ $("reverbMix").value="12";$("echoMix").value="2";$("decay").value="2.0";$("voiceLevel").value="100";$("musicLevel").value="10";$("musicFadeIn").value="5";$("musicFadeOut").value="9";$("duckMusic").checked=true;
+ updateLabels();updateEffects();if(audioCtx&&convolver)convolver.buffer=makeImpulseFor(audioCtx,Number($("decay").value));
+ $("status").textContent="Produkcijski preset je primenjen. Možeš dodatno prilagoditi svako podešavanje.";
+};
 
 $("insertPause").onclick=()=>{
  const ta=$("finalText"),tag="[PAUZA: "+$("pauseDuration").value+"s]",start=ta.selectionStart,end=ta.selectionEnd;
