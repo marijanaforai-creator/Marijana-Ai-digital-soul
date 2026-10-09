@@ -185,7 +185,7 @@ async function renderProcessed(parts){
  dry.gain.value=1;rev.gain.value=Number($("reverbMix").value)/100*.55;echo.gain.value=Number($("echoMix").value)/100*.48;
  feedback.gain.value=Math.min(.52,Number($("echoMix").value)/100*1.35);delay.delayTime.value=.42;voice.gain.value=Number($("voiceLevel").value)/100;master.gain.value=.88;
  comp.threshold.value=-8;comp.knee.value=12;comp.ratio.value=3;comp.attack.value=.004;comp.release.value=.25;conv.buffer=makeImpulseFor(offline,Number($("decay").value));
- dry.connect(voice);conv.connect(rev);rev.connect(voice);delay.connect(echo);echo.connect(voice);delay.connect(feedback);feedback.connect(delay);voice.connect(comp);comp.connect(master);
+ dry.connect(voice);conv.connect(rev);rev.connect(voice);delay.connect(echo);echo.connect(voice);delay.connect(feedback);feedback.connect(delay);voice.connect(comp);comp.connect(master);master.connect(offline.destination);
  let t=0;const speechWindows=[];
  for(const p of buffers){
   if(p.type==="silence"){t+=p.seconds;continue}
