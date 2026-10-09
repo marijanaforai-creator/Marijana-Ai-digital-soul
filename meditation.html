@@ -232,7 +232,7 @@ $("generateBtn").onclick=async()=>{
   if(generatedAudioUrl)URL.revokeObjectURL(generatedAudioUrl);generatedAudioUrl=finalAudioUrl;
   $("player").pause();$("player").src=finalAudioUrl;$("player").load();$("downloadAudio").disabled=false;
   $("previewMix").disabled=true;$("stopBtn").disabled=false;$("status").textContent=selectedMusicFile?"Gotov miks je spreman: glas, efekti, precizne pauze i muzička podloga.":"Gotov audio je spreman: glas, efekti i precizne pauze. Možeš učitati muziku i ponovo generisati miks.";
-  $("player").play().catch(()=>{});
+  try{await $("player").play()}catch(playError){$("stopBtn").disabled=true;$("status").textContent="Audio je generisan, ali pregledač nije pokrenuo reprodukciju. Pritisni Play na audio plejeru da ga čuješ.";console.warn("Audio playback failed:",playError)}
  }catch(e){$("status").textContent=e.message||"Greška pri obradi zvuka."}finally{$("generateBtn").disabled=false}
 };
 $("downloadAudio").onclick=()=>{
