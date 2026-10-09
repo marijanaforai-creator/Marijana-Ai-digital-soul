@@ -5,43 +5,70 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Marijana AI — Meditation Studio</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=Montserrat:wght@400;500;600;700&display=swap');
-:root{--ivory:#F7F4ED;--paper:#FFFDF8;--black:#20221F;--gold:#C7A66A;--sage:#8EA386;--sage-dark:#657761;--line:#DDD9CE;--azure:#6aa7c8;--muted:#74786F;--card:#FFFDF8}
-*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#F7F4ED,#FFFDF8);color:var(--black);font-family:Montserrat,Arial,sans-serif}
-.wrap{max-width:1180px;margin:auto;padding:32px 20px 60px}.brand{font-family:"Cormorant Garamond",Georgia,serif;letter-spacing:.4px}.brand span{color:var(--gold)}
-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:26px}.pill{padding:8px 13px;border:1px solid var(--line);border-radius:999px;background:#fff8}
-.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:20px}.card{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:0 12px 35px #00000008}
-h1,h2{font-family:"Cormorant Garamond",Georgia,serif;margin:0 0 8px}h1{font-size:38px}.sub{color:var(--muted);margin:0 0 22px}.label{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:#777;margin:16px 0 8px}
-textarea{width:100%;min-height:210px;resize:vertical;border:1px solid #ddd5c7;border-radius:16px;padding:16px;font:16px/1.65 Georgia,serif;background:#fffdf9;outline:none}textarea:focus{border-color:var(--sage);box-shadow:0 0 0 3px #8ea38622}
-.row{display:flex;gap:10px;flex-wrap:wrap}.btn{border:0;border-radius:12px;padding:12px 17px;font-weight:700;cursor:pointer}.primary{background:var(--black);color:white}.gold{background:var(--gold);color:white}.soft{background:#e9eee7}.ghost{background:white;border:1px solid #ddd5c7}.btn:disabled{opacity:.5;cursor:not-allowed}
-.cont{margin-top:16px;padding:16px;border-left:3px solid var(--sage);background:#f5f8f3;border-radius:12px;white-space:pre-wrap;line-height:1.7;font-family:Georgia,serif}
-.controls{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{padding:13px;border:1px solid var(--line);border-radius:14px;background:#fff}.field label{display:block;font-size:12px;color:#777;margin-bottom:7px}.field select,.field input{width:100%;border:0;background:transparent;font-size:15px;outline:0}
-.status{font-size:13px;color:var(--muted);min-height:20px}.player{width:100%;margin-top:10px}.note{font-size:12px;color:#777;line-height:1.5;margin-top:12px}.effects{margin-top:18px;padding:16px;border:1px solid #e2dbcf;border-radius:16px;background:linear-gradient(145deg,#fffdf9,#f4f6f0)}.effect-row{margin:13px 0}.effect-row label{display:flex;justify-content:space-between;gap:12px;font-size:13px;color:#514d46;margin-bottom:7px}.effect-row label span{font-weight:700;color:#8b6d36}.effect-row input[type=range]{width:100%;accent-color:#8ea386;cursor:pointer}
-@media(max-width:800px){.grid{grid-template-columns:1fr}h1{font-size:31px}}
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=DM+Sans:wght@400;500;600;700&display=swap');
+:root{color-scheme:dark;--ivory:#100817;--paper:rgba(29,17,41,.82);--black:#F5EFF9;--gold:#D9B96F;--sage:#A477E8;--sage-dark:#8958C8;--line:rgba(211,180,235,.17);--azure:#91A9F7;--muted:#B9AAC7;--card:rgba(29,17,41,.82);--field:rgba(14,8,21,.78);--soft:rgba(142,84,190,.17);--purple:#9148E7;--purple-light:#A45CF2}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 14% 8%,rgba(129,63,181,.28),transparent 34%),radial-gradient(ellipse at 86% 28%,rgba(79,40,116,.24),transparent 32%),linear-gradient(135deg,#0D0713,#160B20 58%,#0C0712);color:var(--black);font-family:"DM Sans",Arial,sans-serif}
+.wrap{max-width:1180px;margin:auto;padding:32px 20px 60px;position:relative}
+.brand{font-family:"Cormorant Garamond",Georgia,serif;font-size:20px;letter-spacing:.4px}.brand span{color:var(--gold)}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:26px}.pill{padding:8px 13px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.045);backdrop-filter:blur(14px);color:#E7DDF0}
+.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:20px}
+.card{background:linear-gradient(145deg,rgba(34,20,49,.86),rgba(21,12,31,.88));border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:0 18px 50px rgba(0,0,0,.28);backdrop-filter:blur(22px)}
+h1,h2{font-family:"Cormorant Garamond",Georgia,serif;margin:0 0 8px;letter-spacing:.01em}h1{font-size:42px;line-height:1.05}h2{font-size:32px}
+.sub{color:var(--muted);margin:0 0 22px}.label{font-size:12px;text-transform:uppercase;letter-spacing:.13em;color:#C7B6D4;margin:16px 0 8px}
+textarea{width:100%;min-height:210px;resize:vertical;border:1px solid var(--line);border-radius:16px;padding:16px;font:18px/1.6 "Cormorant Garamond",Georgia,serif;color:var(--black);background:rgba(13,7,20,.74);outline:none;transition:border-color .2s,box-shadow .2s}
+textarea::placeholder{color:#92839F}textarea:focus,input:focus,select:focus{border-color:var(--purple-light)!important;box-shadow:0 0 0 3px rgba(164,92,242,.19);outline:none}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid transparent;border-radius:12px;padding:12px 17px;font:600 14px "DM Sans",Arial,sans-serif;cursor:pointer;color:var(--black);transition:transform .18s,filter .18s,border-color .18s,box-shadow .18s}
+.btn:hover:not(:disabled){transform:translateY(-1px);filter:brightness(1.08);box-shadow:0 8px 24px rgba(114,53,162,.2)}
+.btn:focus-visible{outline:2px solid var(--purple-light);outline-offset:3px}
+.primary,.gold{background:linear-gradient(135deg,#8240D3,#A14FE9);color:white;box-shadow:0 7px 22px rgba(133,65,211,.24)}
+.soft{background:var(--soft);border-color:rgba(185,143,222,.18);color:#E4D7EF}
+.ghost{background:rgba(255,255,255,.035);border-color:var(--line);color:#EAE1F1}
+.btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+.icon{width:17px;height:17px;flex:none;display:inline-block;vertical-align:middle;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.cont{margin-top:16px;padding:17px 18px;border-left:3px solid var(--purple-light);background:linear-gradient(130deg,rgba(116,67,151,.18),rgba(255,255,255,.025));border-radius:12px;white-space:pre-wrap;line-height:1.75;color:#F2EAF7;font:19px/1.75 "Cormorant Garamond",Georgia,serif}
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field{padding:13px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.035);backdrop-filter:blur(12px)}
+.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:7px}
+.field select,.field input{width:100%;border:0;background:transparent;color:var(--black);font:500 15px "DM Sans",Arial,sans-serif;outline:0}
+.field select option,select option{background:#1B1026;color:#F5EFF9}
+input[type=text],input[type=file],select{color:var(--black)}
+input[type=text]::placeholder{color:#92839F}
+.status{font-size:13px;color:var(--muted);min-height:20px}.player{width:100%;margin-top:10px;color-scheme:dark}
+.note{font-size:12px;color:var(--muted);line-height:1.6;margin-top:12px}
+.effects{margin-top:18px;padding:16px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(145deg,rgba(42,25,58,.72),rgba(20,12,29,.78));backdrop-filter:blur(16px)}
+.effect-row{margin:13px 0}.effect-row label{display:flex;justify-content:space-between;gap:12px;font-size:13px;color:#D8CBE2;margin-bottom:7px}
+.effect-row label span{font-weight:700;color:var(--gold)}.effect-row input[type=range]{width:100%;accent-color:var(--purple-light);cursor:pointer}
+input[type=range]{accent-color:var(--purple-light)}
+input[type=file]{max-width:100%;color:var(--muted)}
+details summary{color:#EEE5F5}
+::selection{background:rgba(158,83,225,.4);color:white}
+@media(max-width:800px){.grid{grid-template-columns:1fr}h1{font-size:36px}.wrap{padding:22px 14px 42px}.card{padding:18px}}
 </style>
 </head>
 <body>
 <div class="wrap">
-<header><div class="brand">Marijana <span>AI</span> · Meditation Studio</div><div class="pill">🎙️ Moj glas</div></header>
+<header><div class="brand">Marijana <span>AI</span> · Meditation Studio</div><div class="pill"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3m-4 0h8"/></svg> Moj glas</div></header>
 <div class="grid">
 <section class="card">
 <h1>AI Meditation Studio</h1>
 <p class="sub">Ti pišeš. AI nastavlja. Ti odobravaš. Tek onda govori tvoj glas.</p>
 <div class="label">AI naracija od teme</div>
-<input id="narrationTopic" type="text" placeholder="Tema, npr. miran san ili opuštanje posle napornog dana" style="width:100%;padding:13px 15px;border:1px solid #ddd5c7;border-radius:12px;background:#fffdf9;font:15px Arial,sans-serif">
-<div class="row" style="margin-top:10px;align-items:center"><select id="narrationDuration" aria-label="Trajanje naracije" style="padding:10px;border:1px solid #ddd5c7;border-radius:10px;background:white"><option value="1">1 minut</option><option value="3" selected>3 minuta</option><option value="5">5 minuta</option><option value="10">10 minuta</option></select><button class="btn gold" id="generateNarrationBtn">✨ Generiši celu naraciju</button></div>
+<input id="narrationTopic" type="text" placeholder="Tema, npr. miran san ili opuštanje posle napornog dana" style="width:100%;padding:13px 15px;border:1px solid var(--line);border-radius:12px;background:rgba(13,7,20,.74);font:15px Arial,sans-serif">
+<div class="row" style="margin-top:10px;align-items:center"><select id="narrationDuration" aria-label="Trajanje naracije" style="padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--field)"><option value="1">1 minut</option><option value="3" selected>3 minuta</option><option value="5">5 minuta</option><option value="10">10 minuta</option></select><button class="btn gold" id="generateNarrationBtn"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z"/><path d="m19 16 .7 2.3L22 19l-2.3.7L19 22l-.7-2.3L16 19l2.3-.7L19 16Z"/></svg> Generiši celu naraciju</button></div>
 <p class="note">AI će napisati tekst koji možeš pregledati i izmeniti pre nego što ga izgovori tvoj glas.</p>
 <div class="label">Moj tekst</div>
 <textarea id="source" placeholder="Napiši početak meditacije..."></textarea>
 <div class="row" style="margin-top:12px">
-<button class="btn primary" id="continueBtn">✨ Nastavi</button>
+<button class="btn primary" id="continueBtn"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z"/><path d="m19 16 .7 2.3L22 19l-2.3.7L19 22l-.7-2.3L16 19l2.3-.7L19 16Z"/></svg> Nastavi</button>
 <button class="btn ghost" id="clearBtn">Obriši</button>
 </div>
 <div class="label">AI nastavak</div>
 <div id="continuation" class="cont">Ovde će se pojaviti nastavak. Tvoj originalni tekst ostaje odvojen i ne menja se.</div>
 <div class="row" style="margin-top:12px">
-<button class="btn soft" id="appendBtn" disabled>➕ Dodaj nastavak u skriptu</button>
-<button class="btn ghost" id="rewriteBtn" disabled>✏️ Prepravi nastavak</button>
+<button class="btn soft" id="appendBtn" disabled><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg> Dodaj nastavak u skriptu</button>
+<button class="btn ghost" id="rewriteBtn" disabled><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m16 4 4 4M4 20l4-.8L19 8a2.8 2.8 0 0 0-4-4L4 15v5Z"/></svg> Prepravi nastavak</button>
 </div>
 <div class="label">Finalna skripta</div>
 <textarea id="finalText" placeholder="Ovde će biti tekst koji će se poslati tvom glasu."></textarea>
@@ -49,11 +76,11 @@ textarea{width:100%;min-height:210px;resize:vertical;border:1px solid #ddd5c7;bo
   <div class="label">Precizne pauze u skripti</div>
   <p class="note">Postavi kursor u tekst i umetni pauzu. Oznake se ne čitaju naglas — prilikom generisanja se pretvaraju u stvarnu tišinu.</p>
   <div class="row" style="align-items:center">
-    <select id="pauseDuration" aria-label="Trajanje pauze" style="padding:10px;border:1px solid #ddd5c7;border-radius:10px;background:white">
+    <select id="pauseDuration" aria-label="Trajanje pauze" style="padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--field)">
       <option value="1">1 sekunda</option><option value="2">2 sekunde</option><option value="3">3 sekunde</option><option value="4" selected>4 sekunde</option><option value="5">5 sekundi</option><option value="10">10 sekundi</option>
     </select>
-    <button class="btn soft" id="insertPause">＋ Umetni pauzu</button>
-    <button class="btn ghost" id="autoPauses">✨ Predloži pauze</button>
+    <button class="btn soft" id="insertPause"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg> Umetni pauzu</button>
+    <button class="btn ghost" id="autoPauses"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z"/><path d="m19 16 .7 2.3L22 19l-2.3.7L19 22l-.7-2.3L16 19l2.3-.7L19 16Z"/></svg> Predloži pauze</button>
   </div>
   <p class="note">Primer oznake: [PAUZA: 4s]. Možeš da je menjaš ili obrišeš kao običan tekst.</p>
 </div>
@@ -66,18 +93,18 @@ textarea{width:100%;min-height:210px;resize:vertical;border:1px solid #ddd5c7;bo
 <div class="field"><label>Brzina</label><input id="speed" type="range" min=".75" max="1.15" step=".01" value=".9"></div>
 <div class="field"><label>Pauze</label><select id="pauses"><option value="natural">Prirodne</option><option value="long">Duže</option><option value="short">Kraće</option></select></div>
 </div>
-<div class="row" style="margin-top:12px"><button class="btn soft" id="productionPreset">✨ Primeni produkcijski preset</button></div>
-<details class="effects" style="margin-top:12px"><summary style="cursor:pointer;font-weight:700">＋ Dodaj svoj klon glasa</summary><p class="note">Zaštiti kvalitet: koristi čist snimak samo svog glasa ili glasa za koji imaš dozvolu. Kompresovan MP3 snimak od 1–2 minuta, bez muzike i buke, najbolje prolazi.</p><div class="row"><input id="cloneName" type="text" maxlength="80" placeholder="Naziv glasa" style="padding:10px;border:1px solid #ddd5c7;border-radius:10px"><input id="cloneAudio" type="file" accept="audio/*"><button class="btn ghost" id="cloneVoiceBtn">🎙️ Napravi klon</button></div></details>
+<div class="row" style="margin-top:12px"><button class="btn soft" id="productionPreset"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z"/><path d="m19 16 .7 2.3L22 19l-2.3.7L19 22l-.7-2.3L16 19l2.3-.7L19 16Z"/></svg> Primeni produkcijski preset</button></div>
+<details class="effects" style="margin-top:12px"><summary style="cursor:pointer;font-weight:700"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg> Dodaj svoj klon glasa</summary><p class="note">Zaštiti kvalitet: koristi čist snimak samo svog glasa ili glasa za koji imaš dozvolu. Kompresovan MP3 snimak od 1–2 minuta, bez muzike i buke, najbolje prolazi.</p><div class="row"><input id="cloneName" type="text" maxlength="80" placeholder="Naziv glasa" style="padding:10px;border:1px solid var(--line);border-radius:10px"><input id="cloneAudio" type="file" accept="audio/*"><button class="btn ghost" id="cloneVoiceBtn"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3m-4 0h8"/></svg> Napravi klon</button></div></details>
 <div class="label">Audio</div>
 <div class="row">
-<button class="btn gold" id="generateBtn">🎙️ Generiši i obradi</button>
-<button class="btn ghost" id="stopBtn" disabled>■ Zaustavi</button>
-<button class="btn soft" id="previewAudio" disabled>▶ Preslušaj pre preuzimanja</button>
-<button class="btn soft" id="downloadAudio" disabled>⬇️ Preuzmi gotov audio</button>
+<button class="btn gold" id="generateBtn"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3m-4 0h8"/></svg> Generiši i obradi</button>
+<button class="btn ghost" id="stopBtn" disabled><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor" stroke="none"/></svg> Zaustavi</button>
+<button class="btn soft" id="previewAudio" disabled><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 12 7-12 7V5Z" fill="currentColor" stroke="none"/></svg> Preslušaj pre preuzimanja</button>
+<button class="btn soft" id="downloadAudio" disabled><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 20h16"/></svg> Preuzmi gotov audio</button>
 </div>
 <audio id="player" class="player" controls></audio>
 <div class="label">Pozadinska muzika</div>
-<div class="effects" style="margin-top:8px"><div class="label">Generiši podlogu pomoću AI</div><textarea id="musicPrompt" placeholder="Opiši podlogu, npr. tiha, topla ambijentalna muzika za meditaciju, bez vokala i naglih promena" style="min-height:82px"></textarea><div class="row" style="margin-top:10px;align-items:center"><select id="musicDuration" aria-label="Trajanje AI muzike" style="padding:10px;border:1px solid #ddd5c7;border-radius:10px;background:white"><option value="60000">1 minut</option><option value="120000" selected>2 minuta</option><option value="300000">5 minuta</option><option value="600000">10 minuta</option></select><button class="btn soft" id="generateMusicBtn">✨ Generiši AI muziku</button><button class="btn ghost" id="previewMusic" disabled>▶ Preslušaj muziku</button></div><p class="note">AI muzika je instrumentalna. Generisanje troši ElevenLabs kredite; fajl se koristi kao podloga pri sledećoj obradi.</p></div>
+<div class="effects" style="margin-top:8px"><div class="label">Generiši podlogu pomoću AI</div><textarea id="musicPrompt" placeholder="Opiši podlogu, npr. tiha, topla ambijentalna muzika za meditaciju, bez vokala i naglih promena" style="min-height:82px"></textarea><div class="row" style="margin-top:10px;align-items:center"><select id="musicDuration" aria-label="Trajanje AI muzike" style="padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--field)"><option value="60000">1 minut</option><option value="120000" selected>2 minuta</option><option value="300000">5 minuta</option><option value="600000">10 minuta</option></select><button class="btn soft" id="generateMusicBtn"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z"/><path d="m19 16 .7 2.3L22 19l-2.3.7L19 22l-.7-2.3L16 19l2.3-.7L19 16Z"/></svg> Generiši AI muziku</button><button class="btn ghost" id="previewMusic" disabled><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 12 7-12 7V5Z" fill="currentColor" stroke="none"/></svg> Preslušaj muziku</button></div><p class="note">AI muzika je instrumentalna. Generisanje troši ElevenLabs kredite; fajl se koristi kao podloga pri sledećoj obradi.</p></div>
 <p class="note">Ili učitaj svoju muzičku podlogu:</p><input id="music" type="file" accept="audio/*">
 <div class="effects">
   <div class="label">Podešavanje muzičke podloge</div>
@@ -86,7 +113,7 @@ textarea{width:100%;min-height:210px;resize:vertical;border:1px solid #ddd5c7;bo
   <label style="display:flex;align-items:center;gap:9px;font-size:13px;margin-top:12px"><input id="duckMusic" type="checkbox" checked style="width:auto"> Automatski stišaj muziku dok se govori</label>
   <p class="note">Za YouTube koristi muziku koju si sama napravila ili za koju imaš jasnu licencu za komercijalnu upotrebu i objavljivanje.</p>
 </div>
-<div class="row" style="margin-top:12px"><button class="btn soft" id="previewMix" disabled>🎵 Preslušaj miks</button></div>
+<div class="row" style="margin-top:12px"><button class="btn soft" id="previewMix" disabled><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg> Preslušaj miks</button></div>
 <div class="effects">
   <div class="label">Audio Effects · obrada zvuka</div>
   <div class="effect-row"><label for="reverbMix">Reverb <span id="reverbValue">18%</span></label><input id="reverbMix" type="range" min="0" max="40" value="18"></div>
