@@ -15,7 +15,7 @@ textarea{width:100%;min-height:210px;resize:vertical;border:1px solid #ddd5c7;bo
 .row{display:flex;gap:10px;flex-wrap:wrap}.btn{border:0;border-radius:12px;padding:12px 17px;font-weight:700;cursor:pointer}.primary{background:var(--black);color:white}.gold{background:var(--gold);color:white}.soft{background:#e9eee7}.ghost{background:white;border:1px solid #ddd5c7}.btn:disabled{opacity:.5;cursor:not-allowed}
 .cont{margin-top:16px;padding:16px;border-left:3px solid var(--sage);background:#f5f8f3;border-radius:12px;white-space:pre-wrap;line-height:1.7;font-family:Georgia,serif}
 .controls{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{padding:13px;border:1px solid #e2dbcf;border-radius:14px;background:#fff}.field label{display:block;font-size:12px;color:#777;margin-bottom:7px}.field select,.field input{width:100%;border:0;background:transparent;font-size:15px;outline:0}
-.status{font-size:13px;color:var(--muted);min-height:20px}.player{width:100%;margin-top:10px}.note{font-size:12px;color:#777;line-height:1.5;margin-top:12px}
+.status{font-size:13px;color:var(--muted);min-height:20px}.player{width:100%;margin-top:10px}.note{font-size:12px;color:#777;line-height:1.5;margin-top:12px}.effects{margin-top:18px;padding:16px;border:1px solid #e2dbcf;border-radius:16px;background:linear-gradient(145deg,#fffdf9,#f4f6f0)}.effect-row{margin:13px 0}.effect-row label{display:flex;justify-content:space-between;gap:12px;font-size:13px;color:#514d46;margin-bottom:7px}.effect-row label span{font-weight:700;color:#8b6d36}.effect-row input[type=range]{width:100%;accent-color:#8ea386;cursor:pointer}
 @media(max-width:800px){.grid{grid-template-columns:1fr}h1{font-size:31px}}
 </style>
 </head>
@@ -57,34 +57,114 @@ textarea{width:100%;min-height:210px;resize:vertical;border:1px solid #ddd5c7;bo
 <audio id="player" class="player" controls></audio>
 <div class="label">Pozadinska muzika</div>
 <input id="music" type="file" accept="audio/*">
-<div class="row" style="margin-top:12px"><button class="btn soft" id="previewMix" disabled>🎵 Preview sa muzikom</button></div>
+<div class="row" style="margin-top:12px"><button class="btn soft" id="previewMix" disabled>🎵 Preslušaj miks</button></div>
+<div class="effects">
+  <div class="label">Audio Effects · obrada zvuka</div>
+  <div class="effect-row"><label for="reverbMix">Reverb <span id="reverbValue">18%</span></label><input id="reverbMix" type="range" min="0" max="40" value="18"></div>
+  <div class="effect-row"><label for="echoMix">Echo / odjek <span id="echoValue">12%</span></label><input id="echoMix" type="range" min="0" max="35" value="12"></div>
+  <div class="effect-row"><label for="decay">Dužina prostora <span id="decayValue">2.2 s</span></label><input id="decay" type="range" min="0.5" max="4" step="0.1" value="2.2"></div>
+  <div class="effect-row"><label for="voiceLevel">Jačina glasa <span id="voiceValue">100%</span></label><input id="voiceLevel" type="range" min="60" max="120" value="100"></div>
+  <div class="effect-row"><label for="musicLevel">Jačina muzike <span id="musicValue">20%</span></label><input id="musicLevel" type="range" min="5" max="35" value="20"></div>
+  <p class="note">Efekti se primenjuju uživo tokom preslušavanja. Za prvi test echo i reverb su blagi kako bi govor ostao razumljiv. Trenutna verzija je pregled miksa; izvoz obrađenog miksa dodajemo u sledećoj fazi.</p>
+</div>
 <div id="status" class="status"></div>
 <p class="note">API ključevi se ne stavljaju u ovaj frontend. Backend koristi server-side secrets. Za produkcijski kvalitet tvog glasa preporučujemo profesionalni voice clone; originalni snimci glasa ostaju pod tvojom kontrolom.</p>
 </section>
 </div>
 </div>
 <script>
-const $=id=>document.getElementById(id); let lastContinuation="";
+const $=id=>document.getElementById(id);
+let lastContinuation="";
+let audioCtx=null, voiceSource=null, voiceGain=null, dryGain=null, convolver=null, reverbGain=null, delayNode=null, feedbackGain=null, echoGain=null, musicAudio=null, musicSource=null, musicGain=null, masterGain=null, compressor=null, impulseDuration=0;
+function makeImpulse(duration){
+ if(!audioCtx||!convolver)return;
+ const rate=audioCtx.sampleRate, length=Math.max(1,Math.floor(rate*duration));
+ const buffer=audioCtx.createBuffer(2,length,rate);
+ for(let ch=0;ch<2;ch++){const data=buffer.getChannelData(ch);for(let i=0;i<length;i++){const fade=Math.pow(1-i/length,2.5);data[i]=(Math.random()*2-1)*fade;}}
+ convolver.buffer=buffer;impulseDuration=duration;
+}
+function setupAudioGraph(){
+ if(audioCtx)return;
+ const Ctx=window.AudioContext||window.webkitAudioContext;
+ if(!Ctx)throw new Error("Ovaj pregledač ne podržava audio efekte. Probaj najnoviji Chrome.");
+ audioCtx=new Ctx();
+ voiceSource=audioCtx.createMediaElementSource($("player"));
+ dryGain=audioCtx.createGain();convolver=audioCtx.createConvolver();reverbGain=audioCtx.createGain();
+ delayNode=audioCtx.createDelay(2);feedbackGain=audioCtx.createGain();echoGain=audioCtx.createGain();
+ voiceGain=audioCtx.createGain();masterGain=audioCtx.createGain();compressor=audioCtx.createDynamicsCompressor();
+ compressor.threshold.value=-8;compressor.knee.value=12;compressor.ratio.value=3;compressor.attack.value=.004;compressor.release.value=.25;
+ voiceSource.connect(dryGain);dryGain.connect(voiceGain);
+ voiceSource.connect(convolver);convolver.connect(reverbGain);reverbGain.connect(voiceGain);
+ voiceSource.connect(delayNode);delayNode.connect(echoGain);echoGain.connect(voiceGain);
+ delayNode.connect(feedbackGain);feedbackGain.connect(delayNode);
+ voiceGain.connect(compressor);compressor.connect(masterGain);masterGain.connect(audioCtx.destination);
+ delayNode.delayTime.value=.42;
+ makeImpulse(Number($("decay").value));
+ if(musicAudio)connectMusic();
+ updateEffects();
+}
+function connectMusic(){
+ if(!audioCtx||!musicAudio||musicSource)return;
+ musicSource=audioCtx.createMediaElementSource(musicAudio);
+ musicGain=audioCtx.createGain();musicSource.connect(musicGain);musicGain.connect(compressor);
+ updateEffects();
+}
+function updateEffects(){
+ if(!audioCtx)return;
+ const rev=Number($("reverbMix").value)/100, ech=Number($("echoMix").value)/100;
+ reverbGain.gain.setTargetAtTime(rev*.55,audioCtx.currentTime,.04);
+ echoGain.gain.setTargetAtTime(ech*.48,audioCtx.currentTime,.04);
+ feedbackGain.gain.setTargetAtTime(Math.min(.52,ech*1.35),audioCtx.currentTime,.04);
+ voiceGain.gain.setTargetAtTime(Number($("voiceLevel").value)/100,audioCtx.currentTime,.04);
+ masterGain.gain.setTargetAtTime(.88,audioCtx.currentTime,.04);
+ if(musicGain)musicGain.gain.setTargetAtTime(Number($("musicLevel").value)/100,audioCtx.currentTime,.04);
+}
+function updateLabels(){
+ $("reverbValue").textContent=$("reverbMix").value+"%";
+ $("echoValue").textContent=$("echoMix").value+"%";
+ $("decayValue").textContent=Number($("decay").value).toFixed(1)+" s";
+ $("voiceValue").textContent=$("voiceLevel").value+"%";
+ $("musicValue").textContent=$("musicLevel").value+"%";
+}
+["reverbMix","echoMix","voiceLevel","musicLevel"].forEach(id=>$(id).addEventListener("input",()=>{updateLabels();updateEffects()}));
+$("decay").addEventListener("input",()=>{updateLabels();if(audioCtx&&convolver)makeImpulse(Number($("decay").value))});
+updateLabels();
 $("continueBtn").onclick=async()=>{
- const text=$("source").value.trim(); if(!text)return;
- $("status").textContent="AI priprema nastavak…"; $("continueBtn").disabled=true;
+ const text=$("source").value.trim();if(!text)return;
+ $("status").textContent="AI priprema nastavak…";$("continueBtn").disabled=true;
  try{const r=await fetch("/api/meditation-continue",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text,style:$("style").value})});
- const d=await r.json(); if(!r.ok)throw new Error(d.error||"Greška");
- lastContinuation=d.continuation||""; $("continuation").textContent=lastContinuation; $("appendBtn").disabled=!lastContinuation; $("rewriteBtn").disabled=!lastContinuation; $("status").textContent="Nastavak je spreman.";
+ const d=await r.json();if(!r.ok)throw new Error(d.error||"Greška");
+ lastContinuation=d.continuation||"";$("continuation").textContent=lastContinuation;$("appendBtn").disabled=!lastContinuation;$("rewriteBtn").disabled=!lastContinuation;$("status").textContent="Nastavak je spreman.";
  }catch(e){$("status").textContent=e.message}finally{$("continueBtn").disabled=false}
 };
 $("appendBtn").onclick=()=>{$("finalText").value=[$("source").value.trim(),lastContinuation].filter(Boolean).join("\n\n");$("status").textContent="Nastavak je dodat u finalnu skriptu."};
-$("rewriteBtn").onclick=async()=>{$("source").value=$("source").value.trim()+"\n\n"+lastContinuation; $("continueBtn").click()};
+$("rewriteBtn").onclick=async()=>{$("source").value=$("source").value.trim()+"\n\n"+lastContinuation;$("continueBtn").click()};
 $("clearBtn").onclick=()=>{["source","finalText"].forEach(id=>$(id).value="");$("continuation").textContent="Ovde će se pojaviti nastavak. Tvoj originalni tekst ostaje odvojen i ne menja se.";lastContinuation="";$("appendBtn").disabled=true;$("rewriteBtn").disabled=true};
 $("generateBtn").onclick=async()=>{
- const text=$("finalText").value.trim()||[$("source").value.trim(),lastContinuation].filter(Boolean).join("\n\n"); if(!text){$("status").textContent="Prvo napiši ili generiši skriptu.";return}
+ const text=$("finalText").value.trim()||[$("source").value.trim(),lastContinuation].filter(Boolean).join("\n\n");if(!text){$("status").textContent="Prvo napiši ili generiši skriptu.";return}
  $("status").textContent="Generišem audio u tvom glasu…";$("generateBtn").disabled=true;
  try{const r=await fetch("/api/meditation-voice",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text,style:$("style").value,pauses:$("pauses").value,speed:Number($("speed").value)})});
  if(!r.ok){const d=await r.json().catch(()=>({}));throw new Error(d.error||"Audio nije generisan");}
- const blob=await r.blob(); const url=URL.createObjectURL(blob); $("player").src=url; $("player").play().catch(()=>{}); $("status").textContent="Audio je spreman.";
- }catch(e){$("status").textContent=e.message}finally{$("generateBtn").disabled=false}
+ const blob=await r.blob();const url=URL.createObjectURL(blob);$("player").pause();$("player").src=url;$("player").load();
+ await setupAudioGraph();await audioCtx.resume();await $("player").play();
+ $("previewMix").disabled=!musicAudio;$("stopBtn").disabled=false;$("status").textContent="Audio je spreman. Efekte možeš menjati tokom preslušavanja.";
+ }catch(e){$("status").textContent=e.message||"Greška pri generisanju zvuka."}finally{$("generateBtn").disabled=false}
 };
-$("music").onchange=()=>{$("previewMix").disabled=!$("music").files.length||!$("player").src;$("status").textContent="Muzika je učitana za preview. Finalni miks ćemo dodati u sledećoj fazi."};
+$("music").onchange=()=>{
+ const file=$("music").files&&$("music").files[0];if(!file)return;
+ if(musicAudio){musicAudio.pause();musicAudio.src="";musicAudio=null;musicSource=null;musicGain=null;}
+ musicAudio=new Audio(URL.createObjectURL(file));musicAudio.loop=true;musicAudio.preload="auto";
+ if(audioCtx)connectMusic();
+ $("previewMix").disabled=!$("player").src;$("status").textContent="Muzika je učitana. Generiši govor, pa klikni „Preslušaj miks“.";
+};
+$("previewMix").onclick=async()=>{
+ if(!$("player").src){$("status").textContent="Prvo generiši govor, pa preslušaj miks.";return}
+ if(!musicAudio){$("status").textContent="Prvo izaberi audio fajl za pozadinsku muziku.";return}
+ try{setupAudioGraph();connectMusic();await audioCtx.resume();$("player").currentTime=0;musicAudio.currentTime=0;await Promise.all([$("player").play(),musicAudio.play()]);$("stopBtn").disabled=false;$("status").textContent="Preslušavaš miks. Podešavaj efekte dok zvuk svira."}
+ catch(e){$("status").textContent="Nije moguće pokrenuti miks: "+e.message}
+};
+$("stopBtn").onclick=()=>{$("player").pause();if(musicAudio)musicAudio.pause();$("stopBtn").disabled=true;$("status").textContent="Reprodukcija je zaustavljena."};
+$("player").addEventListener("ended",()=>{if(musicAudio)musicAudio.pause();$("stopBtn").disabled=true});
 </script>
 </body>
 </html>
