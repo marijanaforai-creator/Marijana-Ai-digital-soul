@@ -65,6 +65,7 @@ textarea{width:100%;min-height:210px;resize:vertical;border:1px solid #ddd5c7;bo
 <div class="row">
 <button class="btn gold" id="generateBtn">🎙️ Generiši i obradi</button>
 <button class="btn ghost" id="stopBtn" disabled>■ Zaustavi</button>
+<button class="btn soft" id="previewAudio" disabled>▶ Preslušaj pre preuzimanja</button>
 <button class="btn soft" id="downloadAudio" disabled>⬇️ Preuzmi gotov audio</button>
 </div>
 <audio id="player" class="player" controls></audio>
@@ -230,10 +231,16 @@ $("generateBtn").onclick=async()=>{
   const parts=splitPauseScript(text);if(!parts.some(p=>p.type==="speech"))throw new Error("Nema teksta za izgovor.");
   const wav=await renderProcessed(parts);if(finalAudioUrl)URL.revokeObjectURL(finalAudioUrl);finalAudioUrl=URL.createObjectURL(wav);
   if(generatedAudioUrl)URL.revokeObjectURL(generatedAudioUrl);generatedAudioUrl=finalAudioUrl;
-  $("player").pause();$("player").src=finalAudioUrl;$("player").load();$("downloadAudio").disabled=false;
+  $("player").pause();$("player").src=finalAudioUrl;$("player").load();$("previewAudio").disabled=false;$("downloadAudio").disabled=false;
   $("previewMix").disabled=true;$("stopBtn").disabled=false;$("status").textContent=selectedMusicFile?"Gotov miks je spreman: glas, efekti, precizne pauze i muzička podloga.":"Gotov audio je spreman: glas, efekti i precizne pauze. Možeš učitati muziku i ponovo generisati miks.";
   try{await $("player").play()}catch(playError){$("stopBtn").disabled=true;$("status").textContent="Audio je generisan, ali pregledač nije pokrenuo reprodukciju. Pritisni Play na audio plejeru da ga čuješ.";console.warn("Audio playback failed:",playError)}
  }catch(e){$("status").textContent=e.message||"Greška pri obradi zvuka."}finally{$("generateBtn").disabled=false}
+};
+$("previewAudio").onclick=async()=>{
+ if(!finalAudioUrl){$("status").textContent="Prvo generiši audio.";return}
+ const player=$("player");player.currentTime=0;
+ try{await player.play();$("stopBtn").disabled=false;$("status").textContent="Preslušavaš generisani audio. Možeš ga preuzeti kada budeš spremna."}
+ catch(e){$("status").textContent="Pregledač nije pokrenuo reprodukciju. Pritisni Play na audio plejeru."}
 };
 $("downloadAudio").onclick=()=>{
  if(!finalAudioUrl)return;const a=document.createElement("a");a.href=finalAudioUrl;a.download="meditation-studio-final.wav";document.body.appendChild(a);a.click();a.remove();$("status").textContent="Preuzimanje WAV audio fajla je pokrenuto.";
