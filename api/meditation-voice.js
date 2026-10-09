@@ -1,10 +1,10 @@
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
   try {
-    const { text } = req.body || {};
+    const { text, voiceId: requestedVoiceId } = req.body || {};
     if (typeof text !== "string" || !text.trim()) return res.status(400).json({ error: "Nedostaje tekst." });
     const key = process.env.ELEVENLABS_API_KEY;
-    const voiceId = process.env.ELEVENLABS_VOICE_ID;
+    const voiceId = typeof requestedVoiceId === "string" && /^[A-Za-z0-9_-]{8,100}$/.test(requestedVoiceId) ? requestedVoiceId : process.env.ELEVENLABS_VOICE_ID;
     if (!key || !voiceId) return res.status(500).json({ error: "ELEVENLABS_API_KEY ili ELEVENLABS_VOICE_ID nije podešen na serveru." });
 
     const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}?output_format=mp3_44100_128`, {
