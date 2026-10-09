@@ -26,6 +26,10 @@ textarea{width:100%;min-height:210px;resize:vertical;border:1px solid #ddd5c7;bo
 <section class="card">
 <h1>AI Meditation Studio</h1>
 <p class="sub">Ti pišeš. AI nastavlja. Ti odobravaš. Tek onda govori tvoj glas.</p>
+<div class="label">AI naracija od teme</div>
+<input id="narrationTopic" type="text" placeholder="Tema, npr. miran san ili opuštanje posle napornog dana" style="width:100%;padding:13px 15px;border:1px solid #ddd5c7;border-radius:12px;background:#fffdf9;font:15px Arial,sans-serif">
+<div class="row" style="margin-top:10px;align-items:center"><select id="narrationDuration" aria-label="Trajanje naracije" style="padding:10px;border:1px solid #ddd5c7;border-radius:10px;background:white"><option value="1">1 minut</option><option value="3" selected>3 minuta</option><option value="5">5 minuta</option><option value="10">10 minuta</option></select><button class="btn gold" id="generateNarrationBtn">✨ Generiši celu naraciju</button></div>
+<p class="note">AI će napisati tekst koji možeš pregledati i izmeniti pre nego što ga izgovori tvoj glas.</p>
 <div class="label">Moj tekst</div>
 <textarea id="source" placeholder="Napiši početak meditacije..."></textarea>
 <div class="row" style="margin-top:12px">
@@ -56,12 +60,13 @@ textarea{width:100%;min-height:210px;resize:vertical;border:1px solid #ddd5c7;bo
 <section class="card">
 <h2>Produkcija</h2><p class="sub">Prva verzija je fokusirana na tvoj glas i čist workflow.</p>
 <div class="controls">
-<div class="field"><label>Glas</label><select id="voice"><option>Marijana Voice</option></select></div>
+<div class="field"><label>Glas</label><select id="voice"><option value="default">Marijana Voice</option></select></div>
 <div class="field"><label>Trajanje / stil</label><select id="style"><option>Mirna meditacija</option><option>Duboko opuštanje</option><option>Večernja meditacija</option><option>Jutarnja meditacija</option></select></div>
 <div class="field"><label>Brzina</label><input id="speed" type="range" min=".75" max="1.15" step=".01" value=".9"></div>
 <div class="field"><label>Pauze</label><select id="pauses"><option value="natural">Prirodne</option><option value="long">Duže</option><option value="short">Kraće</option></select></div>
 </div>
 <div class="row" style="margin-top:12px"><button class="btn soft" id="productionPreset">✨ Primeni produkcijski preset</button></div>
+<details class="effects" style="margin-top:12px"><summary style="cursor:pointer;font-weight:700">＋ Dodaj svoj klon glasa</summary><p class="note">Zaštiti kvalitet: koristi čist snimak samo svog glasa ili glasa za koji imaš dozvolu. Kompresovan MP3 snimak od 1–2 minuta, bez muzike i buke, najbolje prolazi.</p><div class="row"><input id="cloneName" type="text" maxlength="80" placeholder="Naziv glasa" style="padding:10px;border:1px solid #ddd5c7;border-radius:10px"><input id="cloneAudio" type="file" accept="audio/*"><button class="btn ghost" id="cloneVoiceBtn">🎙️ Napravi klon</button></div></details>
 <div class="label">Audio</div>
 <div class="row">
 <button class="btn gold" id="generateBtn">🎙️ Generiši i obradi</button>
@@ -71,7 +76,8 @@ textarea{width:100%;min-height:210px;resize:vertical;border:1px solid #ddd5c7;bo
 </div>
 <audio id="player" class="player" controls></audio>
 <div class="label">Pozadinska muzika</div>
-<input id="music" type="file" accept="audio/*">
+<div class="effects" style="margin-top:8px"><div class="label">Generiši podlogu pomoću AI</div><textarea id="musicPrompt" placeholder="Opiši podlogu, npr. tiha, topla ambijentalna muzika za meditaciju, bez vokala i naglih promena" style="min-height:82px"></textarea><div class="row" style="margin-top:10px;align-items:center"><select id="musicDuration" aria-label="Trajanje AI muzike" style="padding:10px;border:1px solid #ddd5c7;border-radius:10px;background:white"><option value="60000">1 minut</option><option value="120000" selected>2 minuta</option><option value="300000">5 minuta</option><option value="600000">10 minuta</option></select><button class="btn soft" id="generateMusicBtn">✨ Generiši AI muziku</button><button class="btn ghost" id="previewMusic" disabled>▶ Preslušaj muziku</button></div><p class="note">AI muzika je instrumentalna. Generisanje troši ElevenLabs kredite; fajl se koristi kao podloga pri sledećoj obradi.</p></div>
+<p class="note">Ili učitaj svoju muzičku podlogu:</p><input id="music" type="file" accept="audio/*">
 <div class="effects">
   <div class="label">Podešavanje muzičke podloge</div>
   <div class="effect-row"><label for="musicFadeIn">Postepeni ulaz muzike <span id="fadeInValue">3 s</span></label><input id="musicFadeIn" type="range" min="0" max="12" step="1" value="3"></div>
@@ -166,7 +172,7 @@ function audioBufferToWav(buffer){
  return new Blob([ab],{type:"audio/wav"});
 }
 async function fetchSpeech(text){
- const r=await fetch("/api/meditation-voice",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text,style:$("style").value,pauses:$("pauses").value,speed:Number($("speed").value)})});
+ const r=await fetch("/api/meditation-voice",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text,voiceId:$("voice").value==="default"?"":$("voice").value,style:$("style").value,pauses:$("pauses").value,speed:Number($("speed").value)})});
  if(!r.ok){const d=await r.json().catch(()=>({}));throw new Error(d.error||"Audio nije generisan");}
  const bytes=await r.arrayBuffer();const Ctx=window.AudioContext||window.webkitAudioContext;const ctx=new Ctx();
  try{return await ctx.decodeAudioData(bytes.slice(0));}finally{await ctx.close();}
@@ -227,6 +233,28 @@ $("continueBtn").onclick=async()=>{
  lastContinuation=d.continuation||"";$("continuation").textContent=lastContinuation;$("appendBtn").disabled=!lastContinuation;$("rewriteBtn").disabled=!lastContinuation;$("status").textContent="Nastavak je spreman.";
  }catch(e){$("status").textContent=e.message}finally{$("continueBtn").disabled=false}
 };
+$("generateNarrationBtn").onclick=async()=>{
+ const topic=$("narrationTopic").value.trim();if(!topic){$("status").textContent="Upiši temu za AI naraciju.";return}
+ const button=$("generateNarrationBtn");button.disabled=true;$("status").textContent="AI piše celu meditaciju…";
+ try{const r=await fetch("/api/meditation-continue",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text:topic,style:$("style").value,mode:"full",durationMinutes:Number($("narrationDuration").value)})});const d=await r.json();if(!r.ok)throw new Error(d.error||"Generisanje naracije nije uspelo.");$("finalText").value=d.continuation||"";$("status").textContent="AI naracija je spremna. Pregledaj i po želji izmeni tekst pre generisanja glasa."}
+ catch(e){$("status").textContent=e.message||"Generisanje naracije nije uspelo."}finally{button.disabled=false}
+};
+$("cloneVoiceBtn").onclick=async()=>{
+ const file=$("cloneAudio").files&&$("cloneAudio").files[0];if(!file){$("status").textContent="Izaberi audio snimak svog glasa.";return}
+ if(file.size>4*1024*1024){$("status").textContent="Snimak mora biti manji od 4 MB. Izaberi kompresovan MP3 fajl.";return}
+ const button=$("cloneVoiceBtn"),name=$("cloneName").value.trim()||"Moj klon";
+ button.disabled=true;$("status").textContent="Kreiram klon glasa…";
+ try{
+  const form=new FormData();form.append("name",name);form.append("audio",file);
+  const r=await fetch("/api/meditation-clone",{method:"POST",body:form});const d=await r.json();if(!r.ok)throw new Error(d.error||"Kreiranje klona nije uspelo.");
+  const clones=JSON.parse(localStorage.getItem("meditationStudioVoiceClones")||"[]").filter(v=>v.id!==d.voiceId);clones.push({id:d.voiceId,name:d.name||name});localStorage.setItem("meditationStudioVoiceClones",JSON.stringify(clones));
+  let option=Array.from($("voice").options).find(o=>o.value===d.voiceId);if(!option){option=new Option(d.name||name,d.voiceId);$("voice").add(option)}
+  $("voice").value=d.voiceId;localStorage.setItem("meditationStudioActiveVoice",d.voiceId);
+  $("status").textContent=d.requiresVerification?"Klon je napravljen, ali ElevenLabs traži verifikaciju pre korišćenja.":"Klon glasa je spreman i izabran za naraciju.";
+ }catch(e){$("status").textContent=e.message||"Kreiranje klona nije uspelo."}finally{button.disabled=false}
+};
+$("voice").addEventListener("change",()=>localStorage.setItem("meditationStudioActiveVoice",$("voice").value));
+try{const clones=JSON.parse(localStorage.getItem("meditationStudioVoiceClones")||"[]");for(const v of clones){if(v.id&&!Array.from($("voice").options).some(o=>o.value===v.id))$("voice").add(new Option(v.name||"Sačuvani klon",v.id))}const active=localStorage.getItem("meditationStudioActiveVoice");if(active&&Array.from($("voice").options).some(o=>o.value===active))$("voice").value=active}catch{}
 $("appendBtn").onclick=()=>{$("finalText").value=[$("source").value.trim(),lastContinuation].filter(Boolean).join("\n\n");$("status").textContent="Nastavak je dodat u finalnu skriptu."};
 $("rewriteBtn").onclick=async()=>{$("source").value=$("source").value.trim()+"\n\n"+lastContinuation;$("continueBtn").click()};
 $("clearBtn").onclick=()=>{["source","finalText"].forEach(id=>$(id).value="");$("continuation").textContent="Ovde će se pojaviti nastavak. Tvoj originalni tekst ostaje odvojen i ne menja se.";lastContinuation="";$("appendBtn").disabled=true;$("rewriteBtn").disabled=true};
@@ -254,11 +282,29 @@ $("downloadAudio").onclick=()=>{
 };
 $("music").onchange=()=>{
  const file=$("music").files&&$("music").files[0];if(!file)return;
- selectedMusicFile=file;
+ selectedMusicFile=file;$("previewMusic").disabled=false;
  if(musicAudio){musicAudio.pause();musicAudio.src="";musicAudio=null;musicSource=null;musicGain=null;}
  musicAudio=new Audio(URL.createObjectURL(file));musicAudio.loop=true;musicAudio.preload="auto";
  $("previewMix").disabled=!$("player").src;
  $("status").textContent="Učitana muzička podloga: "+file.name+". Klikni „Generiši i obradi“ da uključiš muziku u finalni WAV.";
+};
+$("generateMusicBtn").onclick=async()=>{
+ const prompt=$("musicPrompt").value.trim();if(!prompt){$("status").textContent="Opiši kakvu AI muziku želiš.";return}
+ const button=$("generateMusicBtn");button.disabled=true;$("status").textContent="AI komponuje instrumentalnu podlogu…";
+ try{
+  const r=await fetch("/api/meditation-music",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt,durationMs:Number($("musicDuration").value)})});
+  if(!r.ok){const d=await r.json().catch(()=>({}));throw new Error(d.error||"Generisanje muzike nije uspelo.")}
+  const blob=await r.blob();selectedMusicFile=new File([blob],"ai-meditation-background.mp3",{type:blob.type||"audio/mpeg"});
+  if(musicAudio){musicAudio.pause();musicAudio.src=""}
+  musicAudio=new Audio(URL.createObjectURL(blob));musicAudio.loop=true;musicAudio.preload="auto";$("previewMusic").disabled=false;
+  $("status").textContent="AI muzika je spremna. Preslušaj je ili klikni „Generiši i obradi“ da je uključiš u finalni miks."
+ }catch(e){$("status").textContent=e.message||"Generisanje muzike nije uspelo."}finally{button.disabled=false}
+};
+$("previewMusic").onclick=async()=>{
+ if(!selectedMusicFile){$("status").textContent="Prvo izaberi ili generiši muzičku podlogu.";return}
+ if(!musicAudio||musicAudio.src===""){musicAudio=new Audio(URL.createObjectURL(selectedMusicFile));musicAudio.loop=true}
+ musicAudio.currentTime=0;
+ try{await musicAudio.play();$("status").textContent="Preslušavaš muzičku podlogu."}catch(e){$("status").textContent="Pregledač nije pokrenuo reprodukciju muzike. Pokušaj ponovo."}
 };
 $("previewMix").onclick=async()=>{
  if(!$("player").src){$("status").textContent="Prvo generiši audio.";return}
