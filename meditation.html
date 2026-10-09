@@ -70,6 +70,13 @@ textarea{width:100%;min-height:210px;resize:vertical;border:1px solid #ddd5c7;bo
 <audio id="player" class="player" controls></audio>
 <div class="label">Pozadinska muzika</div>
 <input id="music" type="file" accept="audio/*">
+<div class="effects">
+  <div class="label">Podešavanje muzičke podloge</div>
+  <div class="effect-row"><label for="musicFadeIn">Postepeni ulaz muzike <span id="fadeInValue">3 s</span></label><input id="musicFadeIn" type="range" min="0" max="12" step="1" value="3"></div>
+  <div class="effect-row"><label for="musicFadeOut">Postepeni završetak <span id="fadeOutValue">6 s</span></label><input id="musicFadeOut" type="range" min="0" max="20" step="1" value="6"></div>
+  <label style="display:flex;align-items:center;gap:9px;font-size:13px;margin-top:12px"><input id="duckMusic" type="checkbox" checked style="width:auto"> Automatski stišaj muziku dok se govori</label>
+  <p class="note">Za YouTube koristi muziku koju si sama napravila ili za koju imaš jasnu licencu za komercijalnu upotrebu i objavljivanje.</p>
+</div>
 <div class="row" style="margin-top:12px"><button class="btn soft" id="previewMix" disabled>🎵 Preslušaj miks</button></div>
 <div class="effects">
   <div class="label">Audio Effects · obrada zvuka</div>
@@ -78,7 +85,7 @@ textarea{width:100%;min-height:210px;resize:vertical;border:1px solid #ddd5c7;bo
   <div class="effect-row"><label for="decay">Dužina prostora <span id="decayValue">2.2 s</span></label><input id="decay" type="range" min="0.5" max="4" step="0.1" value="2.2"></div>
   <div class="effect-row"><label for="voiceLevel">Jačina glasa <span id="voiceValue">100%</span></label><input id="voiceLevel" type="range" min="60" max="120" value="100"></div>
   <div class="effect-row"><label for="musicLevel">Jačina muzike <span id="musicValue">20%</span></label><input id="musicLevel" type="range" min="5" max="35" value="20"></div>
-  <p class="note">Efekti se primenjuju uživo i u obrađenom izvozu glasa. U ovoj fazi izvoz sadrži glas, efekte i precizne pauze; pozadinsku muziku dodajemo naknadno.</p>
+  <p class="note">Izvoz uključuje glas, efekte, precizne pauze i, ako učitaš fajl, pozadinsku muziku sa postepenim ulazom/završetkom i automatskim stišavanjem tokom govora.</p>
 </div>
 <div id="status" class="status"></div>
 <p class="note">API ključevi se ne stavljaju u ovaj frontend. Backend koristi server-side secrets. Za produkcijski kvalitet tvog glasa preporučujemo profesionalni voice clone; originalni snimci glasa ostaju pod tvojom kontrolom.</p>
@@ -89,7 +96,7 @@ textarea{width:100%;min-height:210px;resize:vertical;border:1px solid #ddd5c7;bo
 const $=id=>document.getElementById(id);
 let lastContinuation="";
 let audioCtx=null, voiceSource=null, voiceGain=null, dryGain=null, convolver=null, reverbGain=null, delayNode=null, feedbackGain=null, echoGain=null, musicAudio=null, musicSource=null, musicGain=null, masterGain=null, compressor=null;
-let finalAudioUrl=null, generatedAudioUrl=null;
+let finalAudioUrl=null, generatedAudioUrl=null, selectedMusicFile=null;
 function makeImpulseFor(ctx,duration){
  const rate=ctx.sampleRate,length=Math.max(1,Math.floor(rate*duration)),buffer=ctx.createBuffer(2,length,rate);
  for(let ch=0;ch<2;ch++){const data=buffer.getChannelData(ch);for(let i=0;i<length;i++)data[i]=(Math.random()*2-1)*Math.pow(1-i/length,2.5);}
@@ -118,6 +125,7 @@ function updateEffects(){
 function updateLabels(){
  $("reverbValue").textContent=$("reverbMix").value+"%";$("echoValue").textContent=$("echoMix").value+"%";
  $("decayValue").textContent=Number($("decay").value).toFixed(1)+" s";$("voiceValue").textContent=$("voiceLevel").value+"%";$("musicValue").textContent=$("musicLevel").value+"%";
+ $("fadeInValue").textContent=$("musicFadeIn").value+" s";$("fadeOutValue").textContent=$("musicFadeOut").value+" s";
 }
 ["reverbMix","echoMix","voiceLevel","musicLevel"].forEach(id=>$(id).addEventListener("input",()=>{updateLabels();updateEffects()}));
 $("decay").addEventListener("input",()=>{updateLabels();if(audioCtx&&convolver)convolver.buffer=makeImpulseFor(audioCtx,Number($("decay").value))});updateLabels();
@@ -154,27 +162,53 @@ async function fetchSpeech(text){
  try{return await ctx.decodeAudioData(bytes.slice(0));}finally{await ctx.close();}
 }
 async function renderProcessed(parts){
- const rate=44100, buffers=[];let total=0;
+ const rate=44100,buffers=[];let total=0;
  for(let i=0;i<parts.length;i++){
-   const p=parts[i];
-   if(p.type==="silence"){buffers.push(p);total+=p.seconds;continue}
-   $("status").textContent="Generišem glas: segment "+(buffers.filter(x=>x.type==="speech").length+1)+"…";
-   const buf=await fetchSpeech(p.text);buffers.push({type:"speech",buffer:buf});total+=buf.duration;
+  const p=parts[i];
+  if(p.type==="silence"){buffers.push(p);total+=p.seconds;continue}
+  $("status").textContent="Generišem glas: segment "+(buffers.filter(x=>x.type==="speech").length+1)+"…";
+  const buf=await fetchSpeech(p.text);buffers.push({type:"speech",buffer:buf});total+=buf.duration;
  }
  if(!buffers.some(x=>x.type==="speech"))throw new Error("Nema teksta za izgovor.");
- const tail=Number($("decay").value)+1.5, length=Math.ceil((total+tail)*rate),offline=new OfflineAudioContext(2,length,rate);
+ let musicBuffer=null;
+ if(selectedMusicFile){
+  $("status").textContent="Učitavam muzičku podlogu…";
+  const Ctx=window.AudioContext||window.webkitAudioContext,decodeCtx=new Ctx();
+  try{musicBuffer=await decodeCtx.decodeAudioData(await selectedMusicFile.arrayBuffer())}finally{await decodeCtx.close()}
+ }
+ const tail=Number($("decay").value)+1.5,renderDuration=total+tail,length=Math.ceil(renderDuration*rate);
+ const offline=new OfflineAudioContext(2,length,rate);
  const dry=offline.createGain(),conv=offline.createConvolver(),rev=offline.createGain(),delay=offline.createDelay(2),echo=offline.createGain(),feedback=offline.createGain(),voice=offline.createGain(),comp=offline.createDynamicsCompressor(),master=offline.createGain();
- dry.gain.value=1;rev.gain.value=Number($("reverbMix").value)/100*.55;echo.gain.value=Number($("echoMix").value)/100*.48;feedback.gain.value=Math.min(.52,Number($("echoMix").value)/100*1.35);delay.delayTime.value=.42;
- voice.gain.value=Number($("voiceLevel").value)/100;master.gain.value=.88;comp.threshold.value=-8;comp.knee.value=12;comp.ratio.value=3;comp.attack.value=.004;comp.release.value=.25;
- conv.buffer=makeImpulseFor(offline,Number($("decay").value));
- dry.connect(voice);conv.connect(rev);rev.connect(voice);delay.connect(echo);echo.connect(voice);delay.connect(feedback);feedback.connect(delay);voice.connect(comp);comp.connect(master);master.connect(offline.destination);
- let t=0;
+ dry.gain.value=1;rev.gain.value=Number($("reverbMix").value)/100*.55;echo.gain.value=Number($("echoMix").value)/100*.48;
+ feedback.gain.value=Math.min(.52,Number($("echoMix").value)/100*1.35);delay.delayTime.value=.42;voice.gain.value=Number($("voiceLevel").value)/100;master.gain.value=.88;
+ comp.threshold.value=-8;comp.knee.value=12;comp.ratio.value=3;comp.attack.value=.004;comp.release.value=.25;conv.buffer=makeImpulseFor(offline,Number($("decay").value));
+ dry.connect(voice);conv.connect(rev);rev.connect(voice);delay.connect(echo);echo.connect(voice);delay.connect(feedback);feedback.connect(delay);voice.connect(comp);comp.connect(master);
+ let t=0;const speechWindows=[];
  for(const p of buffers){
   if(p.type==="silence"){t+=p.seconds;continue}
-  const src=offline.createBufferSource();src.buffer=p.buffer;
-  src.connect(dry);src.connect(conv);src.connect(delay);src.start(t);t+=p.buffer.duration;
+  const src=offline.createBufferSource();src.buffer=p.buffer;src.connect(dry);src.connect(conv);src.connect(delay);src.start(t);
+  speechWindows.push({start:t,end:t+p.buffer.duration});t+=p.buffer.duration;
  }
- $("status").textContent="Obrađujem zvuk i precizne pauze…";
+ if(musicBuffer){
+  const musicSrc=offline.createBufferSource(),musicGain=offline.createGain();
+  musicSrc.buffer=musicBuffer;musicSrc.loop=true;musicSrc.connect(musicGain);musicGain.connect(comp);
+  const base=Math.max(.001,Number($("musicLevel").value)/100),fadeIn=Math.min(Number($("musicFadeIn").value),renderDuration/3),fadeOut=Math.min(Number($("musicFadeOut").value),renderDuration/3);
+  const g=musicGain.gain;g.setValueAtTime(0,0);
+  if(fadeIn>0)g.linearRampToValueAtTime(base,fadeIn);else g.setValueAtTime(base,0);
+  if($("duckMusic").checked){
+   const duck=base*.38;
+   for(const w of speechWindows){
+    const down=Math.max(fadeIn,w.start-.18);
+    g.setTargetAtTime(duck,down,.12);
+    g.setTargetAtTime(base,Math.min(renderDuration,w.end+.08),1.0);
+   }
+  }
+  const fadeStart=Math.max(0,renderDuration-fadeOut);
+  if(fadeOut>0){g.setValueAtTime(base,fadeStart);g.linearRampToValueAtTime(0,renderDuration)}
+  else{g.setValueAtTime(base,Math.max(0,renderDuration-.01));g.linearRampToValueAtTime(0,renderDuration)}
+  musicSrc.start(0);musicSrc.stop(renderDuration);
+ }
+ $("status").textContent=musicBuffer?"Miksujem glas, efekte, pauze i muziku…":"Obrađujem glas, efekte i precizne pauze…";
  const rendered=await offline.startRendering();return audioBufferToWav(rendered);
 }
 $("continueBtn").onclick=async()=>{
@@ -195,7 +229,7 @@ $("generateBtn").onclick=async()=>{
   const wav=await renderProcessed(parts);if(finalAudioUrl)URL.revokeObjectURL(finalAudioUrl);finalAudioUrl=URL.createObjectURL(wav);
   if(generatedAudioUrl)URL.revokeObjectURL(generatedAudioUrl);generatedAudioUrl=finalAudioUrl;
   $("player").pause();$("player").src=finalAudioUrl;$("player").load();$("downloadAudio").disabled=false;
-  $("previewMix").disabled=true;$("stopBtn").disabled=false;$("status").textContent="Gotov audio je spreman: glas, efekti i precizne pauze. Muziku dodajemo u sledećoj fazi.";
+  $("previewMix").disabled=true;$("stopBtn").disabled=false;$("status").textContent=selectedMusicFile?"Gotov miks je spreman: glas, efekti, precizne pauze i muzička podloga.":"Gotov audio je spreman: glas, efekti i precizne pauze. Možeš učitati muziku i ponovo generisati miks.";
   $("player").play().catch(()=>{});
  }catch(e){$("status").textContent=e.message||"Greška pri obradi zvuka."}finally{$("generateBtn").disabled=false}
 };
@@ -204,11 +238,17 @@ $("downloadAudio").onclick=()=>{
 };
 $("music").onchange=()=>{
  const file=$("music").files&&$("music").files[0];if(!file)return;
+ selectedMusicFile=file;
  if(musicAudio){musicAudio.pause();musicAudio.src="";musicAudio=null;musicSource=null;musicGain=null;}
  musicAudio=new Audio(URL.createObjectURL(file));musicAudio.loop=true;musicAudio.preload="auto";
- if(audioCtx)connectMusic();$("previewMix").disabled=!$("player").src;$("status").textContent="Muzika je učitana. Integraciju muzike u finalni izvoz dodajemo u sledećoj fazi.";
+ $("previewMix").disabled=!$("player").src;
+ $("status").textContent="Učitana muzička podloga: "+file.name+". Klikni „Generiši i obradi“ da uključiš muziku u finalni WAV.";
 };
-$("previewMix").onclick=async()=>{$("status").textContent="Muzika će biti uključena u finalni miks u sledećoj fazi."};
+$("previewMix").onclick=async()=>{
+ if(!$("player").src){$("status").textContent="Prvo generiši audio.";return}
+ if(!selectedMusicFile){$("status").textContent="Prvo izaberi muzičku datoteku.";return}
+ $("status").textContent="Za miks sa muzikom klikni „Generiši i obradi“, pa preslušaj obrađeni WAV.";
+};
 $("stopBtn").onclick=()=>{$("player").pause();if(musicAudio)musicAudio.pause();$("stopBtn").disabled=true;$("status").textContent="Reprodukcija je zaustavljena."};
 $("player").addEventListener("ended",()=>{if(musicAudio)musicAudio.pause();$("stopBtn").disabled=true});
 </script>
