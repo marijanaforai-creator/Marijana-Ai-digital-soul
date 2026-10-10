@@ -142,7 +142,7 @@ details summary{color:#EEE5F5}
   </div>
 </div>
 </div>
-
+</div>
 <div id="status" class="status"></div>
 <p class="note">API ključevi se ne stavljaju u ovaj frontend. Backend koristi server-side secrets. Za produkcijski kvalitet tvog glasa preporučujemo profesionalni voice clone; originalni snimci glasa ostaju pod tvojom kontrolom.</p>
 </section>
@@ -157,14 +157,7 @@ let paragraphRequestToken=0;
 let audioCtx=null, voiceSource=null, voiceGain=null, dryGain=null, convolver=null, reverbGain=null, delayNode=null, feedbackGain=null, echoGain=null, musicAudio=null, musicSource=null, musicGain=null, masterGain=null, compressor=null;
 let finalAudioUrl=null, generatedAudioUrl=null, selectedMusicFile=null;
 
-function rememberFinalText(){previousFinalText=$("finalText").value;$("undoEditBtn").disabled=false}
-function setAudioSettingsExpanded(expanded){
- const panel=$("advancedAudioSettings");panel.hidden=!expanded;
- $("showAudioSettingsBtn").disabled=expanded;$("showAudioSettingsBtn").setAttribute("aria-expanded",String(expanded));
- $("hideAudioSettingsBtn").disabled=!expanded;
-}
-$("showAudioSettingsBtn").addEventListener("click",()=>setAudioSettingsExpanded(true));
-$("hideAudioSettingsBtn").addEventListener("click",()=>setAudioSettingsExpanded(false));
+function rememberFinalText(){previousFinalText=$("finalText").value;$("undoEditBtn").disabled=fse));
 function getFinalParagraphs(){
  const text=$("finalText").value,paragraphs=[],re=/\S[\s\S]*?(?=\n\s*\n|$)/g;let m;
  while((m=re.exec(text))!==null)paragraphs.push({text:m[0],start:m.index,end:m.index+m[0].length});
