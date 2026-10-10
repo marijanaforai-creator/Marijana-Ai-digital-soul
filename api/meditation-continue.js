@@ -1,7 +1,7 @@
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
   try {
-    const { text, style = "Mirna meditacija", mode = "continue", durationMinutes = 3 } = req.body || {};
+    const { text, style = "Mirna meditacija", mode = "continue", durationMinutes = 3, instruction = "" } = req.body || {};
     if (typeof text !== "string" || !text.trim()) return res.status(400).json({ error: "Nedostaje tema ili tekst." });
     if (text.length > 5000) return res.status(400).json({ error: "Tekst je predugačak." });
     if (!process.env.OPENAI_API_KEY) return res.status(500).json({ error: "OPENAI_API_KEY nije podešen na serveru." });
@@ -17,6 +17,11 @@ Napravi tekst za približno ${minutes} minuta sporog govora, oko ${wordRange} re
 Piši prirodno za toplu, mirnu AI naraciju. Koristi kratke, jasne rečenice i obraćanje slušaocu u drugom licu.
 Umetni oznake [PAUZA: 3s] ili [PAUZA: 4s] na nekoliko prirodnih mesta za disanje i tišinu. Ne preteruj s oznakama.
 Ne dodaj naslov, objašnjenja, navodnike ni meta-komentare. Ne obećavaj medicinske ili terapijske rezultate.`;
+    } else if (mode === "rewrite_paragraph") {
+      if (typeof instruction !== "string" || !instruction.trim() || instruction.length > 1200) {
+        return res.status(400).json({ error: "Unesi kratko uputstvo za prepravku pasusa (najviše 1.200 znakova)." });
+      }
+      prompt = `Prepravi samo jedan postojeći pasus meditacije na srpskom jeziku, latinicom i ekavicom.\nStil: ${style}.\nUputstvo korisnika: ${instruction.trim()}\nSačuvaj osnovnu nameru izvornog pasusa, prati uputstvo i vrati samo novi pasus, bez naslova, objašnjenja ili navodnika. Ne dodaj tvrdnje o medicinskim ili terapijskim rezultatima.\n\nIZVORNI PASUS:\n${text.trim()}`;
     } else {
       prompt = `Nastavi sledeću meditacionu skriptu na srpskom jeziku.
 Stil: ${style}.

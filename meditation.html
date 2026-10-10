@@ -27,7 +27,7 @@ textarea::placeholder{color:#92839F}textarea:focus,input:focus,select:focus{bord
 .ghost{background:rgba(255,255,255,.035);border-color:var(--line);color:#EAE1F1}
 .btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
 .icon{width:17px;height:17px;flex:none;display:inline-block;vertical-align:middle;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.cont{margin-top:16px;padding:17px 18px;border-left:3px solid var(--purple-light);background:linear-gradient(130deg,rgba(116,67,151,.18),rgba(255,255,255,.025));border-radius:12px;white-space:pre-wrap;line-height:1.75;color:#F2EAF7;font:19px/1.75 "Cormorant Garamond",Georgia,serif}
+.paragraph-list{display:grid;gap:10px;margin-top:12px}.paragraph-item{padding:13px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.025)}.paragraph-item.selected{border-color:var(--purple-light);box-shadow:0 0 0 2px rgba(164,92,242,.14)}.paragraph-item label{display:flex;gap:10px;align-items:flex-start;cursor:pointer}.paragraph-item input{margin-top:6px;accent-color:var(--purple-light)}.paragraph-copy{white-space:pre-wrap;line-height:1.65;font:17px/1.65 "Cormorant Garamond",Georgia,serif;flex:1}.edit-instruction{margin-top:10px;min-height:84px;font:14px/1.5 "DM Sans",Arial,sans-serif}.audio-toggle-row{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 14px}.audio-toggle-row .btn{flex:1;min-width:140px}.cont{margin-top:16px;padding:17px 18px;border-left:3px solid var(--purple-light);background:linear-gradient(130deg,rgba(116,67,151,.18),rgba(255,255,255,.025));border-radius:12px;white-space:pre-wrap;line-height:1.75;color:#F2EAF7;font:19px/1.75 "Cormorant Garamond",Georgia,serif}
 .controls{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .field{padding:13px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.035);backdrop-filter:blur(12px)}
 .field label{display:block;font-size:12px;color:var(--muted);margin-bottom:7px}
@@ -72,6 +72,18 @@ details summary{color:#EEE5F5}
 </div>
 <div class="label">Finalna skripta</div>
 <textarea id="finalText" placeholder="Ovde će biti tekst koji će se poslati tvom glasu."></textarea>
+<div class="row" style="margin-top:10px">
+<button class="btn ghost" id="undoEditBtn" disabled>Vrati poslednju izmenu</button>
+<button class="btn soft" id="deleteParagraphBtn" disabled>Obriši izabrani pasus</button>
+<button class="btn ghost" id="deleteAllScriptBtn">Obriši celu meditaciju</button>
+</div>
+<div class="label">Uređivanje pasusa</div>
+<p class="note">Izaberi pasus ispod, pa ga obriši ili prepravi. Ostali pasusi ostaju sačuvani.</p>
+<div id="paragraphList" class="paragraph-list"><p class="note">Unesi tekst u finalnu skriptu da bi se pasusi prikazali ovde.</p></div>
+<textarea id="paragraphInstruction" class="edit-instruction" placeholder="Napiši kako želiš da se izabrani pasus prepravi, npr. dodaj afirmacije za samopouzdanje."></textarea>
+<div class="row" style="margin-top:10px">
+<button class="btn soft" id="rewriteParagraphBtn" disabled>Prepravi izabrani pasus</button>
+</div>
 <div class="effects" style="margin-top:12px">
   <div class="label">Precizne pauze u skripti</div>
   <p class="note">Postavi kursor u tekst i umetni pauzu. Oznake se ne čitaju naglas — prilikom generisanja se pretvaraju u stvarnu tišinu.</p>
@@ -104,8 +116,13 @@ details summary{color:#EEE5F5}
 </div>
 <audio id="player" class="player" controls></audio>
 <div class="label">Pozadinska muzika</div>
-<div class="effects" style="margin-top:8px"><div class="label">Generiši podlogu pomoću AI</div><textarea id="musicPrompt" placeholder="Opiši podlogu, npr. tiha, topla ambijentalna muzika za meditaciju, bez vokala i naglih promena" style="min-height:82px"></textarea><div class="row" style="margin-top:10px;align-items:center"><select id="musicDuration" aria-label="Trajanje AI muzike" style="padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--field)"><option value="60000">1 minut</option><option value="120000" selected>2 minuta</option><option value="300000">5 minuta</option><option value="600000">10 minuta</option></select><button class="btn soft" id="generateMusicBtn"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z"/><path d="m19 16 .7 2.3L22 19l-2.3.7L19 22l-.7-2.3L16 19l2.3-.7L19 16Z"/></svg> Generiši AI muziku</button><button class="btn ghost" id="previewMusic" disabled><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 12 7-12 7V5Z" fill="currentColor" stroke="none"/></svg> Preslušaj muziku</button></div><p class="note">AI muzika je instrumentalna. Generisanje troši ElevenLabs kredite; fajl se koristi kao podloga pri sledećoj obradi.</p></div>
+<div class="effects" style="margin-top:8px"><div class="label">Generiši podlogu pomoću AI</div><textarea id="musicPrompt" placeholder="Opiši podlogu, npr. tiha, topla ambijentalna muzika za meditaciju, bez vokala i naglih promena" style="min-height:82px"></textarea><div class="row" style="margin-top:10px;align-items:center"><select id="musicDuration" aria-label="Trajanje AI muzike" style="padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--field)"><option value="60000">1 minut</option><option value="120000" selected>2 minuta</option><option value="300000">5 minuta</option><option value="420000">7 minuta</option><option value="600000">10 minuta</option></select><button class="btn soft" id="generateMusicBtn"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z"/><path d="m19 16 .7 2.3L22 19l-2.3.7L19 22l-.7-2.3L16 19l2.3-.7L19 16Z"/></svg> Generiši AI muziku</button><button class="btn ghost" id="previewMusic" disabled><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 12 7-12 7V5Z" fill="currentColor" stroke="none"/></svg> Preslušaj muziku</button></div><p class="note">AI muzika je instrumentalna. Generisanje troši ElevenLabs kredite; fajl se koristi kao podloga pri sledećoj obradi.</p></div>
 <p class="note">Ili učitaj svoju muzičku podlogu:</p><input id="music" type="file" accept="audio/*">
+<div class="audio-toggle-row">
+  <button class="btn soft" type="button" id="showAudioSettingsBtn" aria-expanded="false" aria-controls="advancedAudioSettings">Prikaži više</button>
+  <button class="btn ghost" type="button" id="hideAudioSettingsBtn" disabled>Prikaži manje</button>
+</div>
+<div id="advancedAudioSettings" hidden>
 <div class="effects">
   <div class="label">Podešavanje muzičke podloge</div>
   <div class="effect-row"><label for="musicFadeIn">Postepeni ulaz muzike <span id="fadeInValue">3 s</span></label><input id="musicFadeIn" type="range" min="0" max="12" step="1" value="3"></div>
@@ -116,12 +133,15 @@ details summary{color:#EEE5F5}
 <div class="row" style="margin-top:12px"><button class="btn soft" id="previewMix" disabled><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg> Preslušaj miks</button></div>
 <div class="effects">
   <div class="label">Audio Effects · obrada zvuka</div>
-  <div class="effect-row"><label for="reverbMix">Reverb <span id="reverbValue">18%</span></label><input id="reverbMix" type="range" min="0" max="40" value="18"></div>
-  <div class="effect-row"><label for="echoMix">Echo / odjek <span id="echoValue">12%</span></label><input id="echoMix" type="range" min="0" max="35" value="12"></div>
-  <div class="effect-row"><label for="decay">Dužina prostora <span id="decayValue">2.2 s</span></label><input id="decay" type="range" min="0.5" max="4" step="0.1" value="2.2"></div>
-  <div class="effect-row"><label for="voiceLevel">Jačina glasa <span id="voiceValue">100%</span></label><input id="voiceLevel" type="range" min="60" max="120" value="100"></div>
-  <div class="effect-row"><label for="musicLevel">Jačina muzike <span id="musicValue">20%</span></label><input id="musicLevel" type="range" min="5" max="35" value="20"></div>
-  <p class="note">Izvoz uključuje glas, efekte, precizne pauze i, ako učitaš fajl, pozadinsku muziku sa postepenim ulazom/završetkom i automatskim stišavanjem tokom govora.</p>
+    <div class="effect-row"><label for="reverbMix">Reverb <span id="reverbValue">18%</span></label><input id="reverbMix" type="range" min="0" max="40" value="18"></div>
+    <div class="effect-row"><label for="echoMix">Echo / odjek <span id="echoValue">12%</span></label><input id="echoMix" type="range" min="0" max="35" value="12"></div>
+    <div class="effect-row"><label for="decay">Dužina prostora <span id="decayValue">2.2 s</span></label><input id="decay" type="range" min="0.5" max="4" step="0.1" value="2.2"></div>
+    <div class="effect-row"><label for="voiceLevel">Jačina glasa <span id="voiceValue">100%</span></label><input id="voiceLevel" type="range" min="60" max="120" value="100"></div>
+    <div class="effect-row"><label for="musicLevel">Jačina muzike <span id="musicValue">20%</span></label><input id="musicLevel" type="range" min="5" max="35" value="20"></div>
+    <p class="note">Izvoz uključuje glas, efekte, precizne pauze i, ako učitaš fajl, pozadinsku muziku sa postepenim ulazom/završetkom i automatskim stišavanjem tokom govora.</p>
+  </div>
+</div>
+</div>
 </div>
 <div id="status" class="status"></div>
 <p class="note">API ključevi se ne stavljaju u ovaj frontend. Backend koristi server-side secrets. Za produkcijski kvalitet tvog glasa preporučujemo profesionalni voice clone; originalni snimci glasa ostaju pod tvojom kontrolom.</p>
@@ -131,8 +151,88 @@ details summary{color:#EEE5F5}
 <script>
 const $=id=>document.getElementById(id);
 let lastContinuation="";
+let selectedParagraphIndex=-1;
+let previousFinalText=null;
+let paragraphRequestToken=0;
+let continuationRequestToken=0;
 let audioCtx=null, voiceSource=null, voiceGain=null, dryGain=null, convolver=null, reverbGain=null, delayNode=null, feedbackGain=null, echoGain=null, musicAudio=null, musicSource=null, musicGain=null, masterGain=null, compressor=null;
 let finalAudioUrl=null, generatedAudioUrl=null, selectedMusicFile=null;
+
+function rememberFinalText(){previousFinalText=$("finalText").value;$("undoEditBtn").disabled=false}
+function setAudioSettingsExpanded(expanded){
+ const panel=$("advancedAudioSettings");panel.hidden=!expanded;
+ $("showAudioSettingsBtn").disabled=expanded;$("showAudioSettingsBtn").setAttribute("aria-expanded",String(expanded));
+ $("hideAudioSettingsBtn").disabled=!expanded;
+}
+$("showAudioSettingsBtn").addEventListener("click",()=>setAudioSettingsExpanded(true));
+$("hideAudioSettingsBtn").addEventListener("click",()=>setAudioSettingsExpanded(false));
+function getFinalParagraphs(){
+ const text=$("finalText").value,paragraphs=[],re=/\S[\s\S]*?(?=\n\s*\n|$)/g;let m;
+ while((m=re.exec(text))!==null)paragraphs.push({text:m[0],start:m.index,end:m.index+m[0].length});
+ return paragraphs;
+}
+function refreshParagraphList(){
+ const list=$("paragraphList"),paragraphs=getFinalParagraphs();list.replaceChildren();
+ if(!paragraphs.length){
+  list.innerHTML='<p class="note">Unesi tekst u finalnu skriptu da bi se pasusi prikazali ovde.</p>';
+  selectedParagraphIndex=-1;$("deleteParagraphBtn").disabled=true;$("rewriteParagraphBtn").disabled=true;return;
+ }
+ paragraphs.forEach((p,index)=>{
+  const item=document.createElement("div");item.className="paragraph-item"+(index===selectedParagraphIndex?" selected":"");
+  const label=document.createElement("label"),radio=document.createElement("input");radio.type="radio";radio.name="selectedParagraph";radio.value=String(index);radio.checked=index===selectedParagraphIndex;
+  radio.addEventListener("change",()=>{selectedParagraphIndex=index;refreshParagraphList()});
+  const copy=document.createElement("span");copy.className="paragraph-copy";copy.textContent=p.text;
+  label.append(radio,copy);item.append(label);list.append(item);
+ });
+ $("deleteParagraphBtn").disabled=selectedParagraphIndex<0||selectedParagraphIndex>=paragraphs.length;
+ $("rewriteParagraphBtn").disabled=selectedParagraphIndex<0||selectedParagraphIndex>=paragraphs.length;
+}
+$("finalText").addEventListener("input",()=>{
+ previousFinalText=null;
+ $("undoEditBtn").disabled=true;
+ selectedParagraphIndex=-1;
+ refreshParagraphList();
+});
+$("undoEditBtn").onclick=()=>{
+ if(previousFinalText===null)return;
+ const current=$("finalText").value;$("finalText").value=previousFinalText;previousFinalText=current;
+ selectedParagraphIndex=-1;refreshParagraphList();$("status").textContent="Poslednja izmena je poništena.";
+};
+$("deleteParagraphBtn").onclick=()=>{
+ const parts=getFinalParagraphs(),index=selectedParagraphIndex;if(index<0||index>=parts.length)return;
+ if(parts.length===1){$("status").textContent="Ovo je poslednji pasus. Za brisanje cele meditacije koristi dugme „Obriši celu meditaciju“.";return}
+ const p=parts[index];rememberFinalText();
+ const left=$("finalText").value.slice(0,p.start),right=$("finalText").value.slice(p.end);
+ let result=left+right;result=result.replace(/\n{3,}/g,"\n\n").replace(/^\s+|\s+$/g,"");
+ $("finalText").value=result;selectedParagraphIndex=-1;refreshParagraphList();
+ $("status").textContent="Izabrani pasus je obrisan. Možeš ga vratiti opcijom „Vrati poslednju izmenu“.";
+};
+$("deleteAllScriptBtn").onclick=()=>{
+ if(!$("finalText").value.trim()){$("status").textContent="Finalna skripta je već prazna.";return}
+ if(!window.confirm("Da li sigurno želiš da obrišeš celu finalnu meditaciju?"))return;
+ rememberFinalText();$("finalText").value="";selectedParagraphIndex=-1;refreshParagraphList();
+ $("status").textContent="Finalna skripta je obrisana. Možeš poništiti izmenu.";
+};
+$("rewriteParagraphBtn").onclick=async()=>{
+ const parts=getFinalParagraphs(),index=selectedParagraphIndex;
+ if(index<0||index>=parts.length)return;
+ const original=parts[index].text,instruction=$("paragraphInstruction").value.trim();
+ if(!instruction){$("status").textContent="Napiši kako želiš da se izabrani pasus prepravi.";return}
+ const token=++paragraphRequestToken,button=$("rewriteParagraphBtn"),sourceSnapshot=$("finalText").value;
+ button.disabled=true;$("status").textContent="Prepravljam samo izabrani pasus…";
+ try{
+  const r=await fetch("/api/meditation-continue",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text:original,style:$("style").value,mode:"rewrite_paragraph",instruction})});
+  const d=await r.json();if(!r.ok)throw new Error(d.error||"Prepravka pasusa nije uspela.");
+  if(token!==paragraphRequestToken||$("finalText").value!==sourceSnapshot)throw new Error("Tekst se promenio tokom generisanja. Original je sačuvan; pokušaj ponovo.");
+  const fresh=getFinalParagraphs();
+  if(!fresh[index]||fresh[index].text!==original)throw new Error("Izabrani pasus se promenio. Original je sačuvan; izaberi pasus ponovo.");
+  if(!d.continuation)throw new Error("AI nije vratio novi pasus. Original je sačuvan.");
+  rememberFinalText();$("finalText").value=sourceSnapshot.slice(0,fresh[index].start)+d.continuation.trim()+sourceSnapshot.slice(fresh[index].end);
+  selectedParagraphIndex=-1;refreshParagraphList();$("status").textContent="Izabrani pasus je prepravljen. Ostali pasusi nisu menjani.";
+ }catch(e){$("status").textContent=e.message||"Prepravka nije uspela. Original je sačuvan."}
+ finally{button.disabled=false;refreshParagraphList()}
+};
+
 function makeImpulseFor(ctx,duration){
  const rate=ctx.sampleRate,length=Math.max(1,Math.floor(rate*duration)),buffer=ctx.createBuffer(2,length,rate);
  for(let ch=0;ch<2;ch++){const data=buffer.getChannelData(ch);for(let i=0;i<length;i++)data[i]=(Math.random()*2-1)*Math.pow(1-i/length,2.5);}
@@ -173,13 +273,13 @@ $("productionPreset").onclick=()=>{
 };
 
 $("insertPause").onclick=()=>{
- const ta=$("finalText"),tag="[PAUZA: "+$("pauseDuration").value+"s]",start=ta.selectionStart,end=ta.selectionEnd;
+ const ta=$("finalText"),tag="[PAUZA: "+$("pauseDuration").value+"s]",start=ta.selectionStart,end=ta.selectionEnd;rememberFinalText();
  ta.value=ta.value.slice(0,start)+tag+ta.value.slice(end);ta.focus();ta.selectionStart=ta.selectionEnd=start+tag.length;
  $("status").textContent="Pauza od "+$("pauseDuration").value+" sekunde je dodata.";
 };
 $("autoPauses").onclick=()=>{
  const ta=$("finalText");let t=ta.value.trim();if(!t){$("status").textContent="Prvo unesi tekst u finalnu skriptu.";return}
- t=t.replace(/([.!?])\s+(?=[A-ZČĆŽŠĐА-Я])/g,'$1\n[PAUZA: 3s]\n');
+ rememberFinalText();t=t.replace(/([.!?])\s+(?=[A-ZČĆŽŠĐА-Я])/g,'$1\n[PAUZA: 3s]\n');
  ta.value=t;$("status").textContent="Predlog pauza je dodat posle većine rečenica. Pregledaj tekst i prilagodi oznake.";
 };
 function splitPauseScript(text){
@@ -256,15 +356,20 @@ async function renderProcessed(parts){
  const rendered=await offline.startRendering();return audioBufferToWav(rendered);
 }
 $("continueBtn").onclick=async()=>{
- const text=$("source").value.trim();if(!text)return;$("status").textContent="AI priprema nastavak…";$("continueBtn").disabled=true;
- try{const r=await fetch("/api/meditation-continue",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text,style:$("style").value})});const d=await r.json();if(!r.ok)throw new Error(d.error||"Greška");
- lastContinuation=d.continuation||"";$("continuation").textContent=lastContinuation;$("appendBtn").disabled=!lastContinuation;$("rewriteBtn").disabled=!lastContinuation;$("status").textContent="Nastavak je spreman.";
- }catch(e){$("status").textContent=e.message}finally{$("continueBtn").disabled=false}
+ const text=$("source").value.trim();if(!text){$("status").textContent="Prvo unesi tekst u polje „Moj tekst“.";return}
+ const requestToken=++continuationRequestToken;
+ $("status").textContent="AI priprema nastavak…";$("continueBtn").disabled=true;
+ try{
+  const r=await fetch("/api/meditation-continue",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text,style:$("style").value})});const d=await r.json();if(!r.ok)throw new Error(d.error||"Greška");
+  if(requestToken!==continuationRequestToken)return;
+  lastContinuation=d.continuation||"";$("continuation").textContent=lastContinuation;$("appendBtn").disabled=!lastContinuation;$("rewriteBtn").disabled=!lastContinuation;$("status").textContent="Nastavak je spreman.";
+ }catch(e){if(requestToken===continuationRequestToken)$("status").textContent=e.message}
+ finally{if(requestToken===continuationRequestToken)$("continueBtn").disabled=false}
 };
 $("generateNarrationBtn").onclick=async()=>{
  const topic=$("narrationTopic").value.trim();if(!topic){$("status").textContent="Upiši temu za AI naraciju.";return}
  const button=$("generateNarrationBtn");button.disabled=true;$("status").textContent="AI piše celu meditaciju…";
- try{const r=await fetch("/api/meditation-continue",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text:topic,style:$("style").value,mode:"full",durationMinutes:Number($("narrationDuration").value)})});const d=await r.json();if(!r.ok)throw new Error(d.error||"Generisanje naracije nije uspelo.");$("finalText").value=d.continuation||"";$("status").textContent="AI naracija je spremna. Pregledaj i po želji izmeni tekst pre generisanja glasa."}
+ try{const r=await fetch("/api/meditation-continue",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text:topic,style:$("style").value,mode:"full",durationMinutes:Number($("narrationDuration").value)})});const d=await r.json();if(!r.ok)throw new Error(d.error||"Generisanje naracije nije uspelo.");rememberFinalText();$("finalText").value=d.continuation||"";selectedParagraphIndex=-1;refreshParagraphList();$("status").textContent="AI naracija je spremna. Pregledaj i po želji izmeni tekst pre generisanja glasa."}
  catch(e){$("status").textContent=e.message||"Generisanje naracije nije uspelo."}finally{button.disabled=false}
 };
 $("cloneVoiceBtn").onclick=async()=>{
@@ -283,9 +388,18 @@ $("cloneVoiceBtn").onclick=async()=>{
 };
 $("voice").addEventListener("change",()=>localStorage.setItem("meditationStudioActiveVoice",$("voice").value));
 try{const clones=JSON.parse(localStorage.getItem("meditationStudioVoiceClones")||"[]");for(const v of clones){if(v.id&&!Array.from($("voice").options).some(o=>o.value===v.id))$("voice").add(new Option(v.name||"Sačuvani klon",v.id))}const active=localStorage.getItem("meditationStudioActiveVoice");if(active&&Array.from($("voice").options).some(o=>o.value===active))$("voice").value=active}catch{}
-$("appendBtn").onclick=()=>{$("finalText").value=[$("source").value.trim(),lastContinuation].filter(Boolean).join("\n\n");$("status").textContent="Nastavak je dodat u finalnu skriptu."};
+$("appendBtn").onclick=()=>{rememberFinalText();$("finalText").value=[$("source").value.trim(),lastContinuation].filter(Boolean).join("\n\n");selectedParagraphIndex=-1;refreshParagraphList();$("status").textContent="Nastavak je dodat u finalnu skriptu."};
 $("rewriteBtn").onclick=async()=>{$("source").value=$("source").value.trim()+"\n\n"+lastContinuation;$("continueBtn").click()};
-$("clearBtn").onclick=()=>{["source","finalText"].forEach(id=>$(id).value="");$("continuation").textContent="Ovde će se pojaviti nastavak. Tvoj originalni tekst ostaje odvojen i ne menja se.";lastContinuation="";$("appendBtn").disabled=true;$("rewriteBtn").disabled=true};
+$("clearBtn").onclick=()=>{
+ if(!$("source").value.trim()&&!lastContinuation){$("status").textContent="Polje „Moj tekst“ je već prazno.";return}
+ if(!window.confirm("Obrisati tekst iz polja „Moj tekst“ i prethodni AI nastavak? Finalna skripta neće biti promenjena."))return;
+ continuationRequestToken++;
+ lastContinuation="";
+ $("source").value="";
+ $("continuation").textContent="Ovde će se pojaviti nastavak. Tvoj originalni tekst ostaje odvojen i ne menja se.";
+ $("appendBtn").disabled=true;$("rewriteBtn").disabled=true;$("continueBtn").disabled=false;
+ $("status").textContent="Tekst i prethodni AI nastavak su obrisani. Finalna skripta je sačuvana.";
+};
 $("generateBtn").onclick=async()=>{
  const text=$("finalText").value.trim()||[$("source").value.trim(),lastContinuation].filter(Boolean).join("\n\n");
  if(!text){$("status").textContent="Prvo napiši ili generiši skriptu.";return}
