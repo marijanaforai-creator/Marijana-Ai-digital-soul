@@ -158,6 +158,14 @@ let audioCtx=null, voiceSource=null, voiceGain=null, dryGain=null, convolver=nul
 let finalAudioUrl=null, generatedAudioUrl=null, selectedMusicFile=null;
 
 function rememberFinalText(){previousFinalText=$("finalText").value;$("undoEditBtn").disabled=fse));
+function rememberFinalText(){previousFinalText=$("finalText").value;$("undoEditBtn").disabled=false}
+function setAudioSettingsExpanded(expanded){
+ const panel=$("advancedAudioSettings");panel.hidden=!expanded;
+ $("showAudioSettingsBtn").disabled=expanded;$("showAudioSettingsBtn").setAttribute("aria-expanded",String(expanded));
+ $("hideAudioSettingsBtn").disabled=!expanded;
+}
+$("showAudioSettingsBtn").addEventListener("click",()=>setAudioSettingsExpanded(true));
+$("hideAudioSettingsBtn").addEventListener("click",()=>setAudioSettingsExpanded(false));
 function getFinalParagraphs(){
  const text=$("finalText").value,paragraphs=[],re=/\S[\s\S]*?(?=\n\s*\n|$)/g;let m;
  while((m=re.exec(text))!==null)paragraphs.push({text:m[0],start:m.index,end:m.index+m[0].length});
