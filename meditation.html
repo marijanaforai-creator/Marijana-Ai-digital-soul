@@ -154,10 +154,10 @@ let lastContinuation="";
 let selectedParagraphIndex=-1;
 let previousFinalText=null;
 let paragraphRequestToken=0;
+let continuationRequestToken=0;
 let audioCtx=null, voiceSource=null, voiceGain=null, dryGain=null, convolver=null, reverbGain=null, delayNode=null, feedbackGain=null, echoGain=null, musicAudio=null, musicSource=null, musicGain=null, masterGain=null, compressor=null;
 let finalAudioUrl=null, generatedAudioUrl=null, selectedMusicFile=null;
 
-function rememberFinalText(){previousFinalText=$("finalText").value;$("undoEditBtn").disabled=fse));
 function rememberFinalText(){previousFinalText=$("finalText").value;$("undoEditBtn").disabled=false}
 function setAudioSettingsExpanded(expanded){
  const panel=$("advancedAudioSettings");panel.hidden=!expanded;
@@ -187,7 +187,12 @@ function refreshParagraphList(){
  $("deleteParagraphBtn").disabled=selectedParagraphIndex<0||selectedParagraphIndex>=paragraphs.length;
  $("rewriteParagraphBtn").disabled=selectedParagraphIndex<0||selectedParagraphIndex>=paragraphs.length;
 }
-$("finalText").addEventListener("input",()=>{selectedParagraphIndex=-1;refreshParagraphList()});
+$("finalText").addEventListener("input",()=>{
+ previousFinalText=null;
+ $("undoEditBtn").disabled=true;
+ selectedParagraphIndex=-1;
+ refreshParagraphList();
+});
 $("undoEditBtn").onclick=()=>{
  if(previousFinalText===null)return;
  const current=$("finalText").value;$("finalText").value=previousFinalText;previousFinalText=current;
@@ -195,6 +200,7 @@ $("undoEditBtn").onclick=()=>{
 };
 $("deleteParagraphBtn").onclick=()=>{
  const parts=getFinalParagraphs(),index=selectedParagraphIndex;if(index<0||index>=parts.length)return;
+ if(parts.length===1){$("status").textContent="Ovo je poslednji pasus. Za brisanje cele meditacije koristi dugme „Obriši celu meditaciju“.";return}
  const p=parts[index];rememberFinalText();
  const left=$("finalText").value.slice(0,p.start),right=$("finalText").value.slice(p.end);
  let result=left+right;result=result.replace(/\n{3,}/g,"\n\n").replace(/^\s+|\s+$/g,"");
@@ -350,10 +356,15 @@ async function renderProcessed(parts){
  const rendered=await offline.startRendering();return audioBufferToWav(rendered);
 }
 $("continueBtn").onclick=async()=>{
- const text=$("source").value.trim();if(!text)return;$("status").textContent="AI priprema nastavak…";$("continueBtn").disabled=true;
- try{const r=await fetch("/api/meditation-continue",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text,style:$("style").value})});const d=await r.json();if(!r.ok)throw new Error(d.error||"Greška");
- lastContinuation=d.continuation||"";$("continuation").textContent=lastContinuation;$("appendBtn").disabled=!lastContinuation;$("rewriteBtn").disabled=!lastContinuation;$("status").textContent="Nastavak je spreman.";
- }catch(e){$("status").textContent=e.message}finally{$("continueBtn").disabled=false}
+ const text=$("source").value.trim();if(!text){$("status").textContent="Prvo unesi tekst u polje „Moj tekst“.";return}
+ const requestToken=++continuationRequestToken;
+ $("status").textContent="AI priprema nastavak…";$("continueBtn").disabled=true;
+ try{
+  const r=await fetch("/api/meditation-continue",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text,style:$("style").value})});const d=await r.json();if(!r.ok)throw new Error(d.error||"Greška");
+  if(requestToken!==continuationRequestToken)return;
+  lastContinuation=d.continuation||"";$("continuation").textContent=lastContinuation;$("appendBtn").disabled=!lastContinuation;$("rewriteBtn").disabled=!lastContinuation;$("status").textContent="Nastavak je spreman.";
+ }catch(e){if(requestToken===continuationRequestToken)$("status").textContent=e.message}
+ finally{if(requestToken===continuationRequestToken)$("continueBtn").disabled=false}
 };
 $("generateNarrationBtn").onclick=async()=>{
  const topic=$("narrationTopic").value.trim();if(!topic){$("status").textContent="Upiši temu za AI naraciju.";return}
@@ -379,7 +390,16 @@ $("voice").addEventListener("change",()=>localStorage.setItem("meditationStudioA
 try{const clones=JSON.parse(localStorage.getItem("meditationStudioVoiceClones")||"[]");for(const v of clones){if(v.id&&!Array.from($("voice").options).some(o=>o.value===v.id))$("voice").add(new Option(v.name||"Sačuvani klon",v.id))}const active=localStorage.getItem("meditationStudioActiveVoice");if(active&&Array.from($("voice").options).some(o=>o.value===active))$("voice").value=active}catch{}
 $("appendBtn").onclick=()=>{rememberFinalText();$("finalText").value=[$("source").value.trim(),lastContinuation].filter(Boolean).join("\n\n");selectedParagraphIndex=-1;refreshParagraphList();$("status").textContent="Nastavak je dodat u finalnu skriptu."};
 $("rewriteBtn").onclick=async()=>{$("source").value=$("source").value.trim()+"\n\n"+lastContinuation;$("continueBtn").click()};
-$("clearBtn").onclick=()=>{if(!$("source").value.trim()){$("status").textContent="Polje „Moj tekst“ je već prazno.";return}if(!window.confirm("Obrisati samo tekst iz polja „Moj tekst“? Finalna skripta neće biti promenjena."))return;$("source").value="";$("status").textContent="Polje „Moj tekst“ je obrisano. Finalna skripta je sačuvana."};
+$("clearBtn").onclick=()=>{
+ if(!$("source").value.trim()&&!lastContinuation){$("status").textContent="Polje „Moj tekst“ je već prazno.";return}
+ if(!window.confirm("Obrisati tekst iz polja „Moj tekst“ i prethodni AI nastavak? Finalna skripta neće biti promenjena."))return;
+ continuationRequestToken++;
+ lastContinuation="";
+ $("source").value="";
+ $("continuation").textContent="Ovde će se pojaviti nastavak. Tvoj originalni tekst ostaje odvojen i ne menja se.";
+ $("appendBtn").disabled=true;$("rewriteBtn").disabled=true;$("continueBtn").disabled=false;
+ $("status").textContent="Tekst i prethodni AI nastavak su obrisani. Finalna skripta je sačuvana.";
+};
 $("generateBtn").onclick=async()=>{
  const text=$("finalText").value.trim()||[$("source").value.trim(),lastContinuation].filter(Boolean).join("\n\n");
  if(!text){$("status").textContent="Prvo napiši ili generiši skriptu.";return}
