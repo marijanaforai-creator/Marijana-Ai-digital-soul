@@ -104,7 +104,8 @@ details summary{color:#EEE5F5}
 </div>
 <audio id="player" class="player" controls></audio>
 <div class="label">Pozadinska muzika</div>
-<div class="effects" style="margin-top:8px"><div class="label">Generiši podlogu pomoću AI</div><textarea id="musicPrompt" placeholder="Opiši podlogu, npr. tiha, topla ambijentalna muzika za meditaciju, bez vokala i naglih promena" style="min-height:82px"></textarea><div class="row" style="margin-top:10px;align-items:center"><select id="musicDuration" aria-label="Trajanje AI muzike" style="padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--field)"><option value="60000">1 minut</option><option value="120000" selected>2 minuta</option><option value="300000">5 minuta</option><option value="600000">10 minuta</option></select><button class="btn soft" id="generateMusicBtn"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z"/><path d="m19 16 .7 2.3L22 19l-2.3.7L19 22l-.7-2.3L16 19l2.3-.7L19 16Z"/></svg> Generiši AI muziku</button><button class="btn ghost" id="previewMusic" disabled><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 12 7-12 7V5Z" fill="currentColor" stroke="none"/></svg> Preslušaj muziku</button></div><p class="note">AI muzika je instrumentalna. Generisanje troši ElevenLabs kredite; fajl se koristi kao podloga pri sledećoj obradi.</p></div>
+<div class="effects" style="margin-top:8px"><div class="label">Generiši podlogu pomoću AI</div><textarea id="musicPrompt" placeholder="Opiši podlogu, npr. tiha, topla ambijentalna muzika za meditaciju, bez vokala i naglih promena" style="min-height:82px"></textarea><div class="row" style="margin-top:10px;align-items:center"><select id="musicDuration" aria-label="Trajanje AI muzike" style="padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--field)"><option value="60000">1 minut</option><option value="120000" selected>2 minuta</option><option value="300000">5 minuta</option><option value="600000">10 minuta</option></select><button class="btn soft" id="generateMusicBtn"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z"/><path d="m19 16 .7 2.3L22 19l-2.3.7L19 22l-.7-2.3L16 19l2.3-.7L19 16Z"/></svg> Generiši AI muziku</button><button class="btn ghost" id="downloadMusic" disabled><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 20h16"/></svg> Preuzmi AI muziku</button>
+<button class="btn ghost" id="previewMusic" disabled><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 12 7-12 7V5Z" fill="currentColor" stroke="none"/></svg> Preslušaj muziku</button></div><p class="note">AI muzika je instrumentalna. Generisanje troši ElevenLabs kredite; fajl se koristi kao podloga pri sledećoj obradi.</p></div>
 <p class="note">Ili učitaj svoju muzičku podlogu:</p><input id="music" type="file" accept="audio/*">
 <div class="effects">
   <div class="label">Podešavanje muzičke podloge</div>
@@ -310,7 +311,7 @@ $("downloadAudio").onclick=()=>{
 };
 $("music").onchange=()=>{
  const file=$("music").files&&$("music").files[0];if(!file)return;
- selectedMusicFile=file;$("previewMusic").disabled=false;
+ selectedMusicFile=file;$("previewMusic").disabled=false;$("downloadMusic").disabled=false;
  if(musicAudio){musicAudio.pause();musicAudio.src="";musicAudio=null;musicSource=null;musicGain=null;}
  musicAudio=new Audio(URL.createObjectURL(file));musicAudio.loop=true;musicAudio.preload="auto";
  $("previewMix").disabled=!$("player").src;
@@ -327,6 +328,13 @@ $("generateMusicBtn").onclick=async()=>{
   musicAudio=new Audio(URL.createObjectURL(blob));musicAudio.loop=true;musicAudio.preload="auto";$("previewMusic").disabled=false;
   $("status").textContent="AI muzika je spremna. Preslušaj je ili klikni „Generiši i obradi“ da je uključiš u finalni miks."
  }catch(e){$("status").textContent=e.message||"Generisanje muzike nije uspelo."}finally{button.disabled=false}
+};
+$("downloadMusic").onclick=()=>{
+ if(!selectedMusicFile){$("status").textContent="Prvo generiši AI muziku.";return}
+ const url=URL.createObjectURL(selectedMusicFile),a=document.createElement("a");
+ a.href=url;a.download="ai-meditation-background.mp3";document.body.appendChild(a);a.click();a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1000);
+ $("status").textContent="Preuzimanje AI muzike je pokrenuto.";
 };
 $("previewMusic").onclick=async()=>{
  if(!selectedMusicFile){$("status").textContent="Prvo izaberi ili generiši muzičku podlogu.";return}
