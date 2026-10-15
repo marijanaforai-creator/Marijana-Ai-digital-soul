@@ -206,6 +206,17 @@ async function fetchSpeech(text){
  const bytes=await r.arrayBuffer();const Ctx=window.AudioContext||window.webkitAudioContext;const ctx=new Ctx();
  try{return await ctx.decodeAudioData(bytes.slice(0));}finally{await ctx.close();}
 }
+function makeSeamlessLoop(buffer,fadeSeconds=1.5){
+ const fade=Math.min(fadeSeconds,buffer.duration/4),frames=Math.floor(fade*buffer.sampleRate);
+ if(frames<2)return buffer;
+ const length=buffer.length-frames,out=new AudioBuffer({length,numberOfChannels:buffer.numberOfChannels,sampleRate:buffer.sampleRate});
+ for(let ch=0;ch<buffer.numberOfChannels;ch++){
+  const src=buffer.getChannelData(ch),dst=out.getChannelData(ch);dst.set(src.subarray(0,length));
+  const start=buffer.length-frames;
+  for(let i=0;i<frames;i++){const x=i/(frames-1),a=Math.cos(x*Math.PI/2),b=Math.sin(x*Math.PI/2);dst[start+i]=src[start+i]*a+src[i]*b;}
+ }
+ return out;
+}
 async function renderProcessed(parts){
  const rate=44100,buffers=[];let total=0;
  for(let i=0;i<parts.length;i++){
@@ -219,7 +230,7 @@ async function renderProcessed(parts){
  if(selectedMusicFile){
   $("status").textContent="Učitavam muzičku podlogu…";
   const Ctx=window.AudioContext||window.webkitAudioContext,decodeCtx=new Ctx();
-  try{musicBuffer=await decodeCtx.decodeAudioData(await selectedMusicFile.arrayBuffer())}finally{await decodeCtx.close()}
+  try{musicBuffer=makeSeamlessLoop(await decodeCtx.decodeAudioData(await selectedMusicFile.arrayBuffer()))}finally{await decodeCtx.close()}
  }
  const tail=Number($("decay").value)+1.5,renderDuration=total+tail,length=Math.ceil(renderDuration*rate);
  const offline=new OfflineAudioContext(2,length,rate);
