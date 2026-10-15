@@ -325,7 +325,7 @@ $("generateMusicBtn").onclick=async()=>{
   if(!r.ok){const d=await r.json().catch(()=>({}));throw new Error(d.error||"Generisanje muzike nije uspelo.")}
   const blob=await r.blob();selectedMusicFile=new File([blob],"ai-meditation-background.mp3",{type:blob.type||"audio/mpeg"});
   if(musicAudio){musicAudio.pause();musicAudio.src=""}
-  musicAudio=new Audio(URL.createObjectURL(blob));musicAudio.loop=true;musicAudio.preload="auto";$("previewMusic").disabled=false;
+  musicAudio=new Audio(URL.createObjectURL(blob));musicAudio.loop=true;musicAudio.preload="auto";$("previewMusic").disabled=false;$("downloadMusic").disabled=false;
   $("status").textContent="AI muzika je spremna. Preslušaj je ili klikni „Generiši i obradi“ da je uključiš u finalni miks."
  }catch(e){$("status").textContent=e.message||"Generisanje muzike nije uspelo."}finally{button.disabled=false}
 };
