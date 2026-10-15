@@ -6,10 +6,13 @@ export default async function handler(req, res) {
     if (!apiKey) return res.status(500).json({ error: "ELEVENLABS_API_KEY nije podešen na serveru." });
     if (typeof prompt !== "string" || !prompt.trim()) return res.status(400).json({ error: "Opiši kakvu muziku želiš." });
     if (prompt.length > 4100) return res.status(400).json({ error: "Opis muzike je predugačak." });
-    const length = Number(durationMs);
-    if (!Number.isInteger(length) || length < 3000 || length > 600000) {
-      return res.status(400).json({ error: "Trajanje muzike mora biti između 3 sekunde i 10 minuta." });
+    const requestedLength = Number(durationMs);
+    if (!Number.isInteger(requestedLength) || requestedLength < 3000 || requestedLength > 1200000) {
+      return res.status(400).json({ error: "Trajanje muzike mora biti između 3 sekunde i 20 minuta." });
     }
+    // ElevenLabs generation is limited here to 10 minutes; for the 20-minute option,
+    // generate a 10-minute bed and loop it in preview and final meditation mix.
+    const length = Math.min(requestedLength, 600000);
 
     const response = await fetch("https://api.elevenlabs.io/v1/music?output_format=mp3_44100_128", {
       method: "POST",
